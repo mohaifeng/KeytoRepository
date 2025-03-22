@@ -1,0 +1,4 @@
+../Core/Src/led.c:11:6:Led_Init	1
+../Core/Src/led.c:20:6:Led_Color_Set	4
+../Core/Src/led.c:47:6:Ow_Init	1
+../Core/Src/led.c:52:6:Ow_Set	2
