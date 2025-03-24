@@ -38,10 +38,10 @@ uint8_t aRxBuffer;			//接收中断缓冲
 uint8_t rx_buffer[BUFFER_SIZE];  // 接收缓冲区
 uint8_t tx_buffer[BUFFER_SIZE];  // 输出缓冲区
 volatile uint16_t rx_index = 0;              // 当前接收数据的索引
-extern OEM_TYPEDEF *oem_send_data;//发送数据oem结构体变量
-extern OEM_TYPEDEF *oem_rec_data;//接收到数据oem结构体变量
-extern DT_TYPEDEF *dt_send_data;//发送数据dt结构体变量
-extern DT_TYPEDEF *dt_rec_data;//接收到数据dt结构体变量
+extern OEM_TYPEDEF oem_send_data_instance;              //发送数据oem结构体变量
+extern OEM_TYPEDEF oem_rec_data_instance;              //接收到数据oem结构体变量
+extern DT_TYPEDEF dt_send_data_instance;              //发送数据dt结构体变量
+extern DT_TYPEDEF dt_rec_data_instance;              //接收到数据dt结构体变量
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
@@ -87,7 +87,7 @@ void MX_USART1_UART_Init(void)
   }
   /* USER CODE BEGIN USART1_Init 2 */
 	// 启动接收中断
-	HAL_UART_Receive_IT(&huart1, (uint8_t *)&aRxBuffer, 1);
+	HAL_UART_Receive_IT(&huart1, (uint8_t*) &aRxBuffer, 1);
   /* USER CODE END USART1_Init 2 */
 
 }
@@ -171,7 +171,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		HAL_TIM_Base_Start_IT(&htim6);
 		if (rx_index < BUFFER_SIZE)
 		{
-			HAL_UART_Receive_IT(&huart1, (uint8_t *)&aRxBuffer, 1);
+			HAL_UART_Receive_IT(&huart1, (uint8_t*) &aRxBuffer, 1);
 		}
 		else
 		{
@@ -183,10 +183,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 void ProcessReceivedData(void)
 {
 	// 将接收到的数据发送回去
-//	Protocol_Analyze(rx_buffer,rx_index);
-	HAL_UART_Transmit_IT(&huart1, rx_buffer,rx_index);
+	Protocol_Analyze(rx_buffer, rx_index);
+	HAL_UART_Transmit_IT(&huart1, tx_buffer, oem_send_data_instance.data_len);
 	// 重置接收索引
 	rx_index = 0;
-	HAL_UART_Receive_IT(&huart1, (uint8_t *)&aRxBuffer, 1);
+	HAL_UART_Receive_IT(&huart1, (uint8_t*) &aRxBuffer, 1);
 }
 /* USER CODE END 1 */

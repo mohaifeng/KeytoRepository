@@ -36,13 +36,8 @@ typedef struct
 	uint8_t checksum;
 } OEM_TYPEDEF;
 
-//OEM_TYPEDEF *oem_send_data;//发送数据oem结构体变量
-//OEM_TYPEDEF *oem_rec_data;//接收到数据oem结构体变量
-//DT_TYPEDEF *dt_send_data;//发送数据dt结构体变量
-//DT_TYPEDEF *dt_rec_data;//接收到数据dt结构体变量
 
-
-uint8_t OEM_Conf(uint8_t *rx_buff, uint16_t len);
+uint8_t OEM_Conf(uint8_t *rx_buff, uint32_t len);
 void OEM_Send_Conf(void);
 void Protocol_Analyze(uint8_t *rx_buff, uint8_t len);
 #endif /* INC_PROTOCOL_H_ */

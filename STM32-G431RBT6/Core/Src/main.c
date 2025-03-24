@@ -27,12 +27,11 @@
 #include <stdio.h>
 #include <string.h>
 
-uint8_t t = 0;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-extern uint8_t rx_timeout_flag;
+
 
 /* USER CODE END PTD */
 
@@ -60,7 +59,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+extern uint8_t rx_finish_flag;
 /* USER CODE END 0 */
 
 /**
@@ -110,11 +109,11 @@ int main(void)
     /* USER CODE BEGIN 3 */
 		Ow_Set();
 		// 检查是否超时
-		if (rx_timeout_flag)
+		if (rx_finish_flag)
 		{
 			// 处理接收完成的数据
 			ProcessReceivedData();
-			rx_timeout_flag = 0;
+			rx_finish_flag = 0;
 		}
 	 }
   /* USER CODE END 3 */

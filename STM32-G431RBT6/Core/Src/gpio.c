@@ -93,7 +93,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (GPIO_Pin == GPIO_PIN_5)
 	{
-		HAL_Delay(10);
+		HAL_Delay(50);
 		GPIO_PinState pinState = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5);
 
 		// 根据引脚状态执行操作
