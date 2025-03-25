@@ -42,6 +42,7 @@ extern OEM_TYPEDEF oem_send_data_instance;              //发送数据oem结构�
 extern OEM_TYPEDEF oem_rec_data_instance;              //接收到数据oem结构体变量
 extern DT_TYPEDEF dt_send_data_instance;              //发送数据dt结构体变量
 extern DT_TYPEDEF dt_rec_data_instance;              //接收到数据dt结构体变量
+extern uint8_t protocol_type;
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
@@ -184,7 +185,12 @@ void ProcessReceivedData(void)
 {
 	// 将接收到的数据发送回去
 	Protocol_Analyze(rx_buffer, rx_index);
-	HAL_UART_Transmit_IT(&huart1, tx_buffer, oem_send_data_instance.data_len);
+	switch(protocol_type)
+	{
+		case 0:HAL_UART_Transmit_IT(&huart1, tx_buffer, dt_send_data_instance.data_len);break;
+		case 1:HAL_UART_Transmit_IT(&huart1, tx_buffer, oem_send_data_instance.data_len);break;
+		default:break;
+	}
 	// 重置接收索引
 	rx_index = 0;
 	HAL_UART_Receive_IT(&huart1, (uint8_t*) &aRxBuffer, 1);
