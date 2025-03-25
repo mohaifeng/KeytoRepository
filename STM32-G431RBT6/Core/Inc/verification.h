@@ -10,6 +10,6 @@
 
 #include "stm32g4xx_hal.h"
 
-uint8_t Checksum_8(uint8_t *data, uint32_t length);
+uint8_t Checksum_8(uint8_t *data,uint32_t length);
 
 #endif /* INC_VERIFICATION_H_ */

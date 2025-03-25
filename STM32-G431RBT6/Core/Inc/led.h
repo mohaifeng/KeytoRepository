@@ -12,10 +12,8 @@
 
 typedef enum
 {
-	RED,
-	GREEN,
-	BLUE,
-}LED_COLOR_TYPEDEF;
+	RED, GREEN, BLUE,
+} LED_COLOR_TYPEDEF;
 
 void Led_Init(void);
 void Led_Color_Set(LED_COLOR_TYPEDEF idex);

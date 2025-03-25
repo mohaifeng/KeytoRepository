@@ -66,8 +66,8 @@ all: main-build
 main-build: STM32-G431RBT6.elf secondary-outputs
 
 # Tool invocations
-STM32-G431RBT6.elf STM32-G431RBT6.map: $(OBJS) $(USER_OBJS) D:\code\Stm32_Projects\STM32-G431RBT6\STM32G431RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "STM32-G431RBT6.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\code\Stm32_Projects\STM32-G431RBT6\STM32G431RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32-G431RBT6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+STM32-G431RBT6.elf STM32-G431RBT6.map: $(OBJS) $(USER_OBJS) D:\GitRepository\STM32-G431RBT6\STM32G431RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "STM32-G431RBT6.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\GitRepository\STM32-G431RBT6\STM32G431RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32-G431RBT6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
