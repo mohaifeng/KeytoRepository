@@ -58,7 +58,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-extern uint8_t rx_finish_flag;
+extern volatile uint8_t rx_finish_flag;
 /* USER CODE END 0 */
 
 /**

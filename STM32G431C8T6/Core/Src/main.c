@@ -56,7 +56,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-extern uint8_t rx_finish_flag;
+extern volatile uint8_t rx_finish_flag;
+uint8_t  rx_f_flag;
 uint8_t test = 0;
 /* USER CODE END 0 */
 
@@ -91,8 +92,9 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM6_Init();
   MX_USART1_UART_Init();
-  /* USER CODE BEGIN 2 */
 
+  /* USER CODE BEGIN 2 */
+  HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_SET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -102,10 +104,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if(rx_finish_flag == 1)
+		if(rx_finish_flag)
 		{
 			// 处理接收完成的数据
-			test++;
 			ProcessReceivedData();
 			rx_finish_flag = 0;
 		}

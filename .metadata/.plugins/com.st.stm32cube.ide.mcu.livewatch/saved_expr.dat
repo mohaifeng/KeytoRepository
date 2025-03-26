@@ -8,3 +8,4 @@ protocol_type
 oem_send_data_instance
 oem_rec_data_instance
 test
+rx_f_flag

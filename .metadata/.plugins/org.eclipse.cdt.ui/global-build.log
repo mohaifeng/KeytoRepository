@@ -1,4 +1,4 @@
-15:11:02 **** Clean-only build of configuration Debug for project STM32G431C8T6 ****
+15:32:38 **** Clean-only build of configuration Debug for project STM32G431C8T6 ****
 make -j8 clean 
 rm -rf ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma_ex.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma_ex.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma_ex.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma_ex.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_exti.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_exti.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_exti.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_exti.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ex.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ex.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ex.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ex.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ramfunc.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ramfunc.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ramfunc.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ramfunc.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_gpio.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_gpio.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_gpio.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_gpio.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr_ex.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr_ex.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr_ex.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr_ex.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc_ex.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc_ex.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc_ex.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc_ex.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart.su ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart_ex.cyclo ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart_ex.d ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart_ex.o ./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart_ex.su
 rm -rf ./Core/Startup/startup_stm32g431c8tx.d ./Core/Startup/startup_stm32g431c8tx.o
@@ -7,7 +7,7 @@ rm -rf STM32G431C8T6.bin STM32G431C8T6.elf STM32G431C8T6.hex STM32G431C8T6.list 
 rm: can't remove 'STM32G431C8T6.elf': Permission denied
 make: [makefile:96: clean] Error 1 (ignored)
  
-15:11:05 **** Build of configuration Debug for project STM32G431C8T6 ****
+15:32:40 **** Build of configuration Debug for project STM32G431C8T6 ****
 make -j8 all 
 arm-none-eabi-gcc "../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.d" -MT"Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.o"
 arm-none-eabi-gcc "../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.d" -MT"Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.o"
@@ -53,4 +53,466 @@ Finished building: STM32G431C8T6.bin
  
  
 Finished building: STM32G431C8T6.list
+ 
+15:43:53 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+15:44:03 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+15:54:52 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.bin
+Finished building: STM32G431C8T6.hex
+ 
+Finished building: STM32G431C8T6.list
+ 
+ 
+15:58:08 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+Finished building: STM32G431C8T6.bin
+ 
+ 
+Finished building: STM32G431C8T6.list
+ 
+15:58:11 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+16:01:12 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/usart.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/usart.d" -MT"Core/Src/usart.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/usart.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+Finished building: STM32G431C8T6.bin
+ 
+ 
+Finished building: STM32G431C8T6.list
+ 
+16:01:15 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+16:11:16 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+ 
+Finished building: STM32G431C8T6.bin
+Finished building: STM32G431C8T6.list
+ 
+ 
+16:13:01 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+ 
+Finished building: STM32G431C8T6.bin
+ 
+Finished building: STM32G431C8T6.list
+ 
+16:13:04 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+16:14:29 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+Finished building: STM32G431C8T6.bin
+ 
+Finished building: STM32G431C8T6.list
+ 
+ 
+16:14:32 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+16:16:09 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+Finished building: STM32G431C8T6.bin
+ 
+ 
+Finished building: STM32G431C8T6.list
+ 
+16:16:16 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+16:17:47 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+Finished building: STM32G431C8T6.bin
+ 
+ 
+Finished building: STM32G431C8T6.list
+ 
+16:17:53 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+16:18:47 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+ 
+Finished building: STM32G431C8T6.list
+Finished building: STM32G431C8T6.bin
+ 
+ 
+16:18:50 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+16:19:18 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+Finished building: STM32G431C8T6.bin
+ 
+ 
+Finished building: STM32G431C8T6.list
+ 
+16:19:21 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+16:20:05 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/usart.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/usart.d" -MT"Core/Src/usart.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/usart.o"
+../Core/Src/usart.c: In function 'ProcessReceivedData':
+../Core/Src/usart.c:190:9: error: too few arguments to function 'HAL_UART_Transmit'
+  190 |         HAL_UART_Transmit(&huart1,rx_buffer,rx_index);
+      |         ^~~~~~~~~~~~~~~~~
+In file included from ../Core/Inc/stm32g4xx_hal_conf.h:348,
+                 from ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Inc/usart.h:29,
+                 from ../Core/Src/usart.c:21:
+../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart.h:1633:19: note: declared here
+ 1633 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                   ^~~~~~~~~~~~~~~~~
+make: *** [Core/Src/subdir.mk:52: Core/Src/usart.o] Error 1
+"make -j8 all" terminated with exit code 2. Build might be incomplete.
+16:22:51 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/usart.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/usart.d" -MT"Core/Src/usart.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/usart.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+Finished building: STM32G431C8T6.bin
+ 
+ 
+Finished building: STM32G431C8T6.list
+ 
+16:22:55 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+16:43:26 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.bin
+Finished building: STM32G431C8T6.hex
+Finished building: STM32G431C8T6.list
+ 
+ 
+ 
+16:43:30 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+16:45:10 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+Finished building: STM32G431C8T6.bin
+ 
+ 
+Finished building: STM32G431C8T6.list
+ 
+16:46:07 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+Finished building: STM32G431C8T6.bin
+ 
+ 
+Finished building: STM32G431C8T6.list
+ 
+16:47:16 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+Finished building: STM32G431C8T6.bin
+ 
+ 
+Finished building: STM32G431C8T6.list
+ 
+17:00:39 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/tim.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/tim.d" -MT"Core/Src/tim.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/tim.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+ 
+Finished building: STM32G431C8T6.bin
+Finished building: STM32G431C8T6.list
+ 
+ 
+17:00:42 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+17:01:20 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/tim.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/tim.d" -MT"Core/Src/tim.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/tim.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+ 
+Finished building: STM32G431C8T6.bin
+ 
+Finished building: STM32G431C8T6.list
+ 
+17:07:00 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+Finished building: STM32G431C8T6.bin
+ 
+ 
+Finished building: STM32G431C8T6.list
+ 
+17:07:03 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+17:07:55 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+17:10:36 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32G431C8T6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32G431C8T6\STM32G431C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32G431C8T6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32G431C8T6.elf
+ 
+arm-none-eabi-size  STM32G431C8T6.elf 
+arm-none-eabi-objdump -h -S STM32G431C8T6.elf  > "STM32G431C8T6.list"
+arm-none-eabi-objcopy  -O ihex STM32G431C8T6.elf  "STM32G431C8T6.hex"
+arm-none-eabi-objcopy  -O binary STM32G431C8T6.elf  "STM32G431C8T6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32G431C8T6.hex
+Finished building: STM32G431C8T6.bin
+ 
+ 
+Finished building: STM32G431C8T6.list
+ 
+17:10:40 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+17:11:58 **** Incremental Build of configuration Debug for project STM32G431C8T6 ****
+make -j8 all 
+arm-none-eabi-size  STM32G431C8T6.elf 
+Finished building: default.size.stdout
+ 
+17:12:36 **** Incremental Build of configuration Debug for project STM32-G431RBT6 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G431xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -Werror -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32-G431RBT6.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\GitRepository\STM32-G431RBT6\STM32G431RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32-G431RBT6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32-G431RBT6.elf
+ 
+arm-none-eabi-size  STM32-G431RBT6.elf 
+arm-none-eabi-objdump -h -S STM32-G431RBT6.elf  > "STM32-G431RBT6.list"
+arm-none-eabi-objcopy  -O ihex STM32-G431RBT6.elf  "STM32-G431RBT6.hex"
+arm-none-eabi-objcopy  -O binary STM32-G431RBT6.elf  "STM32-G431RBT6.bin"
+Finished building: default.size.stdout
+ 
+Finished building: STM32-G431RBT6.hex
+Finished building: STM32-G431RBT6.bin
+ 
+ 
+Finished building: STM32-G431RBT6.list
  

@@ -173,20 +173,21 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 void ProcessReceivedData(void)
 {
 	// 将接收到的数据发送回去
-	Protocol_Analyze(rx_buffer,rx_index);
-	switch(protocol_type)
-		{
-		case 0:
-			HAL_UART_Transmit_IT(&huart1,tx_buffer,dt_send_data_instance.data_len);
-			break;
-		case 1:
-			oem_count++;
-			HAL_UART_Transmit_IT(&huart1,tx_buffer,oem_send_data_instance.data_len);
-			break;
-		default:
-			break;
-		}
+//	Protocol_Analyze(rx_buffer,rx_index);
+//	switch(protocol_type)
+//		{
+//		case 0:
+//			HAL_UART_Transmit_IT(&huart1,tx_buffer,dt_send_data_instance.data_len);
+//			break;
+//		case 1:
+//			oem_count++;
+//			HAL_UART_Transmit_IT(&huart1,tx_buffer,oem_send_data_instance.data_len);
+//			break;
+//		default:
+//			break;
+//		}
 	// 重置接收索引
+	HAL_UART_Transmit(&huart1,rx_buffer,rx_index,1000);
 	rx_index = 0;
 	HAL_UART_Receive_IT(&huart1,(uint8_t*)&aRxBuffer,1);
 }
