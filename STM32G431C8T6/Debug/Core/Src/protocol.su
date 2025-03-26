@@ -1,0 +1,5 @@
+../Core/Src/protocol.c:18:9:DT_Rec_Conf	12	static
+../Core/Src/protocol.c:55:9:OEM_Rec_Conf	16	static
+../Core/Src/protocol.c:76:6:DT_Send_Conf	264	static
+../Core/Src/protocol.c:96:6:OEM_Send_Conf	16	static
+../Core/Src/protocol.c:113:6:Protocol_Analyze	16	static

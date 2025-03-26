@@ -1,0 +1,10 @@
+rx_buffer
+tx_buffer
+rx_index
+rx_finish_flag
+count
+oem_count
+protocol_type
+oem_send_data_instance
+oem_rec_data_instance
+test
