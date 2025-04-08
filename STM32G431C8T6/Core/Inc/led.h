@@ -8,6 +8,10 @@
 #ifndef INC_LED_H_
 #define INC_LED_H_
 
+#include "main.h"
 
+void Led_Init(void);
+void LED_Toggle(void);
+void Led_Twinkle(uint8_t num);
 
 #endif /* INC_LED_H_ */

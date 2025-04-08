@@ -1,21 +1,21 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.h
+ * @brief          : Header for main.c file.
+ *                   This file contains the common defines of the application.
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
@@ -31,7 +31,11 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "gpio.h"
+#include "dev.h"
+#include "usart.h"
+#include "dma.h"
+#include "led.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -59,14 +63,6 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define LED_BLUE_Pin GPIO_PIN_13
 #define LED_BLUE_GPIO_Port GPIOB
-#define RS232_TX_Pin GPIO_PIN_9
-#define RS232_TX_GPIO_Port GPIOA
-#define RS232_RX_Pin GPIO_PIN_10
-#define RS232_RX_GPIO_Port GPIOA
-#define CAN_RX_Pin GPIO_PIN_11
-#define CAN_RX_GPIO_Port GPIOA
-#define CAN_TX_Pin GPIO_PIN_12
-#define CAN_TX_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 

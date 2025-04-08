@@ -27,7 +27,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "dma.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -55,10 +55,12 @@ void SVC_Handler(void);
 void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
+void DMA1_Channel1_IRQHandler(void);
+void DMA1_Channel2_IRQHandler(void);
 void USART1_IRQHandler(void);
-void TIM6_DAC_IRQHandler(void);
 /* USER CODE BEGIN EFP */
-
+void USER_UART_IRQHandler(UART_HandleTypeDef *huart);
+void USAR_UART_IDLECallback(UART_HandleTypeDef *huart);
 /* USER CODE END EFP */
 
 #ifdef __cplusplus

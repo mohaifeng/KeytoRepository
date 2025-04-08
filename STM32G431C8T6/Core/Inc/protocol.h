@@ -20,8 +20,8 @@ typedef struct
 	uint8_t addr;
 	uint8_t state;
 	uint8_t dt_flag;
-	uint8_t data[PROTOCOL_DATA_LEN];
-	uint8_t data_len; //数据长度，包括0X0D
+	uint8_t data_buff[PROTOCOL_DATA_LEN];
+	uint8_t data_buff_len; //数据数组长度
 } DT_TYPEDEF;
 
 typedef struct
@@ -32,12 +32,12 @@ typedef struct
 	uint8_t state;
 	uint8_t cmd_len;
 	uint8_t data[PROTOCOL_DATA_LEN];
-	uint8_t data_len;
+	uint8_t data_len;//数据帧长度
 	uint8_t checksum;
 } OEM_TYPEDEF;
 
-uint8_t DT_Rec_Conf(uint8_t *rx_buff,uint32_t len);
-uint8_t OEM_Rec_Conf(uint8_t *rx_buff,uint32_t len);
+uint8_t DT_Rec_Conf(const uint8_t *rx_buff,uint8_t len);
+uint8_t OEM_Rec_Conf(const uint8_t *rx_buff,uint32_t len);
 void OEM_Send_Conf(void);
 void Protocol_Analyze(uint8_t *rx_buff,uint8_t len);
 

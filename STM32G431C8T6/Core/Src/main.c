@@ -18,7 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "tim.h"
+#include "dma.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -50,15 +50,16 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MX_NVIC_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-extern volatile uint8_t rx_finish_flag;
-uint8_t  rx_f_flag;
-uint8_t test = 0;
+extern USART_RX_TYPEDEF usart_rx_struct;
+extern DEV_TYPEDEF dev_instance;
+DEV_TYPEDEF dev_msg;
 /* USER CODE END 0 */
 
 /**
@@ -90,11 +91,16 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_TIM6_Init();
+  MX_DMA_Init();
   MX_USART1_UART_Init();
 
+  /* Initialize interrupts */
+  MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-  HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_SET);
+	Led_Init();
+	//使能空闲中断
+	__HAL_UART_ENABLE_IT(&huart1,UART_IT_IDLE);
+	Start_DMA_Receive();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -104,11 +110,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if(rx_finish_flag)
+		if(usart_rx_struct.recv_end_flag)  //接收完成标志
 		{
-			// 处理接收完成的数据
 			ProcessReceivedData();
-			rx_finish_flag = 0;
 		}
 	}
   /* USER CODE END 3 */
@@ -157,6 +161,17 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief NVIC Configuration.
+  * @retval None
+  */
+static void MX_NVIC_Init(void)
+{
+  /* USART1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(USART1_IRQn, 1, 0);
+  HAL_NVIC_EnableIRQ(USART1_IRQn);
 }
 
 /* USER CODE BEGIN 4 */

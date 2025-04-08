@@ -1,0 +1,159 @@
+2025-04-01 13:46:18,312 [ERROR] LogOutputStream:75 - [STDERR_REDIRECT] Warning: NLS unused message: ChangeExceptionHandler_dialog_title in: org.eclipse.jdt.internal.ui.refactoring.refactoringui
+2025-04-01 13:47:48,725 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2025-04-01 13:47:57,325 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2025-04-01 13:47:59,503 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2025-04-01 13:47:59,616 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2025-04-01 13:48:00,941 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2025-04-01 13:48:05,164 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2025-04-01 13:49:12,905 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,711x468,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2025-04-01 13:49:14,114 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2025-04-01 13:49:14,557 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2025-04-01 13:49:26,561 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 368595040 Bytes (993001472)
+2025-04-01 13:49:27,910 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 467689576 Bytes (993001472)
+2025-04-01 13:49:28,588 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: SYS
+2025-04-01 13:49:28,590 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: RCC
+2025-04-01 13:49:28,591 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: NVIC
+2025-04-01 13:49:28,591 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: USART
+2025-04-01 13:49:28,592 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: DMA
+2025-04-01 13:49:28,611 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: GPIO
+2025-04-01 13:49:28,614 [INFO] CodeGenerator:882 - code generatio: config db path: D:\Download\STM32\STM32CubeIDE_1.14.1\STM32CubeIDE\plugins\com.st.stm32cube.common.mx_6.14.0.202502271554\\db\
+2025-04-01 13:49:28,639 [INFO] Argument:325 - Argument : hdmavalue: null
+2025-04-01 13:49:28,640 [INFO] Argument:327 - 	 sub Args: 
+2025-04-01 13:49:28,643 [INFO] Argument:325 - Argument : Instancevalue: DMA1_Channel2
+2025-04-01 13:49:28,647 [INFO] Argument:335 - Argument : Instancevalue: DMA1_Channel2
+2025-04-01 13:49:28,660 [INFO] Argument:325 - Argument : Initvalue: null
+2025-04-01 13:49:28,661 [INFO] Argument:327 - 	 sub Args: 
+2025-04-01 13:49:28,662 [INFO] Argument:325 - Argument : Requestvalue: DMA_REQUEST_USART1_TX
+2025-04-01 13:49:28,664 [INFO] Argument:335 - Argument : Requestvalue: DMA_REQUEST_USART1_TX
+2025-04-01 13:49:28,664 [INFO] Argument:325 - Argument : Directionvalue: DMA_MEMORY_TO_PERIPH
+2025-04-01 13:49:28,665 [INFO] Argument:335 - Argument : Directionvalue: DMA_MEMORY_TO_PERIPH
+2025-04-01 13:49:28,665 [INFO] Argument:325 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2025-04-01 13:49:28,665 [INFO] Argument:335 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2025-04-01 13:49:28,666 [INFO] Argument:325 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2025-04-01 13:49:28,666 [INFO] Argument:335 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2025-04-01 13:49:28,666 [INFO] Argument:325 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2025-04-01 13:49:28,666 [INFO] Argument:335 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2025-04-01 13:49:28,667 [INFO] Argument:325 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2025-04-01 13:49:28,667 [INFO] Argument:335 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2025-04-01 13:49:28,667 [INFO] Argument:325 - Argument : Modevalue: DMA_NORMAL
+2025-04-01 13:49:28,667 [INFO] Argument:335 - Argument : Modevalue: DMA_NORMAL
+2025-04-01 13:49:28,668 [INFO] Argument:325 - Argument : Priorityvalue: DMA_PRIORITY_LOW
+2025-04-01 13:49:28,668 [INFO] Argument:335 - Argument : Priorityvalue: DMA_PRIORITY_LOW
+2025-04-01 13:49:28,668 [INFO] Argument:325 - Argument : Lockvalue: null
+2025-04-01 13:49:28,668 [INFO] Argument:335 - Argument : Lockvalue: null
+2025-04-01 13:49:28,668 [INFO] Argument:325 - Argument : Statevalue: null
+2025-04-01 13:49:28,668 [INFO] Argument:335 - Argument : Statevalue: null
+2025-04-01 13:49:28,669 [INFO] Argument:325 - Argument : Parentvalue: null
+2025-04-01 13:49:28,669 [INFO] Argument:335 - Argument : Parentvalue: null
+2025-04-01 13:49:28,669 [INFO] Argument:325 - Argument : XferCpltCallbackvalue: null
+2025-04-01 13:49:28,670 [INFO] Argument:335 - Argument : XferCpltCallbackvalue: null
+2025-04-01 13:49:28,670 [INFO] Argument:325 - Argument : XferHalfCpltCallbackvalue: null
+2025-04-01 13:49:28,670 [INFO] Argument:335 - Argument : XferHalfCpltCallbackvalue: null
+2025-04-01 13:49:28,670 [INFO] Argument:325 - Argument : XferErrorCallbackvalue: null
+2025-04-01 13:49:28,670 [INFO] Argument:335 - Argument : XferErrorCallbackvalue: null
+2025-04-01 13:49:28,670 [INFO] Argument:325 - Argument : XferAbortCallbackvalue: null
+2025-04-01 13:49:28,670 [INFO] Argument:335 - Argument : XferAbortCallbackvalue: null
+2025-04-01 13:49:28,670 [INFO] Argument:325 - Argument : ErrorCodevalue: null
+2025-04-01 13:49:28,670 [INFO] Argument:335 - Argument : ErrorCodevalue: null
+2025-04-01 13:49:28,670 [INFO] Argument:325 - Argument : ChannelIndexvalue: null
+2025-04-01 13:49:28,670 [INFO] Argument:335 - Argument : ChannelIndexvalue: null
+2025-04-01 13:49:28,673 [INFO] Argument:325 - Argument : DMAmuxChannelvalue: null
+2025-04-01 13:49:28,675 [INFO] Argument:335 - Argument : DMAmuxChannelvalue: null
+2025-04-01 13:49:28,676 [INFO] Argument:325 - Argument : DMAmuxChannelStatusvalue: null
+2025-04-01 13:49:28,676 [INFO] Argument:335 - Argument : DMAmuxChannelStatusvalue: null
+2025-04-01 13:49:28,676 [INFO] Argument:325 - Argument : DMAmuxChannelStatusMaskvalue: null
+2025-04-01 13:49:28,677 [INFO] Argument:335 - Argument : DMAmuxChannelStatusMaskvalue: null
+2025-04-01 13:49:28,678 [INFO] Argument:325 - Argument : DMAmuxRequestGenvalue: null
+2025-04-01 13:49:28,678 [INFO] Argument:335 - Argument : DMAmuxRequestGenvalue: null
+2025-04-01 13:49:28,678 [INFO] Argument:325 - Argument : DMAmuxRequestGenStatusvalue: null
+2025-04-01 13:49:28,678 [INFO] Argument:335 - Argument : DMAmuxRequestGenStatusvalue: null
+2025-04-01 13:49:28,678 [INFO] Argument:325 - Argument : DMAmuxRequestGenStatusMaskvalue: null
+2025-04-01 13:49:28,680 [INFO] Argument:335 - Argument : DMAmuxRequestGenStatusMaskvalue: null
+2025-04-01 13:49:28,683 [INFO] Argument:325 - Argument : hdmavalue: null
+2025-04-01 13:49:28,684 [INFO] Argument:327 - 	 sub Args: 
+2025-04-01 13:49:28,684 [INFO] Argument:325 - Argument : Instancevalue: DMA1_Channel1
+2025-04-01 13:49:28,684 [INFO] Argument:335 - Argument : Instancevalue: DMA1_Channel1
+2025-04-01 13:49:28,684 [INFO] Argument:325 - Argument : Initvalue: null
+2025-04-01 13:49:28,685 [INFO] Argument:327 - 	 sub Args: 
+2025-04-01 13:49:28,685 [INFO] Argument:325 - Argument : Requestvalue: DMA_REQUEST_USART1_RX
+2025-04-01 13:49:28,685 [INFO] Argument:335 - Argument : Requestvalue: DMA_REQUEST_USART1_RX
+2025-04-01 13:49:28,685 [INFO] Argument:325 - Argument : Directionvalue: DMA_PERIPH_TO_MEMORY
+2025-04-01 13:49:28,685 [INFO] Argument:335 - Argument : Directionvalue: DMA_PERIPH_TO_MEMORY
+2025-04-01 13:49:28,685 [INFO] Argument:325 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2025-04-01 13:49:28,685 [INFO] Argument:335 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2025-04-01 13:49:28,685 [INFO] Argument:325 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2025-04-01 13:49:28,685 [INFO] Argument:335 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2025-04-01 13:49:28,685 [INFO] Argument:325 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2025-04-01 13:49:28,685 [INFO] Argument:335 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2025-04-01 13:49:28,685 [INFO] Argument:325 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2025-04-01 13:49:28,686 [INFO] Argument:335 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2025-04-01 13:49:28,686 [INFO] Argument:325 - Argument : Modevalue: DMA_CIRCULAR
+2025-04-01 13:49:28,686 [INFO] Argument:335 - Argument : Modevalue: DMA_CIRCULAR
+2025-04-01 13:49:28,686 [INFO] Argument:325 - Argument : Priorityvalue: DMA_PRIORITY_LOW
+2025-04-01 13:49:28,686 [INFO] Argument:335 - Argument : Priorityvalue: DMA_PRIORITY_LOW
+2025-04-01 13:49:28,686 [INFO] Argument:325 - Argument : Lockvalue: null
+2025-04-01 13:49:28,686 [INFO] Argument:335 - Argument : Lockvalue: null
+2025-04-01 13:49:28,686 [INFO] Argument:325 - Argument : Statevalue: null
+2025-04-01 13:49:28,686 [INFO] Argument:335 - Argument : Statevalue: null
+2025-04-01 13:49:28,686 [INFO] Argument:325 - Argument : Parentvalue: null
+2025-04-01 13:49:28,687 [INFO] Argument:335 - Argument : Parentvalue: null
+2025-04-01 13:49:28,687 [INFO] Argument:325 - Argument : XferCpltCallbackvalue: null
+2025-04-01 13:49:28,687 [INFO] Argument:335 - Argument : XferCpltCallbackvalue: null
+2025-04-01 13:49:28,687 [INFO] Argument:325 - Argument : XferHalfCpltCallbackvalue: null
+2025-04-01 13:49:28,687 [INFO] Argument:335 - Argument : XferHalfCpltCallbackvalue: null
+2025-04-01 13:49:28,687 [INFO] Argument:325 - Argument : XferErrorCallbackvalue: null
+2025-04-01 13:49:28,687 [INFO] Argument:335 - Argument : XferErrorCallbackvalue: null
+2025-04-01 13:49:28,687 [INFO] Argument:325 - Argument : XferAbortCallbackvalue: null
+2025-04-01 13:49:28,687 [INFO] Argument:335 - Argument : XferAbortCallbackvalue: null
+2025-04-01 13:49:28,687 [INFO] Argument:325 - Argument : ErrorCodevalue: null
+2025-04-01 13:49:28,688 [INFO] Argument:335 - Argument : ErrorCodevalue: null
+2025-04-01 13:49:28,688 [INFO] Argument:325 - Argument : ChannelIndexvalue: null
+2025-04-01 13:49:28,688 [INFO] Argument:335 - Argument : ChannelIndexvalue: null
+2025-04-01 13:49:28,688 [INFO] Argument:325 - Argument : DMAmuxChannelvalue: null
+2025-04-01 13:49:28,688 [INFO] Argument:335 - Argument : DMAmuxChannelvalue: null
+2025-04-01 13:49:28,688 [INFO] Argument:325 - Argument : DMAmuxChannelStatusvalue: null
+2025-04-01 13:49:28,688 [INFO] Argument:335 - Argument : DMAmuxChannelStatusvalue: null
+2025-04-01 13:49:28,688 [INFO] Argument:325 - Argument : DMAmuxChannelStatusMaskvalue: null
+2025-04-01 13:49:28,689 [INFO] Argument:335 - Argument : DMAmuxChannelStatusMaskvalue: null
+2025-04-01 13:49:28,689 [INFO] Argument:325 - Argument : DMAmuxRequestGenvalue: null
+2025-04-01 13:49:28,689 [INFO] Argument:335 - Argument : DMAmuxRequestGenvalue: null
+2025-04-01 13:49:28,689 [INFO] Argument:325 - Argument : DMAmuxRequestGenStatusvalue: null
+2025-04-01 13:49:28,689 [INFO] Argument:335 - Argument : DMAmuxRequestGenStatusvalue: null
+2025-04-01 13:49:28,689 [INFO] Argument:325 - Argument : DMAmuxRequestGenStatusMaskvalue: null
+2025-04-01 13:49:28,689 [INFO] Argument:335 - Argument : DMAmuxRequestGenStatusMaskvalue: null
+2025-04-01 13:49:28,853 [INFO] CodeEngine:263 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\MXTmpFiles\license.tmp_save
+2025-04-01 13:49:29,176 [INFO] CodeEngine:287 - Generated code: D:\GitRepository\STM32G431C8T6\MXTmpFiles\license.tmp
+2025-04-01 13:49:29,286 [INFO] CodeEngine:263 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\Core\Src\gpio.c_save
+2025-04-01 13:49:29,545 [INFO] CodeEngine:287 - Generated code: D:\GitRepository\STM32G431C8T6\Core\Src\gpio.c
+2025-04-01 13:49:29,564 [INFO] CodeEngine:263 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\Core\Inc\gpio.h_save
+2025-04-01 13:49:29,869 [INFO] CodeEngine:287 - Generated code: D:\GitRepository\STM32G431C8T6\Core\Inc\gpio.h
+2025-04-01 13:49:30,570 [INFO] CodeEngine:263 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\Core\Src\dma.c_save
+2025-04-01 13:49:30,733 [INFO] CodeEngine:287 - Generated code: D:\GitRepository\STM32G431C8T6\Core\Src\dma.c
+2025-04-01 13:49:30,750 [INFO] CodeEngine:263 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\Core\Inc\dma.h_save
+2025-04-01 13:49:30,898 [INFO] CodeEngine:287 - Generated code: D:\GitRepository\STM32G431C8T6\Core\Inc\dma.h
+2025-04-01 13:49:30,931 [INFO] CodeEngine:263 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\Core\Src\usart.c_save
+2025-04-01 13:49:31,234 [INFO] CodeEngine:287 - Generated code: D:\GitRepository\STM32G431C8T6\Core\Src\usart.c
+2025-04-01 13:49:31,261 [INFO] CodeEngine:263 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\Core\Inc\usart.h_save
+2025-04-01 13:49:31,446 [INFO] CodeEngine:287 - Generated code: D:\GitRepository\STM32G431C8T6\Core\Inc\usart.h
+2025-04-01 13:49:31,495 [INFO] CodeEngine:263 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\Core\Src\stm32g4xx_it.c_save
+2025-04-01 13:49:31,762 [INFO] CodeEngine:287 - Generated code: D:\GitRepository\STM32G431C8T6\Core\Src\stm32g4xx_it.c
+2025-04-01 13:49:31,787 [INFO] CodeEngine:263 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\Core\Inc\stm32g4xx_it.h_save
+2025-04-01 13:49:31,977 [INFO] CodeEngine:287 - Generated code: D:\GitRepository\STM32G431C8T6\Core\Inc\stm32g4xx_it.h
+2025-04-01 13:49:32,020 [INFO] CodeEngine:263 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\Core\Src\stm32g4xx_hal_msp.c_save
+2025-04-01 13:49:32,250 [INFO] CodeEngine:287 - Generated code: D:\GitRepository\STM32G431C8T6\Core\Src\stm32g4xx_hal_msp.c
+2025-04-01 13:49:32,266 [INFO] CodeEngine:263 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\MXTmpFiles\system.tmp_save
+2025-04-01 13:49:32,397 [INFO] CodeEngine:287 - Generated code: D:\GitRepository\STM32G431C8T6\MXTmpFiles\system.tmp
+2025-04-01 13:49:32,428 [INFO] CodeEngine:319 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\Core\Inc\stm32g4xx_hal_conf.h_save
+2025-04-01 13:49:32,570 [INFO] CodeEngine:343 - Generated code: D:\GitRepository\STM32G431C8T6\Core\Inc\stm32g4xx_hal_conf.h
+2025-04-01 13:49:32,624 [WARN] IPConfigManager:3174 - Warning: the RefConfig RCC_CommonPeriphClockConfig is not available in your config.xml file
+2025-04-01 13:49:32,646 [INFO] CodeEngine:263 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\Core\Inc\main.h_save
+2025-04-01 13:49:32,797 [INFO] CodeEngine:287 - Generated code: D:\GitRepository\STM32G431C8T6\Core\Inc\main.h
+2025-04-01 13:49:32,816 [INFO] CodeEngine:263 - oldGeneratedFile, D:\GitRepository\STM32G431C8T6\Core\Src\main.c_save
+2025-04-01 13:49:33,019 [INFO] CodeEngine:287 - Generated code: D:\GitRepository\STM32G431C8T6\Core\Src\main.c
+2025-04-01 13:49:33,947 [INFO] ProjectBuilder:3324 - Time for Copy HAL[1] : 506mS.
+2025-04-01 13:49:33,956 [INFO] ProjectBuilder:4912 - Project Generator version: 4.6.0-B36
+2025-04-01 13:49:34,099 [INFO] ConfigFileManager:1590 - The Die is : DIE468
+2025-04-01 13:49:37,083 [INFO] ProjectBuilder:5191 - Time for Generating toolchain IDE Files: 3127mS.
+2025-04-01 13:49:37,085 [INFO] ProjectBuilder:3181 - Time for Copy CMSIS : 1mS.
+2025-04-01 13:49:37,096 [INFO] ProjectBuilder:3181 - Time for Copy CMSIS : 0mS.
+2025-04-01 16:12:52,015 [ERROR] LogOutputStream:75 - [STDERR_REDIRECT] 
