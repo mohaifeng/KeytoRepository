@@ -1,2 +1,0 @@
-../Core/Src/dma.c:39:6:MX_DMA_Init	1
-../Core/Src/dma.c:57:6:Start_DMA_Receive	2

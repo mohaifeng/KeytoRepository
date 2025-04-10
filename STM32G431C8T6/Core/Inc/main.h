@@ -32,15 +32,17 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "gpio.h"
-#include "dev.h"
 #include "usart.h"
-#include "dma.h"
 #include "led.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+typedef struct
+{
+	uint8_t addr;
+	uint8_t status;
+} DEV_TYPEDEF;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

@@ -8,7 +8,7 @@
 #ifndef INC_VERIFICATION_H_
 #define INC_VERIFICATION_H_
 
-#include "stm32g4xx_hal.h"
+#include "main.h"
 
 uint8_t Checksum_8(const uint8_t *data,uint32_t length);
 

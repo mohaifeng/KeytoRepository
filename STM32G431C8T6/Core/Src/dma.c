@@ -20,7 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "dma.h"
-
+#include "main.h"
 /* USER CODE BEGIN 0 */
 extern USART_RX_TYPEDEF usart_rx_struct;
 /* USER CODE END 0 */

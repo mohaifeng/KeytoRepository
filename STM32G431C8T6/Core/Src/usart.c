@@ -21,11 +21,14 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
+
 USART_RX_TYPEDEF usart_rx_struct; //接收数据结构体
 USART_TX_TYPEDEF usart_tx_struct; //发送数据结构体
-extern uint8_t protocol_type;
+extern volatile uint8_t protocol_type;
+extern volatile uint8_t protocol_pass_flag;
 extern OEM_TYPEDEF oem_struct; //oem结构体变量
 extern DT_TYPEDEF dt_struct; //dt结构体变量
+extern DEV_TYPEDEF dev_msg;
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
@@ -182,49 +185,120 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *uartHandle)
 	}
 }
 /* USER CODE BEGIN 1 */
-void DT_Send_Conf(DT_TYPEDEF *dt_struct)
+static void DT_Send_Conf(DT_TYPEDEF *dt_struct)
 {
-	usart_tx_struct.tx_buffer[0] = dt_struct->addr;
-	usart_tx_struct.tx_buffer[1] = dt_struct->dt_flag;
-	usart_tx_struct.tx_buffer[2] = dt_struct->state;
-	if(dt_struct->data_buff_len > 0)
+	uint8_t *pdata = usart_tx_struct.tx_buffer;
+	uint8_t count = 0;
+	if(dt_struct->addr < 9)
 	{
-		usart_tx_struct.tx_buffer[3] = 0x3A;
-		for(uint8_t i = 0; i < dt_struct->data_buff_len; i++)
-		{
-			usart_tx_struct.tx_buffer[i + 4] = dt_struct->data_buff[i];
-		}
-		usart_tx_struct.tx_buffer[4 + dt_struct->data_buff_len] = 0x0D;
+		*pdata++ = dt_struct->addr + 0x30;
+		count = 1;
 	}
 	else
 	{
-		usart_tx_struct.tx_buffer[3] = 0x0D;
+		*pdata++ = dt_struct->addr / 10 + 0x30;
+		*pdata++ = dt_struct->addr % 10 + 0x30;
+		count = 2;
 	}
+	*pdata++ = dt_struct->dt_flag;
+	if(dt_struct->state > 9)
+	{
+		*pdata++ = dt_struct->state / 10 + 0x30;
+		*pdata++ = dt_struct->state % 10 + 0x30;
+	}
+	else
+	{
+		*pdata++ = dt_struct->state + 0x30;
+	}
+	if(dt_struct->data_buff_len > 0)
+	{
+		*pdata++ = 0x3A;
+		count++;
+		for(uint8_t i = 0; i < dt_struct->data_buff_len; i++)
+		{
+			*pdata++ = dt_struct->data_buff[i];
+		}
+	}
+	*pdata = 0x0D;
+	usart_tx_struct.tx_len = count + dt_struct->data_buff_len + 3;
 }
-void OEM_Send_Conf()
+static void OEM_Send_Conf(OEM_TYPEDEF *oem_struct)
 {
-
+	uint8_t *pdata = usart_tx_struct.tx_buffer;
+	uint8_t count = 0;
+	*pdata++ = oem_struct->head;
+	*pdata++ = oem_struct->idex;
+	*pdata++ = oem_struct->addr;
+	*pdata++ = oem_struct->state;
+	*pdata++ = oem_struct->cmd_len;
+	count = 5;
+	if(oem_struct->cmd_len)
+	{
+		for(uint8_t i = 0; i < oem_struct->cmd_len; i++)
+		{
+			*pdata++ = oem_struct->data[i];
+			count++;
+		}
+	}
+	oem_struct->checksum = Checksum_8(oem_struct->data,count);
+	*pdata = oem_struct->checksum;
+	count++;
+	usart_tx_struct.tx_len = count;
 }
 void RS232_SendData(void)
 {
 	switch(protocol_type)
 		{
 		case 0:
+			DT_Send_Conf(&dt_struct);
+			break;
 		case 1:
+			OEM_Send_Conf(&oem_struct);
+			break;
 		default:
+			break;
 		}
-	HAL_UART_Transmit_DMA(&huart1,usart_rx_struct.rx_buffer,usart_rx_struct.rx_len);  //发送数据
+	HAL_UART_Transmit_DMA(&huart1,usart_tx_struct.tx_buffer,usart_tx_struct.tx_len);  //发送数据
 	while(HAL_UART_GetState(&huart1) != HAL_UART_STATE_READY)
 	{
 	}
-	// 等待发送完成
+// 等待发送完成
 	Start_DMA_Receive();
 }
-
+void Rec_Conf(void)
+{
+	switch(protocol_type)
+		{
+		case 0:
+			dt_struct.addr = dev_msg.addr;
+			dt_struct.dt_flag = 0x3C;
+			dt_struct.state = 2;
+			dt_struct.data_buff_len = 0;
+			break;
+		case 1:
+			oem_struct.head = 0x55;
+			oem_struct.addr = dev_msg.addr;
+			oem_struct.state = 2;
+			oem_struct.cmd_len = 0;
+			break;
+		default:
+			break;
+		}
+}
 //接收到数据后处理函数
 void ProcessReceivedData(void)
 {
 	Protocol_Analyze(usart_rx_struct.rx_buffer,usart_rx_struct.rx_len);
-	RS232_SendData();
+	if(protocol_pass_flag)
+	{
+		Rec_Conf();
+		RS232_SendData();
+		protocol_pass_flag = 0;
+	}
+	else
+	{
+		Start_DMA_Receive();
+	}
+
 }
 /* USER CODE END 1 */

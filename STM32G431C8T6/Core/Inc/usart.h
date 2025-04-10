@@ -26,16 +26,15 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
-
+#include "protocol.h"
+#include "dma.h"
+#include "stm32g4xx_hal.h"
 /* USER CODE BEGIN Includes */
 
-#include "protocol.h"
-#include "string.h"
+
 /* USER CODE END Includes */
 
 extern UART_HandleTypeDef huart1;
-
 /* USER CODE BEGIN Private defines */
 #define BUFFER_SIZE 255
 
@@ -56,6 +55,7 @@ typedef struct
 void MX_USART1_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+
 void RS232_SendData(void);
 void ProcessReceivedData(void);
 /* USER CODE END Prototypes */
