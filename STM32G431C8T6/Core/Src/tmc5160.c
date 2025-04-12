@@ -5,4 +5,6 @@
  *      Author: 莫海峰
  */
 
+#include "tmc5160.h"
+
 

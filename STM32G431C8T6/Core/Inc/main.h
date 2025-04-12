@@ -63,6 +63,9 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define OW1_Pin GPIO_PIN_0
+#define OW1_GPIO_Port GPIOA
+#define OW1_EXTI_IRQn EXTI0_IRQn
 #define LED_BLUE_Pin GPIO_PIN_13
 #define LED_BLUE_GPIO_Port GPIOB
 

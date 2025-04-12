@@ -20,8 +20,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "dma.h"
-#include "main.h"
+
 /* USER CODE BEGIN 0 */
+#include "string.h"
 extern USART_RX_TYPEDEF usart_rx_struct;
 /* USER CODE END 0 */
 
@@ -50,19 +51,27 @@ void MX_DMA_Init(void)
   /* DMA1_Channel2_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
+  /* DMA1_Channel3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel3_IRQn);
+  /* DMA1_Channel4_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
 
 }
 
 /* USER CODE BEGIN 2 */
 void Start_DMA_Receive(void)
 {
-	memset(usart_rx_struct.rx_buffer,0,usart_rx_struct.rx_len);  //清空缓存区
+	// 启动DMA接收
 	usart_rx_struct.rx_len = 0;  //清除计数
 	usart_rx_struct.recv_end_flag = 0;  //清除接收结束标志位
-	// 启动DMA接收
-	if(HAL_UART_Receive_DMA(&huart1,usart_rx_struct.rx_buffer,BUFFER_SIZE) != HAL_OK)
+	memset(usart_rx_struct.rx_buffer,0,BUFFER_SIZE);  //清空缓存区
+	while(HAL_UART_Receive_DMA(&huart1,usart_rx_struct.rx_buffer,BUFFER_SIZE))
 	{
-		Error_Handler();
+		huart1.gState = HAL_UART_STATE_READY;  // 发送状态复位
+		huart1.RxState = HAL_UART_STATE_READY; // 接收状态复位
+		__HAL_UART_CLEAR_FLAG(&huart1,UART_CLEAR_OREF);
 	}
 }
 /* USER CODE END 2 */
