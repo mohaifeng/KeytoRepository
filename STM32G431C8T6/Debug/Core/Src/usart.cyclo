@@ -1,0 +1,7 @@
+../Core/Src/usart.c:43:6:MX_USART1_UART_Init	5
+../Core/Src/usart.c:87:6:MX_USART2_UART_Init	5
+../Core/Src/usart.c:130:6:HAL_UART_MspInit	9
+../Core/Src/usart.c:279:6:HAL_UART_MspDeInit	3
+../Core/Src/usart.c:394:6:RS232_SendData	8
+../Core/Src/usart.c:413:6:Rec_Conf	3
+../Core/Src/usart.c:434:6:ProcessReceivedData	2
