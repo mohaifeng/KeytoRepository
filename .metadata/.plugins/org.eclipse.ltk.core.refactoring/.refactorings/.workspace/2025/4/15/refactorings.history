@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">&#x0A;<refactoring comment="Delete resource &apos;STM32G431C8T6/Core/Src/dev.c&apos;" deleteContents="false" description="Delete resource &apos;STM32G431C8T6/Core/Src/dev.c&apos;" element1="/STM32G431C8T6/Core/Src/dev.c" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1744184130821"/>&#x0A;<refactoring comment="Delete resource &apos;STM32G431C8T6/Core/Inc/dev.h&apos;" deleteContents="false" description="Delete resource &apos;STM32G431C8T6/Core/Inc/dev.h&apos;" element1="/STM32G431C8T6/Core/Inc/dev.h" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1744184136827"/>
-</session>
