@@ -2,7 +2,6 @@ import Com.Port.check as ck
 
 STATUS_OK = 0
 STATUS_BUSY = 1
-PROTOCOL_TYPE = 0  # 0:旧协议;1:新协议
 
 
 class modbus_prot:
@@ -46,6 +45,7 @@ class keyto_can_dic:
 
 class keyto_oem_prot:
     def __init__(self):
+        self.protocol_type = 0  # 0:旧协议;1:新协议
         self.send_flag = 'AA'  # 发送数据标识
         self.recv_flag = '55'
         self.gap_flag = '2C'  # 数据分隔标识
@@ -55,7 +55,7 @@ class keyto_oem_prot:
         self.data_len = 0  # 数据长度
         self.rec_addr = 0
         self.state = 0  # 状态
-        self.data = ''  # 数据区数据:发送数据为：指令+参数，接收数据为数据区数据
+        self.rx_data = ''  # 接收数据为数据区数据
 
     def Oem_Index(self):
         """
@@ -76,13 +76,12 @@ class keyto_oem_prot:
         :return: 指令字符串
         """
         addr_hex = hex(addr).removeprefix('0x').zfill(2)
-        self.data = cmd
         self.oem_idex = self.Oem_Index()
-        self.data_len = hex(len(self.data) // 2).removeprefix('0x').zfill(2)
-        if PROTOCOL_TYPE == 0:
-            conf_data = self.send_flag + addr_hex + self.data_len + self.data
+        self.data_len = hex(len(cmd) // 2).removeprefix('0x').zfill(2)
+        if self.protocol_type == 0:
+            conf_data = self.send_flag + addr_hex + self.data_len + cmd
         else:
-            conf_data = self.send_flag + self.oem_idex + addr_hex + self.data_len + self.data
+            conf_data = self.send_flag + self.oem_idex + addr_hex + self.data_len + cmd
         return (conf_data + ck.Uchar_Checksum_8_Bit(conf_data)).upper()
 
     def Rec_Data_Conf(self, data: str):
@@ -91,27 +90,25 @@ class keyto_oem_prot:
         :param data: 待解析数据
         :return: True/False
         """
-        if data[:2] == self.recv_flag:
-            if data[-2:] == ck.Uchar_Checksum_8_Bit(data[:-2]):
-                if PROTOCOL_TYPE == 1:
-                    self.oem_idex = data[2:4]
-                    self.rec_addr = int(data[4:6], 16)
-                    self.state = int(data[6:8], 16)
-                    self.data_len = int(data[8:10], 16)
-                    if self.data_len:
-                        self.data = data[10:10 + self.data_len * 2]
-                    else:
-                        self.data = ''
-                    return True
+        if (data[:2] == self.recv_flag) and (data[-2:] == ck.Uchar_Checksum_8_Bit(data[:-2])):
+            if self.protocol_type == 1:
+                self.oem_idex = data[2:4]
+                self.rec_addr = int(data[4:6], 16)
+                self.state = int(data[6:8], 16)
+                self.data_len = int(data[8:10], 16)
+                if self.data_len:
+                    self.rx_data = data[10:10 + self.data_len * 2]
                 else:
-                    self.rec_addr = int(data[2:4], 16)
-                    self.state = int(data[4:6], 16)
-                    self.data_len = int(data[6:8], 16)
-                    if self.data_len:
-                        self.data = data[8:8 + self.data_len * 2]
-                    else:
-                        self.data = ''
-                    return True
+                    self.rx_data = ''
+            else:
+                self.rec_addr = int(data[2:4], 16)
+                self.state = int(data[4:6], 16)
+                self.data_len = int(data[6:8], 16)
+                if self.data_len:
+                    self.rx_data = data[8:8 + self.data_len * 2]
+                else:
+                    self.rx_data = ''
+            return True
         return False
 
 
@@ -124,28 +121,32 @@ class keyto_dt_prot:
         self.end_flag = '0D'  # 指令结束标识"\r"
         self.rec_addr = 0  # 返回数据地址
         self.state = 0  # 返回状态
-        self.data = ''  # 数据区数据:发送数据为：指令+参数，接收数据为数据区数据
+        self.rx_data = ''  # 数据区数据:发送数据为：指令+参数，接收数据为数据区数据
 
     def Dt_Cmd_Conf(self, addr: int, cmd: str):
         addr_hex = ''
         for tmp in str(addr):
             str_hex = hex(ord(tmp)).removeprefix('0x').zfill(2)
             addr_hex += str_hex
-        self.data = cmd
-        conf_data = addr_hex + self.send_flag + self.data + self.end_flag
+        conf_data = addr_hex + self.send_flag + cmd + self.end_flag
         return conf_data.upper()
 
     def Rec_Data_Conf(self, data: str):
-        if data[2:4] == self.recv_flag:
-            self.rec_addr = data[0:2]
-            self.state = int(bytes.fromhex(data[4:6]))
+        if self.recv_flag in data.upper():
+            addr_hex = data.split(self.recv_flag)[0]
+            self.rec_addr = 0
+            num = len(addr_hex) // 2
+            for tmp in range(0, len(addr_hex), 2):
+                self.rec_addr += (int(addr_hex[tmp:tmp + 2], 16) - 0x30) * 10 ^ (num - 1)
+                num -= 1
+            data_hex = data.split(self.recv_flag)[1]
             if self.data_flag in data:
-                self.data = data.split('3A')[1]
+                self.state = int(bytes.fromhex(data_hex.split('3A')[0]))
+                self.rx_data = data_hex.split('3A')[1]
             else:
-                self.data = ''
+                self.rx_data = ''
             return True
-        else:
-            return False
+        return False
 
 
 class keyto_gen_prot:
@@ -182,8 +183,8 @@ class keyto_gen_prot:
         data = data.upper()
         if data[:2] == self.head:
             if data[-2:] == ck.Uchar_Checksum_8_Bit(data[:-2]):
-                self.rec_addr = data[2:4]
-                self.data = int(data[4:-2])
+                self.rec_addr = int(data[2:4], 16)
+                self.data = int(data[4:-2], 16)
                 return True
         return False
 

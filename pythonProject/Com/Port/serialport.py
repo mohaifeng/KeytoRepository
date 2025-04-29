@@ -120,23 +120,34 @@ def List_Serial_Ports():
 
 
 ser = SERIALPORT(List_Serial_Ports()[0], 9600)  # 控制器总线串口输入
-bal = SERIALPORT('com30', 38400)  # 天平串口输入
+bal = SERIALPORT('com1', 38400)  # 天平控制串口
+pwr = SERIALPORT('com2', 9600)  # 电源控制串口
 
 
-def Reset_Ser_Baud(com, baud):
+def Reset_Ser_Baud(ser_type, com, baud):
     """
     重新设置串口号以及波特率
+    :param ser_type: 需要重设的串口类变量 0:ser;1:bal;2:pwr
     :param com:串口号：str
     :param baud:波特率：int
     """
-    global ser
-    ser.ClosePort()
-    ser = SERIALPORT(com, baud)
-    ser.OpenPort()
+    global ser, bal, pwr
+    if ser_type == 0:
+        ser.ClosePort()
+        ser = SERIALPORT(com, baud)
+        ser.OpenPort()
+    elif ser_type == 1:
+        bal.ClosePort()
+        bal = SERIALPORT(com, baud)
+        bal.OpenPort()
+    else:
+        pwr.ClosePort()
+        pwr = SERIALPORT(com, baud)
+        pwr.OpenPort()
 
 
 if __name__ == '__main__':
-    Reset_Ser_Baud('com56', 9600)
+    Reset_Ser_Baud(0,'com56', 9600)
     ser.OpenPort()
     check_stat_cmd = 'A5FF6A000000000E'  # 检查状态
     init_cmd = 'A5FF3800000000DC'  # 初始化

@@ -6,32 +6,46 @@ import Com.Port.serialport as sp
 import os
 import Com.CAN.canalyst as canalyst
 import Com.CAN.can_bus as canbus
+from Configure.downloadpath import Get_Latest_File
 
-# 定义设备类型对应下载文件夹路径
-type_dic = {
-    1: r'D:\code\pythonProject\Com\Download\SP16/',
-    2: r'D:\code\pythonProject\Com\Download\SP18/',
-    3: r'D:\code\pythonProject\Com\Download\STEPCG',
-    4: r'D:\code\pythonProject\Com\Download\STEPIA02/',
-    5: r'D:\code\pythonProject\Com\Download\STEPVLG/',
-    6: r'D:\code\pythonProject\Com\Download\ADPZ/',
-}
-# 定义下载模式是升级还是回退{0：升级路径；1：回退路径}
-download_mode = {
-    0: 'upgrade_version/',
-    1: 'present_version/'
-}
-
-rec_flag = 0
-done_flag = 0
+file_bin_name_lst = []  # 下载与回退文件路径列表
+file_get_flag = 0  # 获取到列表标志
+rec_flag = 0  # 下载过程中收到重发帧标志
+done_flag = 0  # 下载完成标志
 lock = threading.Lock()
+# 定义数字对应设备类型
+type_dic = {
+    1: 'ADP16',
+    2: 'ADP18',
+    3: '旋转阀',
+    4: '旋转阀-编码器',
+    5: '旋转阀-I2C',
+    6: '旋转阀-VICI',
+    7: 'DRL-计量泵',
+    8: 'DRL-柱塞泵',
+    9: 'DRS-柱塞泵',
+    10: 'VLG-柱塞泵',
+    11: 'VLG-PUSI-柱塞泵',
+}
+dev_support_baudrate = {
+    'ADP16': [9600, 19200, 38400, 115200],
+    'ADP18': [9600, 19200, 38400, 115200],
+    '旋转阀': [9600, 19200, 38400, 57600, 115200],
+    '旋转阀-编码器': [9600, 19200, 38400, 57600, 115200],
+    '旋转阀-I2C': [9600, 19200, 38400, 57600, 115200],
+    '旋转阀-VICI': [4800, 9600, 19200, 38400, 57600, 115200],
+    'DRL-计量泵': [9600, 19200, 38400, 57600, 115200],
+    'DRL-柱塞泵': [9600, 19200, 38400, 57600, 115200],
+    'DRS-柱塞泵': [9600, 19200, 38400, 57600, 115200],
+    'VLG-柱塞泵': [9600, 19200, 38400, 57600, 115200],
+    'VLG-PUSI-柱塞泵': [9600],
+}
 
 
-def Run(obj):
+def Run():
     """
     Bootloader线程运行函数，检测是否接受到返回数据，有则将全局变量rec_flag置1
     退出线程需将done_flag置1
-    :param obj: 串口类变量
     """
     global rec_flag
     global done_flag
@@ -54,7 +68,7 @@ class MyThread(threading.Thread):
         self.obj = obj
 
     def run(self, ):
-        Run(self.obj)
+        Run()
 
 
 class DOWNLOAD_PLUS:
@@ -444,18 +458,31 @@ def Get_File_Names(folder_path):
     return file_names[0]
 
 
-def DownLoadPlus(dev_type: int, mode=0):
+def DownLoadPlus(dev_type: int, mode: int):
     """
     使用Download协议下载bin文件
-    :param dev_type: 1:SP16;2:SP18;3:STEPCG;4:STEPIA02;5:STEPVLG
-    :param mode: 0:下载新程序（默认）；1：回退当前正式版
+    :param dev_type:
+    1: 'ADP16',\n
+    2: 'ADP18',\n
+    3: '旋转阀',\n
+    4: '旋转阀-编码器',\n
+    5: '旋转阀-I2C',\n
+    6: '旋转阀-VICI',\n
+    7: 'DRL-计量泵',\n
+    8: 'DRL-柱塞泵',\n
+    9: 'DRS-柱塞泵',\n
+    10: 'VLG-柱塞泵',\n
+    11: 'VLG-PUSI-柱塞泵',\n
+    :param mode: 0:下载测试程序；1：回退最近正式版
     :return:True：下载成功；False：下载失败
     """
     # 按设定获取文件绝对路径
-    dev_file_path = type_dic[dev_type]
-    mode_path = download_mode[mode]
-    file_bin_name = dev_file_path + mode_path + Get_File_Names(dev_file_path + mode_path)
-    dl = DOWNLOAD_PLUS(file_bin_name)  # 定义download下载类变量
+    global file_bin_name_lst, file_get_flag
+    dev_name = type_dic[dev_type]
+    if file_get_flag == 0:
+        file_bin_name_lst = Get_Latest_File(dev_name)
+        file_get_flag = 1
+    dl = DOWNLOAD_PLUS(file_bin_name_lst[mode])  # 定义download下载类变量
     send_data_lst = dl.Get_Send_Data()  # 获取需要发送的数据列表
     # 进入下载模式
     download_count = 0
@@ -505,19 +532,18 @@ def DownLoadPlus(dev_type: int, mode=0):
     return True
 
 
-def Bootloader(dev_type: int, mode=0, interface=0):
+def Bootloader(dev_type: int, mode: int, interface=0):
     """
     Bootloader协议升级
     :param dev_type: 1:SP16;2:SP18;3:STEPCG;4:STEPIA02;5:STEPVLG
-    :param mode: 0:下载新程序（默认）；1：回退当前正式版
+    :param mode: 0:下载测试程序；1：回退最近正式版
     :param interface:0:串口升级；1：can升级
     :return: True：升级成功；False：升级失败
     """
     # 按设定获取文件绝对路径
-    dev_file_path = type_dic[dev_type]
-    mode_path = download_mode[mode]
-    file_bin_name = dev_file_path + mode_path + Get_File_Names(dev_file_path + mode_path)
-    btl = BOOTLOADER(file_bin_name, interface)  # 定义Bootloader类变量
+    dev_name = type_dic[dev_type]
+    file_bin_name_lst = Get_Latest_File(dev_name)
+    btl = BOOTLOADER(file_bin_name_lst[mode], interface)  # 定义Bootloader类变量
     if interface == 1:
         btl.Check_Can_Type()
     send_data_lst = btl.Bootloader_Write_Cmd()  # 生成发送数据列表
@@ -604,13 +630,6 @@ def Bootloader(dev_type: int, mode=0, interface=0):
 
 
 if __name__ == '__main__':
-    sp.Reset_Ser_Baud('com39', 38400)  # 设置串口
+    sp.Reset_Ser_Baud(0,'com36', 9600)  # 设置串口
     canalyst.canalyst.baudrate = 500  # 设置波特率
-    Bootloader(1, 0, 1)
-# sp.Reset_Ser_Baud('com52', 38400)
-# DownLoadPlus(1, 1)
-# dev_file_path = type_dic[1]
-# mode_path = download_mode[0]
-# file_bin_name = dev_file_path + mode_path + Get_File_Names(dev_file_path + mode_path)
-# btl = BOOTLOADER(file_bin_name)  # 定义Bootloader类变量
-# print(btl.Bootloader_Can_Write_cmd())
+    DownLoadPlus(7, 0)

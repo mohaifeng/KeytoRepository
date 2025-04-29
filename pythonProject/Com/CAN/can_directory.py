@@ -13,7 +13,7 @@ frame_id_type = {
 class ADP_CAN_DIC:
     def __init__(self):
         self.addr = 1
-        self.can_prot = pr.keyto_can_dic(self.addr)
+        self.can_prot = pr.keyto_can_dic()
         self.fix_par = 123456
         self.adp16_index = {
             '置零': '4000',

@@ -4,7 +4,7 @@ import threading
 import time
 from binascii import a2b_hex
 import Com.Port.check as ck
-from PlungerPump.pusicmd import PUSICMD
+from Pump.pusicmd import PUSICMD
 import Com.Port.serialport as sp
 import pusimodbuscmd as pm
 
@@ -282,7 +282,7 @@ def Rec_Data_Config(rec_str: str):
 
 lock = threading.Lock()
 if __name__ == '__main__':
-    sp.Reset_Ser_Baud('com41', 9600)
+    sp.Reset_Ser_Baud(0,'com41', 9600)
     pusi = PUSIDRIVER()
     pusi.mode = '485'
     while True:

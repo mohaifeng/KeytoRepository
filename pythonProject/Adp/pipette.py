@@ -82,7 +82,7 @@ class Z_AXIS:
         if self.protocol == 'KT_OEM':  # OEM协议判断
             addr = self.oem_prot.rec_addr
             state = self.oem_prot.state
-            data = self.oem_prot.data
+            data = self.oem_prot.rx_data
             if self.oem_prot.data_len:
                 if self.oem_prot.gap_flag in data:
                     config_data_tuple = tuple(int(a2b_hex(x).decode(), 16) for x in data.split(self.oem_prot.gap_flag))
@@ -94,7 +94,7 @@ class Z_AXIS:
         else:
             addr = self.dt_prot.rec_addr
             state = self.dt_prot.state
-            data = self.dt_prot.data
+            data = self.dt_prot.rx_data
             if data:
                 if self.dt_prot.gap_flag in data:
                     config_data_tuple = (int(a2b_hex(x).decode()) for x in data.split(self.dt_prot.gap_flag))
@@ -224,7 +224,7 @@ class ADP:
         if self.protocol == 'KT_OEM':  # OEM协议判断
             addr = self.oem_prot.rec_addr
             state = self.oem_prot.state
-            data = self.oem_prot.data
+            data = self.oem_prot.rx_data
             if self.oem_prot.data_len:
                 if self.oem_prot.gap_flag in data:
                     config_data_tuple = tuple(int(a2b_hex(x).decode(), 16) for x in data.split(self.oem_prot.gap_flag))
@@ -236,13 +236,13 @@ class ADP:
         else:
             addr = self.dt_prot.rec_addr
             state = self.dt_prot.state
-            data = self.dt_prot.data
+            data = self.dt_prot.rx_data
             if data:
                 if self.dt_prot.gap_flag in data:
                     config_data_tuple = (int(a2b_hex(x).decode()) for x in data.split(self.dt_prot.gap_flag))
                     dat_tup = (addr, state, config_data_tuple)
                 else:
-                    dat_tup = (addr, state, (int(a2b_hex(data).decode())))
+                    dat_tup = (addr, state, (int(a2b_hex(data).decode()),))
             else:
                 dat_tup = (addr, state, ())
         return dat_tup
@@ -253,7 +253,7 @@ class ADP:
         :return: True：获取成功；False：获取失败
         """
         print('查询ADP地址:')
-        for ad in range(1, 33):
+        for ad in range(self.address, 33):
             self.address = ad
             self.AdpSend(self.sys_cmd.Check_State())
             if not self.AdpReceive():
@@ -298,7 +298,7 @@ class ADP:
     def CheckAdpState(self, delay=10):  # 间隔时间：毫秒
         """
         轮询方式查询adp状态
-        :return: 返回状态：0：状态空闲；else：其他错误状态。
+        :return: 返回状态：0：状态空闲；else：其他错误状态,-1:无返回。
         """
         # print('查询adp状态！')
         if self.report_flag == 0:
@@ -317,7 +317,6 @@ class ADP:
                         return sta
                 else:
                     print('查询状态指令无返回')
-                    time.sleep(delay / 1000)
                     return -1
         else:
             self.AdpSend(self.sys_cmd.Check_State())
@@ -371,7 +370,7 @@ class ADP:
 if __name__ == '__main__':
     # lg.Start_Log()  # 开始日志
     PROTOCOL_TYPE = 0
-    sp.Reset_Ser_Baud('com36', 38400)
+    sp.Reset_Ser_Baud(0, 'com36', 38400)
     adp = ADP()
     adpz = Z_AXIS()
     adp.protocol = 'KT_OEM'
