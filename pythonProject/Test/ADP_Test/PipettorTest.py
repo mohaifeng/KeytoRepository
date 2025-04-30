@@ -22,6 +22,8 @@ dev_default_par_dic = {
     'VLG-PUSI-柱塞泵': [9600, 255],
 }
 
+r"D:\Download\STM32CubeProgrammer\bin\STM32_Programmer_CLI.exe"
+
 
 def Dev_Get_Addr(value):
     match value:
@@ -138,7 +140,7 @@ def Download_Test(dev_type: int):
             obj.address = default_addr  # 重设ADP地址
         elif dev_type == 3:
             obj = rv.ROTARYVALVE()
-            obj.address = default_addr  # 重设ADP地址
+            obj.Change_RV_Address(default_addr)  # 重设ADP地址
         elif dev_type == 4:
             obj = pi.ADP()
             obj.address = default_addr  # 重设ADP地址
@@ -263,9 +265,9 @@ def Download_Test(dev_type: int):
                 time.sleep(1)
         elif dev_type == 3:
             if idex == (len(baudrate_lst) - 1):
-                adp_set_lst = [obj.cmd_obj.Set_Usart_Baudrate(baudrate_lst[0]), obj.cmd_obj.Set_Poweroff_Save()]
+                adp_set_lst = [obj.gen_cmd.Set_Usart_Baudrate(baudrate_lst[0]), obj.gen_cmd.Set_Poweroff_Save()]
             else:
-                adp_set_lst = [obj.cmd_obj.Set_Usart_Baudrate(baudrate_lst[idex + 1]), obj.cmd_obj.Set_Poweroff_Save()]
+                adp_set_lst = [obj.gen_cmd.Set_Usart_Baudrate(baudrate_lst[idex + 1]), obj.gen_cmd.Set_Poweroff_Save()]
             for cmd in adp_set_lst:
                 obj.RV_Send(cmd)
                 obj.RV_Receive()

@@ -1,4 +1,5 @@
 import datetime
+import time
 from binascii import a2b_hex
 import Com.Protocol.protocol as pr
 import Com.Port.serialport as sp
@@ -7,16 +8,20 @@ import Com.Port.check as ck
 
 
 class ROTARYVALVE:
-
+    """
+    选切阀类
+    """
     def __init__(self):
         self.rv_ser = sp.ser
-        self.protocol = 'KEYTO'
+        self.protocol = 'KEYTO'  # KEYTO/IDEX/TC_DT/TC_OEM/MODBUS
         self.address = 0
         self.state = 0
         self.rv_version = ''
         self.channel = 10
-        self.cmd_obj = rc.rv_currency_cmd(self.address)
+        self.gen_cmd = rc.rv_gen_cmd(self.address)
+        self.idex_cmd = rc.idex_cmd()
         self.gen_prot = pr.keyto_gen_prot()
+        self.idex_prot = pr.idex_prot()
         self.tx_data = ''
         self.rx_data = ''
 
@@ -27,14 +32,14 @@ class ROTARYVALVE:
         """
         print('查询旋切阀地址:')
         for ad in range(0, 255):
-            self.cmd_obj.address = ad
-            self.RV_Send(self.cmd_obj.Check_State())
+            self.gen_cmd.address = ad
+            self.RV_Send(self.gen_cmd.Check_State())
             if not self.RV_Receive():
                 continue
             else:
                 print('旋切阀：获取地址成功：', ad)
                 self.address = ad
-                self.cmd_obj.address = ad
+                self.gen_cmd.address = ad
                 return True
         print('旋切阀：获取地址失败!')
         return False
@@ -45,9 +50,15 @@ class ROTARYVALVE:
         :return: 1:获取地址成功   0:获取失败
         """
         print('获取版本:')
-        self.RV_Send(self.cmd_obj.Read_Version())
+        if self.protocol == 'KEYTO':
+            send_cmd = self.gen_cmd.Read_Version()
+        elif self.protocol == 'IDEX':
+            send_cmd = self.idex_cmd.Read_Version()
+        else:
+            send_cmd = ''  # 后续需要补充
+        self.RV_Send(send_cmd)
         if self.RV_Receive():
-            self.rv_version = self.RV_RecConf()[1]
+            self.rv_version = str(self.RV_RecConf()[1])
             print('旋转阀版本获取成功：', self.rv_version)
             return True
         else:
@@ -56,7 +67,7 @@ class ROTARYVALVE:
 
     def Change_RV_Address(self, address):
         self.address = address
-        self.cmd_obj.address = address
+        self.gen_cmd.address = address
 
     def RV_Send(self, data: str):
         """
@@ -74,6 +85,8 @@ class ROTARYVALVE:
     def Protocol_Check(self):
         if self.protocol == 'KEYTO':
             return self.gen_prot.Rec_Data_Conf(self.rx_data)
+        elif self.protocol == 'IDEX':
+            return self.idex_prot.Rec_Data_Conf(self.rx_data)
         else:
             return self.gen_prot.Rec_Data_Conf(self.rx_data)
 
@@ -105,16 +118,19 @@ class ROTARYVALVE:
             return 0
 
     def RV_RecConf(self):
-        dat_tup = ()
         if self.protocol == 'KEYTO':
-            addr = self.gen_prot.rec_addr
-            data = self.gen_prot.data
-            dat_tup = (addr, data)
+            dat_tup = (self.gen_prot.rec_addr, str(self.gen_prot.data))
         elif self.protocol == 'IDEX':
-            pass
+            dat_tup = (self.address, bytes.fromhex(self.idex_prot.rx_data).decode())
         else:
-            pass
+            dat_tup = (self.gen_prot.rec_addr, str(self.gen_prot.data))
         return dat_tup
+
+    def Idex_Wait_Complete(self):
+        if self.rv_ser.PortReceive_Data(1, 3000):
+            if self.rv_ser.receive_buf == '0D':
+                return True
+        return False
 
     def Check_RV_State(self, timeout=500):
         """
@@ -122,11 +138,11 @@ class ROTARYVALVE:
         :param timeout: 超时时间：ms，默认500ms
         :return: 0：空闲 -1：回复超时 else：错误状态
         """
-        check_cmd_byte = self.cmd_obj.Check_State()
+        check_cmd_byte = self.gen_cmd.Check_State()
         while True:
             self.RV_Send(check_cmd_byte)
-            if self.RV_Receive():
-                sta = self.RV_RecConf()[1]
+            if self.RV_Receive(timeout):
+                sta = int(self.RV_RecConf()[1])
                 if sta == 1:
                     continue
                 elif sta == 0:
@@ -153,7 +169,13 @@ class ROTARYVALVE:
 
 
 if __name__ == '__main__':
-    sp.Reset_Ser_Baud(0, 'com32', 115200)
+    sp.Reset_Ser_Baud(0, 'com32', 9600)
     rv = ROTARYVALVE()
-    rv.Get_RV_Address()
+    rv.protocol = 'IDEX'
     rv.Get_RV_Version()
+    rv.RV_Send(rv.idex_cmd.Read_Current_Channel())
+    rv.RV_Receive()
+    # rv.RV_Send(rv.idex_cmd.Init())
+    # rv.Idex_Wait_Complete()
+    # rv.RV_Send(rv.idex_cmd.Switch_Channel(5))
+    # rv.Idex_Wait_Complete()

@@ -6,7 +6,10 @@ import Com.Port.serialport as sp
 import os
 import Com.CAN.canalyst as canalyst
 import Com.CAN.can_bus as canbus
-from Configure.downloadpath import Get_Latest_File
+from Configure.downloadpath import Get_Latest_Bin_File, Get_Latest_Hex_File
+import subprocess
+from pathlib import Path
+import winreg
 
 file_bin_name_lst = []  # 下载与回退文件路径列表
 file_get_flag = 0  # 获取到列表标志
@@ -480,7 +483,7 @@ def DownLoadPlus(dev_type: int, mode: int):
     global file_bin_name_lst, file_get_flag
     dev_name = type_dic[dev_type]
     if file_get_flag == 0:
-        file_bin_name_lst = Get_Latest_File(dev_name)
+        file_bin_name_lst = Get_Latest_Bin_File(dev_name)
         file_get_flag = 1
     dl = DOWNLOAD_PLUS(file_bin_name_lst[mode])  # 定义download下载类变量
     send_data_lst = dl.Get_Send_Data()  # 获取需要发送的数据列表
@@ -542,7 +545,7 @@ def Bootloader(dev_type: int, mode: int, interface=0):
     """
     # 按设定获取文件绝对路径
     dev_name = type_dic[dev_type]
-    file_bin_name_lst = Get_Latest_File(dev_name)
+    file_bin_name_lst = Get_Latest_Bin_File(dev_name)
     btl = BOOTLOADER(file_bin_name_lst[mode], interface)  # 定义Bootloader类变量
     if interface == 1:
         btl.Check_Can_Type()
@@ -629,7 +632,111 @@ def Bootloader(dev_type: int, mode: int, interface=0):
     return True
 
 
+def Program_Stm32_Swd(hex_file_path):
+    """
+    使用STM32_Programmer_CLI通过SWD接口烧录HEX文件
+    :param:hex_file_path: HEX文件的完整路径
+    注意：请确保Path环境变量里有STM32_Programmer_CLI.exe路径
+    """
+    if not os.path.exists(hex_file_path):
+        raise FileNotFoundError(f"HEX文件未找到: {hex_file_path}")
+    try:
+        # 执行命令
+        programmer_path = get_stm32_programmer_path()
+        # 构建命令
+        command = [
+            programmer_path,
+            "-c", "port=SWD",  # 使用SWD接口
+            "--erase", "all",  # 完全擦除Flash
+            "-w", hex_file_path,  # 要写入的HEX文件
+            "0x08000000",  # 起始地址(Flash起始地址)
+            "-v",  # 验证写入
+            "-s",  # 开始执行程序
+            "-rst"  # 下载后硬件复位
+        ]
+        result = subprocess.run(command, check=True, capture_output=True, text=True, encoding='utf-8', errors='ignore')
+        print("烧录成功!")
+        print(result.stdout)
+        return True
+    except subprocess.CalledProcessError as e:
+        print("烧录失败!")
+        return False
+
+
+def find_stm32_programmer_cli():
+    # STM32CubeProgrammer常见的安装路径
+    possible_paths = [
+        r"C:\Program Files\STMicroelectronics\STM32Cube\STM32CubeProgrammer\bin\STM32_Programmer_CLI.exe",
+        r"C:\Program Files (x86)\STMicroelectronics\STM32Cube\STM32CubeProgrammer\bin\STM32_Programmer_CLI.exe",
+        os.path.expandvars(
+            r"%ProgramFiles%\STMicroelectronics\STM32Cube\STM32CubeProgrammer\bin\STM32_Programmer_CLI.exe"),
+        os.path.expandvars(
+            r"%ProgramFiles(x86)%\STMicroelectronics\STM32Cube\STM32CubeProgrammer\bin\STM32_Programmer_CLI.exe"),
+    ]
+
+    for path in possible_paths:
+        if os.path.exists(path):
+            return path
+
+    # 如果默认路径未找到，尝试在PATH环境变量中查找
+    for path in os.getenv('PATH').split(os.pathsep):
+        exe_path = os.path.join(path, 'STM32_Programmer_CLI.exe')
+        if os.path.exists(exe_path):
+            return exe_path
+
+    return None
+
+
+def find_stm32_programmer_via_registry():
+    try:
+        # 查询64位系统的注册表
+        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
+                            r"SOFTWARE\STMicroelectronics\STM32Cube\STM32CubeProgrammer") as key:
+            install_path = winreg.QueryValueEx(key, "InstallDir")[0]
+            exe_path = os.path.join(install_path, "bin", "STM32_Programmer_CLI.exe")
+            if os.path.exists(exe_path):
+                return exe_path
+    except WindowsError:
+        pass
+
+    try:
+        # 查询32位系统的注册表(在64位系统上)
+        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
+                            r"SOFTWARE\WOW6432Node\STMicroelectronics\STM32Cube\STM32CubeProgrammer") as key:
+            install_path = winreg.QueryValueEx(key, "InstallDir")[0]
+            exe_path = os.path.join(install_path, "bin", "STM32_Programmer_CLI.exe")
+            if os.path.exists(exe_path):
+                return exe_path
+    except WindowsError:
+        pass
+
+    return None
+
+
+def get_stm32_programmer_path():
+    # 先尝试注册表
+    path = find_stm32_programmer_via_registry()
+    if path:
+        return path
+
+    # 再尝试默认路径
+    path = find_stm32_programmer_cli()
+    if path:
+        return path
+
+    # 最后尝试用户自定义环境变量
+    custom_path = os.getenv("STM32_PROGRAMMER_PATH")
+    if custom_path and os.path.exists(custom_path):
+        return custom_path
+
+    raise FileNotFoundError(
+        "无法找到STM32_Programmer_CLI.exe\n"
+        "请确保已安装STM32CubeProgrammer或设置STM32_PROGRAMMER_PATH环境变量"
+        "在'系统变量'区域点击'新建\n"
+        "变量名：STM32_PROGRAMMER_PATH\n"
+        "变量值：STM32_Programmer_CLI.exe的绝对安装路径"
+    )
+
+
 if __name__ == '__main__':
-    sp.Reset_Ser_Baud(0,'com36', 9600)  # 设置串口
-    canalyst.canalyst.baudrate = 500  # 设置波特率
-    DownLoadPlus(7, 0)
+    Program_Stm32_Swd(Get_Latest_Hex_File(type_dic[3])[0])

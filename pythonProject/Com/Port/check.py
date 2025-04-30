@@ -1,6 +1,20 @@
 from binascii import crc32
 
 
+def Xor_Checksum_8_Bit(data: str):
+    """
+    计算8位异或校验和
+    :param data: 字符串
+    :return: 8位字符串
+    """
+    data = bytes.fromhex(data.replace(' ', ''))
+    checksum = 0
+    for byte in data:
+        checksum ^= byte
+    check_sum = hex(checksum & 0xFF).replace('0x', '').zfill(2).upper()
+    return check_sum  # 确保返回的是8位值
+
+
 def Uchar_Checksum_8_Bit(tmp: str):
     """
     8位和校验
@@ -119,4 +133,4 @@ def CRC_32(data: str):
 
 
 if __name__ == '__main__':
-    pass
+    print(Xor_Checksum_8_Bit('02 30 5A 52 03'))

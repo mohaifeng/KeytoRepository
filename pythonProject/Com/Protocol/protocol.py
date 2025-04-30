@@ -134,11 +134,7 @@ class keyto_dt_prot:
     def Rec_Data_Conf(self, data: str):
         if self.recv_flag in data.upper():
             addr_hex = data.split(self.recv_flag)[0]
-            self.rec_addr = 0
-            num = len(addr_hex) // 2
-            for tmp in range(0, len(addr_hex), 2):
-                self.rec_addr += (int(addr_hex[tmp:tmp + 2], 16) - 0x30) * 10 ^ (num - 1)
-                num -= 1
+            self.rec_addr = int(bytes.fromhex(addr_hex).decode())
             data_hex = data.split(self.recv_flag)[1]
             if self.data_flag in data:
                 self.state = int(bytes.fromhex(data_hex.split('3A')[0]))
@@ -194,8 +190,8 @@ class pusi_prot:
         self.head = 'A5'
         self.recv_flag = '7A'
         self.cmd = ''
+        self.rx_data = 0
         self.rec_addr = 0
-        self.data = 0
 
     @staticmethod
     def data_config(tmp: int):
@@ -207,7 +203,7 @@ class pusi_prot:
         return fin_tmp.upper()
 
     def Ps_Cmd_Conf(self, addr: int, cmd: str, data: int):
-        self.data = data
+        self.rx_data = data
         self.cmd = cmd.zfill(2)
         addr_hex = hex(addr).removeprefix('0x').zfill(2)
         conf_data = self.head + addr_hex + self.cmd + self.data_config(data)
@@ -218,22 +214,93 @@ class pusi_prot:
         if data[:2] == self.head and data[2:4] == self.recv_flag:
             if data[-2:] == ck.Uchar_Checksum_8_Bit(data[:-2]):
                 self.rec_addr = int(data[4:6], 16)
-                self.data = data[6:-2]
+                self.rx_data = data[6:-2]
                 return True
         return False
 
 
-if __name__ == '__main__':
-    # print(hex(ord('3')))
-    # print(hex(-3 & 0xffffffff))
-    # # oem_prot = keyto_oem_prot(1)
-    dt_prot = keyto_dt_prot()
-    print(dt_prot.Dt_Cmd_Conf(12, 'It'))
-    # gen_prot = keyto_gen_prot(0)
+class idex_prot:
+    def __init__(self):
+        self.end_flag = '0D'
+        self.rx_data = ''
 
-    # print(gen_prot.Output_Data('05',600))
-    # print(dt_prot.Input_Data_Conf('313C31300D'))
-    # print(dt_prot.state)
-    # print(oem_prot.Output_Data('It', [500]))
-    # print(oem_prot.data)
-    # print(oem_prot.state)
+    def Idex_Cmd_Conf(self, cmd: str, *args: int):
+        cmd_hex = cmd.encode('utf-8').hex()
+        par = ''
+        for i in range(0, len(args)):
+            par += str(args[i]).encode().hex()
+        return (cmd_hex + par + self.end_flag).upper()
+
+    def Rec_Data_Conf(self, data: str):
+        data = data.upper()
+        if data[-2:] == self.end_flag:
+            self.rx_data = data[0:-2]
+            return True
+        return False
+
+
+class tc_dt_prot:
+    def __init__(self):
+        self.start_flag = '2F'  # 发送数据标识:">"
+        self.etx_flag = '03'  # 终止符
+        self.cr_flag = '0D'  # 回车符
+        self.lf_flag = '0A'  # 换行符
+        self.rec_addr = '30'  # 固定主机地址
+        self.execute_cmd = '52'  # 执行命令'R'指令末尾必须加才能执行
+        self.state = 0  # 返回状态
+        self.rx_data = ''  # 接收数据为数据区数据
+
+    def Dt_Cmd_Conf(self, addr: int, cmd: str):
+        addr_hex = str(addr).encode().hex()
+        if cmd == self.execute_cmd:
+            conf_data = self.start_flag + addr_hex + cmd + self.cr_flag
+        else:
+            conf_data = self.start_flag + addr_hex + cmd + self.execute_cmd + self.cr_flag
+        return conf_data.upper()
+
+    def Rec_Data_Conf(self, data: str):
+        if (data[:2] == self.start_flag and
+                data[-6:-4] == self.etx_flag and data[-4:-2] == self.cr_flag and data[-2:] == self.lf_flag):
+            self.state = int(data[4:6], 16)
+            self.rx_data = data[6:-6]
+            return True
+        return False
+
+
+class tc_oem_prot:
+    def __init__(self):
+        self.start_flag = '02'  # 发送数据标识
+        self.recv_flag = '55'
+        self.end_flag = '03'  # 数据分隔标识
+        self.idex = '30'  # 保留字节，固定为0x30
+        self.rx_addr = '30'  # 主机地址固定为0x30
+        self.state = 0  # 状态
+        self.rx_data = ''  # 接收数据为数据区数据
+
+    def Oem_Cmd_Conf(self, addr: int, cmd: str):
+        """
+        生成符合OEM协议指令字符串
+        :param addr: 设备地址
+        :param cmd: 命令字符串
+        :return: 指令字符串
+        """
+        addr_hex = str(addr).encode().hex()
+        conf_data = self.start_flag + addr_hex + self.idex + cmd + self.end_flag
+        return (conf_data + ck.Xor_Checksum_8_Bit(conf_data)).upper()
+
+    def Rec_Data_Conf(self, data: str):
+        """
+        OEM数据解析，解析成功将类变量赋值
+        :param data: 待解析数据
+        :return: True/False
+        """
+        if (data[:2] == self.start_flag) and (data[-2:] == ck.Xor_Checksum_8_Bit(data[:-2])):
+            self.state = int(data[4:6], 16)
+            self.rx_data = data[6:-4]
+            return True
+        return False
+
+
+if __name__ == '__main__':
+    print(str(123).encode().hex())
+    print(int(bytes.fromhex('313233').decode()))
