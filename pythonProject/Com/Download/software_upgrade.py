@@ -8,7 +8,6 @@ import Com.CAN.canalyst as canalyst
 import Com.CAN.can_bus as canbus
 from Configure.downloadpath import Get_Latest_Bin_File, Get_Latest_Hex_File
 import subprocess
-from pathlib import Path
 import winreg
 
 file_bin_name_lst = []  # 下载与回退文件路径列表
@@ -481,9 +480,8 @@ def DownLoadPlus(dev_type: int, mode: int):
     """
     # 按设定获取文件绝对路径
     global file_bin_name_lst, file_get_flag
-    dev_name = type_dic[dev_type]
     if file_get_flag == 0:
-        file_bin_name_lst = Get_Latest_Bin_File(dev_name)
+        file_bin_name_lst = Get_Latest_Bin_File(type_dic[dev_type])
         file_get_flag = 1
     dl = DOWNLOAD_PLUS(file_bin_name_lst[mode])  # 定义download下载类变量
     send_data_lst = dl.Get_Send_Data()  # 获取需要发送的数据列表
@@ -538,14 +536,18 @@ def DownLoadPlus(dev_type: int, mode: int):
 def Bootloader(dev_type: int, mode: int, interface=0):
     """
     Bootloader协议升级
-    :param dev_type: 1:SP16;2:SP18;3:STEPCG;4:STEPIA02;5:STEPVLG
+    :param dev_type:
+    1: 'ADP16',\n
+    2: 'ADP18',\n
     :param mode: 0:下载测试程序；1：回退最近正式版
     :param interface:0:串口升级；1：can升级
     :return: True：升级成功；False：升级失败
     """
     # 按设定获取文件绝对路径
-    dev_name = type_dic[dev_type]
-    file_bin_name_lst = Get_Latest_Bin_File(dev_name)
+    global file_bin_name_lst, file_get_flag
+    if file_get_flag == 0:
+        file_bin_name_lst = Get_Latest_Bin_File(type_dic[dev_type])
+        file_get_flag = 1
     btl = BOOTLOADER(file_bin_name_lst[mode], interface)  # 定义Bootloader类变量
     if interface == 1:
         btl.Check_Can_Type()
@@ -632,7 +634,7 @@ def Bootloader(dev_type: int, mode: int, interface=0):
     return True
 
 
-def Program_Stm32_Swd(hex_file_path):
+def Download_Hex_Stm32(hex_file_path):
     """
     使用STM32_Programmer_CLI通过SWD接口烧录HEX文件
     :param:hex_file_path: HEX文件的完整路径
@@ -658,7 +660,7 @@ def Program_Stm32_Swd(hex_file_path):
         print("烧录成功!")
         print(result.stdout)
         return True
-    except subprocess.CalledProcessError as e:
+    except WindowsError:
         print("烧录失败!")
         return False
 
@@ -739,4 +741,5 @@ def get_stm32_programmer_path():
 
 
 if __name__ == '__main__':
-    Program_Stm32_Swd(Get_Latest_Hex_File(type_dic[3])[0])
+    Bootloader(1, 0, 0)
+    Download_Hex_Stm32(Get_Latest_Hex_File(type_dic[8]))
