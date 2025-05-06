@@ -56,15 +56,15 @@ def Get_Latest_Hex_File(dev_type):
     # 按修改时间排序（降序，最新文件在前）
     files.sort(key=lambda f: os.path.getmtime(os.path.join(folder_path, f)), reverse=True)
     # 返回最新文件的完整路径
-    confirm_count = True
+    confirm_count = False
     test_file = ''
     pre_file = ''
     for file in files:
-        if confirm_count:
+        if not confirm_count:
             is_ok = input('下载hex文件为：' + file + '\n' + '是否确认？(Y/N):')
             if is_ok == 'Y':
                 test_file = file
-                confirm_count = False
+                confirm_count = True
                 continue
         else:
             if 'beta' not in file and 'dz' not in file:
