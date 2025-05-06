@@ -40,7 +40,7 @@ def Dev_Get_Addr(value):
             else:
                 return -1
         case 3:
-            rvc = rv.ROTARYVALVE()
+            rvc = rv.rotaryvalve()
             if rvc.Get_RV_Address():
                 return rvc.address
             else:
@@ -139,7 +139,7 @@ def Download_Test(dev_type: int):
             obj = pi.ADP()
             obj.address = default_addr  # 重设ADP地址
         elif dev_type == 3:
-            obj = rv.ROTARYVALVE()
+            obj = rv.rotaryvalve()
             obj.Change_RV_Address(default_addr)  # 重设ADP地址
         elif dev_type == 4:
             obj = pi.ADP()

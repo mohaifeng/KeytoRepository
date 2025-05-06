@@ -8,7 +8,7 @@ import Com.Port.serialport as sp
 import stepia02cmd
 
 
-class STEPIA02(sp.SERIALPORT):
+class stepia02(sp.SERIALPORT):
     def __init__(self, port, baud):
         """
         :param port: 串口号
@@ -21,7 +21,7 @@ class STEPIA02(sp.SERIALPORT):
         self.address = 0
         self.adp_name = ''
         self.program_version = ''
-        self.cmd = stepia02cmd.STEPIA02_GENERIC_CMD(self.address)
+        self.cmd = stepia02cmd.stepia02_generic_cmd(self.address)
 
     def Address(self):
         self.OpenPort()
@@ -41,7 +41,7 @@ class STEPIA02(sp.SERIALPORT):
                 else:
                     print('获取地址成功，地址为：', ad)
                     self.address = ad
-                    self.cmd = stepia02cmd.STEPIA02_GENERIC_CMD(self.address)
+                    self.cmd = stepia02cmd.stepia02_generic_cmd(self.address)
                     break
 
     def CmdConfig(self, cmd: str):
@@ -106,7 +106,7 @@ def IdexFuncCheck(age_time: int):
     :param age_time:老化时间
     :return:0：错误 1：正常
     """
-    ia02 = STEPIA02('com14', 9600)
+    ia02 = stepia02('com14', 9600)
     ia02.protocol = 'IDEX'
     ia02.Send('M')
     if ia02.IdexCheckValveState() == 0:

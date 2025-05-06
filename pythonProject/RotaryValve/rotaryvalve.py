@@ -7,9 +7,9 @@ import RotaryValve.rotaryvalvecmd as rc
 import Com.Port.check as ck
 
 
-class ROTARYVALVE:
+class rotaryvalve:
     """
-    选切阀类
+    旋转阀类
     """
     def __init__(self):
         self.rv_ser = sp.ser
@@ -170,7 +170,7 @@ class ROTARYVALVE:
 
 if __name__ == '__main__':
     sp.Reset_Ser_Baud(0, 'com32', 9600)
-    rv = ROTARYVALVE()
+    rv = rotaryvalve()
     rv.protocol = 'IDEX'
     rv.Get_RV_Version()
     rv.RV_Send(rv.idex_cmd.Read_Current_Channel())
