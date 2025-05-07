@@ -15,7 +15,7 @@ def RunTime(func):
     return log
 
 
-class SERIALPORT:
+class serialport:
     """
     初始化串口，参数包括串口号以及波特率
     """
@@ -119,9 +119,9 @@ def List_Serial_Ports():
     return port_list
 
 
-ser = SERIALPORT(List_Serial_Ports()[0], 9600)  # 控制器总线串口输入
-bal = SERIALPORT('com1', 38400)  # 天平控制串口
-pwr = SERIALPORT('com2', 9600)  # 电源控制串口
+ser = serialport(List_Serial_Ports()[0], 9600)  # 控制器总线串口输入
+bal = serialport('com1', 38400)  # 天平控制串口
+pwr = serialport('com2', 9600)  # 电源控制串口
 
 
 def Reset_Ser_Baud(ser_type, com, baud):
@@ -134,15 +134,15 @@ def Reset_Ser_Baud(ser_type, com, baud):
     global ser, bal, pwr
     if ser_type == 0:
         ser.ClosePort()
-        ser = SERIALPORT(com, baud)
+        ser = serialport(com, baud)
         ser.OpenPort()
     elif ser_type == 1:
         bal.ClosePort()
-        bal = SERIALPORT(com, baud)
+        bal = serialport(com, baud)
         bal.OpenPort()
     else:
         pwr.ClosePort()
-        pwr = SERIALPORT(com, baud)
+        pwr = serialport(com, baud)
         pwr.OpenPort()
 
 

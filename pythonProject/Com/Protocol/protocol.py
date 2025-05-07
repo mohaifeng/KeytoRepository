@@ -9,9 +9,36 @@ class modbus_prot:
         self.read_reg = '03'
         self.write_single_reg = '06'
         self.write_mul_reg = '10'
+        self.rec_addr = 0
+        self.rx_data = ''
 
-    def modbus_cmd_conf(self, addr, reg, mode):
-        pass
+    def Read_Reg(self, addr: int, reg: str, num: int):
+        """"""
+        addr_hex = hex(addr).removeprefix('0x').zfill(2)
+        num_hex = hex(num).removeprefix('0x').zfill(4)
+        conf_data = addr_hex + self.read_reg + reg + num_hex
+        return (conf_data + ck.CRC16_MODBUS(conf_data)).upper()
+
+    def Write_S_Reg(self, addr: int, reg: str, data: int):
+        addr_hex = hex(addr).removeprefix('0x').zfill(2)
+        data_hex = hex(data).removeprefix('0x').zfill(4)
+        conf_data = addr_hex + self.write_single_reg + reg + data_hex
+        return (conf_data + ck.CRC16_MODBUS(conf_data)).upper()
+
+    def Write_M_Reg(self, addr: int, reg: str, *args):
+        addr_hex = hex(addr).removeprefix('0x').zfill(2)
+        reg_num_hex = hex(len(args)).removeprefix('0x').zfill(4)
+        data_len_hex = hex(len(args) * 2).removeprefix('0x').zfill(2)
+        data_hex = ''
+        for arg in args:
+            data_hex += hex(arg).removeprefix('0x').zfill(4)
+        conf_data = addr_hex + self.write_mul_reg + reg + reg_num_hex + data_len_hex + data_hex
+        return (conf_data + ck.CRC16_MODBUS(conf_data)).upper()
+
+    def Rec_Data_Conf(self, data: str):
+        data = data.upper()
+        if len(data) // 2 == 8 and data[-2:] == ck.CRC16_MODBUS(data[:-2]):
+            self.rec_addr = int(data[:2], 16)
 
 
 class keyto_can_dic:
@@ -302,5 +329,7 @@ class tc_oem_prot:
 
 
 if __name__ == '__main__':
-    print(str(123).encode().hex())
-    print(int(bytes.fromhex('313233').decode()))
+    mbus = modbus_prot()
+    print(mbus.Read_Reg(1, '6001', 1))
+    print(mbus.Write_S_Reg(255, '0051', 1000))
+    print(mbus.Write_M_Reg(1, '0001', 1000, 100))

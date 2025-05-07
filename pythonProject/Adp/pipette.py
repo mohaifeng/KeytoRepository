@@ -11,7 +11,7 @@ dev_mode = 0
 # 错误状态定义：
 # 0：返回错误；
 # 1：返回正确
-class Z_AXIS:
+class z_axis:
     def __init__(self):
         self.z_ser = sp.ser
         self.report_flag = 0  # 主动上报模式 0：关闭 1：打开
@@ -141,7 +141,7 @@ class Z_AXIS:
                     return sta
 
 
-class ADP:
+class pipette:
     def __init__(self):
         self.adp_ser = sp.ser
         self.report_flag = 0  # 主动上报模式 0：关闭 1：打开
@@ -370,32 +370,3 @@ class ADP:
 if __name__ == '__main__':
     # lg.Start_Log()  # 开始日志
     PROTOCOL_TYPE = 0
-    sp.Reset_Ser_Baud(0, 'com36', 38400)
-    adp = ADP()
-    adpz = Z_AXIS()
-    adp.protocol = 'KT_OEM'
-    adpz.protocol = 'KT_OEM'
-
-    adp.AdpSend(adp.adp_cmd.It(500, 100.0))
-    adp.AdpReceive()
-    adp.CheckAdpState()
-    adpz.ZSend(adpz.z_cmd.Zz(50000))
-    adpz.ZReceive()
-    adpz.CheckZState()
-    adpz.ZSend(adpz.z_cmd.Zp(80000, 5000))
-    adpz.ZReceive()
-    adp.AdpSend(adp.adp_cmd.Ld(1, 10000))
-    adp.AdpReceive()
-    adp.CheckAdpState()
-    time.sleep(1)
-    adp.AdpSend(adp.adp_cmd.Iz(10000, 200, 78))
-    adp.AdpReceive()
-    adp.CheckAdpState()
-    adpz.ZSend(adpz.z_cmd.Zp(140000, 50000))
-    adpz.ZReceive()
-    adpz.CheckZState()
-    adp.AdpSend(adp.adp_cmd.Ia(1000, 8))
-    adp.AdpReceive()
-    adpz.ZSend(adpz.z_cmd.Zp(10000, 5000))
-    adpz.ZReceive()
-    adpz.CheckZState()

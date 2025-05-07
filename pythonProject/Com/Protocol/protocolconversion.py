@@ -2,7 +2,7 @@ from binascii import a2b_hex
 import Com.Port.check as cs
 
 
-class SER_PROT_Trans:
+class ser_prot_trans:
     def __init__(self):
         self.send_head = 'AA'  # oem发送帧头
         self.receive_head = '55'  # oem接收帧头
@@ -108,6 +108,6 @@ class SER_PROT_Trans:
 
 
 if __name__ == '__main__':
-    ser_p = SER_PROT_Trans()
+    ser_p = ser_prot_trans()
     while True:
         print(ser_p.DtToOem(input('请输入oem协议格式指令:'), 1))

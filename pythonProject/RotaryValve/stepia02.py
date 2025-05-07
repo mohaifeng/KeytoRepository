@@ -8,7 +8,7 @@ import Com.Port.serialport as sp
 import stepia02cmd
 
 
-class stepia02(sp.SERIALPORT):
+class stepia02(sp.serialport):
     def __init__(self, port, baud):
         """
         :param port: 串口号

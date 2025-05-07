@@ -43,7 +43,7 @@ def REPORTING():
 
 if __name__ == '__main__':
     workbook = openpyxl.load_workbook('DOC2111001SADP16TEST_CASE.xlsx')  # 返回一个workbook数据类型的值
-    adp = pi.ADP()
+    adp = pi.pipette()
     workbook.save('SADP16TEST_REPORT.xlsx')  # 新建测试报告文档
     test_workbook = openpyxl.load_workbook('SADP16TEST_REPORT.xlsx')  # 返回一个workbook数据类型的值
     test_report = fa.EXCEL(r'D:\code\python_Auto_Test_Project', 'SADP16TEST_REPORT.xlsx')

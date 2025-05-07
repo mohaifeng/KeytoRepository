@@ -28,13 +28,13 @@ r"D:\Download\STM32CubeProgrammer\bin\STM32_Programmer_CLI.exe"
 def Dev_Get_Addr(value):
     match value:
         case 1:
-            adp = pi.ADP()
+            adp = pi.pipette()
             if adp.GetAdpAddress():
                 return adp.address
             else:
                 return -1
         case 2:
-            adp = pi.ADP()
+            adp = pi.pipette()
             if adp.GetAdpAddress():
                 return adp.address
             else:
@@ -136,22 +136,22 @@ def Download_Test(dev_type: int):
         print('当前下载波特率：', baudrate_lst[idex])
         sp.Reset_Ser_Baud(0, default_com, baudrate_lst[idex])
         if dev_type == 1 or dev_type == 2:
-            obj = pi.ADP()
+            obj = pi.pipette()
             obj.address = default_addr  # 重设ADP地址
         elif dev_type == 3:
             obj = rv.rotaryvalve()
             obj.Change_RV_Address(default_addr)  # 重设ADP地址
         elif dev_type == 4:
-            obj = pi.ADP()
+            obj = pi.pipette()
             obj.address = default_addr  # 重设ADP地址
         elif dev_type == 5:
-            obj = pi.ADP()
+            obj = pi.pipette()
             obj.address = default_addr  # 重设ADP地址
         elif dev_type == 6:
-            obj = pi.ADP()
+            obj = pi.pipette()
             obj.address = default_addr  # 重设ADP地址
         elif dev_type == 7:
-            obj = pi.ADP()
+            obj = pi.pipette()
             obj.address = default_addr  # 重设ADP地址
         elif dev_type == 8:
             obj = dr.DRL_PLUNGER_PUMP()
@@ -166,7 +166,7 @@ def Download_Test(dev_type: int):
             obj = dr.DRL_PLUNGER_PUMP()
             obj.address = default_addr  # 重设ADP地址
         else:
-            obj = pi.ADP()
+            obj = pi.pipette()
             obj.address = default_addr  # 重设ADP地址
         if not dl.DownLoadPlus(dev_type, 0):  # 进行升级操作
             print('升级失败')
