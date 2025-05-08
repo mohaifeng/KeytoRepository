@@ -34,6 +34,7 @@ extern "C" {
 #include "gpio.h"
 #include "usart.h"
 #include "led.h"
+#include "tmc5160.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
