@@ -14,9 +14,7 @@ uint32_t TMC5160_ReadRegister(uint8_t address)
 	uint8_t txData[5] = { 0 };
 	uint8_t rxData[5] = { 0 };
 	uint32_t value = 0;
-
-	// TMC5160读取格式：地址 | 0x80
-	txData[0] = address | 0x80;
+	txData[0] = address & 0x7F; //读地址最高位为0
 	HAL_SPI_TransmitReceive(&hspi1, txData, rxData, 5, HAL_MAX_DELAY);
 	value = (rxData[1] << 24) | (rxData[2] << 16) | (rxData[3] << 8) | rxData[4];
 	return value;
@@ -25,14 +23,15 @@ uint32_t TMC5160_ReadRegister(uint8_t address)
 void TMC5160_WriteRegister(uint8_t address, uint32_t value)
 {
 	uint8_t txData[5] = { 0 };
-
-	txData[0] = address & 0x7F; // 写入地址最高位为0
+	txData[0] = address | 0x80; // 写入地址最高位为1
 	txData[1] = (value >> 24) & 0xFF;
 	txData[2] = (value >> 16) & 0xFF;
 	txData[3] = (value >> 8) & 0xFF;
 	txData[4] = value & 0xFF;
-
-	HAL_SPI_Transmit(&hspi1, txData, 5, HAL_MAX_DELAY);
+	if (HAL_SPI_Transmit(&hspi1, txData, 5, HAL_MAX_DELAY) != HAL_OK)
+	{
+		Error_Handler();
+	}
 }
 
 void TMC5160_Init(void)
@@ -42,24 +41,26 @@ void TMC5160_Init(void)
 	HAL_Delay(10);
 
 	// 配置驱动器模式
-	TMC5160_WriteRegister(TMC5160_REG_GCONF, 0x00000008); // 使用SPI控制
+//	TMC5160_WriteRegister(TMC5160_REG_GCONF, 0x00000008); // 使用SPI控制
 
 	// 配置电机参数
-	TMC5160_WriteRegister(TMC5160_REG_CHOPCONF, (8 << 24) | // MRES: 256微步
-			(3 << 15) | // TOFF: 3
-			(4 << 12)); // HSTRT: 4
+	TMC5160_WriteRegister(TMC5160_REG_CHOPCONF, (MRRS_32 << 24) | // MRES=0x4 (1/16微步)
+			(0x3 << 15) | // TBL=0x3 (空白时间)
+			(0x3 << 0)); // TOFF=0x1 (斩波使能)
 
 	// 配置电流
-	TMC5160_WriteRegister(TMC5160_REG_IHOLD_IRUN, (10<<16)|(10<<8)|(5<<0));  // // IRUN=10, IHOLD=5
+	TMC5160_WriteRegister(TMC5160_REG_IHOLD_IRUN, (12 << 8) | (5 << 0));  // // IRUN=12, IHOLD=5
 
 	// 配置速度和加速度
 	TMC5160_WriteRegister(TMC5160_REG_TPOWERDOWN, 10); // 待机电流延时
 	TMC5160_WriteRegister(TMC5160_REG_TPWMTHRS, 500);  // 速度阈值
 	TMC5160_WriteRegister(TMC5160_REG_VSTART, 10);     // 起始速度
 	TMC5160_WriteRegister(TMC5160_REG_A1, 1000);       // 加速度
-	TMC5160_WriteRegister(TMC5160_REG_AMAX, 1000);     // 最大加速度
-	TMC5160_WriteRegister(TMC5160_REG_VMAX, 50000);    // 最大速度
-	TMC5160_WriteRegister(TMC5160_REG_D1, 500);        // 减速度
+	TMC5160_WriteRegister(TMC5160_REG_V1, 50000);       // 加速度阈值速度
+	TMC5160_WriteRegister(TMC5160_REG_AMAX, 500);     // 最大加速度
+	TMC5160_WriteRegister(TMC5160_REG_VSTOP, 10);     // 最大加速度
+	TMC5160_WriteRegister(TMC5160_REG_VMAX, 200000);    // 最大速度
+	TMC5160_WriteRegister(TMC5160_REG_D1, 1400);        // 减速度
 }
 
 void TMC5160_Enable(void)

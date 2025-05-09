@@ -16,6 +16,7 @@ rec_flag = 0  # 下载过程中收到重发帧标志
 done_flag = 0  # 下载完成标志
 lock = threading.Lock()
 # 定义数字对应设备类型
+
 type_dic = {
     1: 'ADP16',
     2: 'ADP18',
@@ -644,7 +645,7 @@ def Download_Hex_Stm32(hex_file_path):
         raise FileNotFoundError(f"HEX文件未找到: {hex_file_path}")
     try:
         # 执行命令
-        programmer_path = get_stm32_programmer_path()
+        programmer_path = Get_Stm32_Programmer_Path()
         # 构建命令
         command = [
             programmer_path,
@@ -665,7 +666,7 @@ def Download_Hex_Stm32(hex_file_path):
         return False
 
 
-def find_stm32_programmer_cli():
+def Find_Stm32_Programmer_Cli():
     # STM32CubeProgrammer常见的安装路径
     possible_paths = [
         r"C:\Program Files\STMicroelectronics\STM32Cube\STM32CubeProgrammer\bin\STM32_Programmer_CLI.exe",
@@ -675,21 +676,18 @@ def find_stm32_programmer_cli():
         os.path.expandvars(
             r"%ProgramFiles(x86)%\STMicroelectronics\STM32Cube\STM32CubeProgrammer\bin\STM32_Programmer_CLI.exe"),
     ]
-
     for path in possible_paths:
         if os.path.exists(path):
             return path
-
     # 如果默认路径未找到，尝试在PATH环境变量中查找
     for path in os.getenv('PATH').split(os.pathsep):
         exe_path = os.path.join(path, 'STM32_Programmer_CLI.exe')
         if os.path.exists(exe_path):
             return exe_path
-
     return None
 
 
-def find_stm32_programmer_via_registry():
+def Find_Stm32_Programmer_via_registry():
     try:
         # 查询64位系统的注册表
         with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
@@ -700,7 +698,6 @@ def find_stm32_programmer_via_registry():
                 return exe_path
     except WindowsError:
         pass
-
     try:
         # 查询32位系统的注册表(在64位系统上)
         with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
@@ -711,26 +708,22 @@ def find_stm32_programmer_via_registry():
                 return exe_path
     except WindowsError:
         pass
-
     return None
 
 
-def get_stm32_programmer_path():
-    # 先尝试注册表
-    path = find_stm32_programmer_via_registry()
+def Get_Stm32_Programmer_Path():
+    # 先尝试默认路径及PATH环境变量
+    path = Find_Stm32_Programmer_Cli()
     if path:
         return path
-
-    # 再尝试默认路径
-    path = find_stm32_programmer_cli()
+    # 再尝试注册表
+    path = Find_Stm32_Programmer_via_registry()
     if path:
         return path
-
     # 最后尝试用户自定义环境变量
     custom_path = os.getenv("STM32_PROGRAMMER_PATH")
     if custom_path and os.path.exists(custom_path):
         return custom_path
-
     raise FileNotFoundError(
         "无法找到STM32_Programmer_CLI.exe\n"
         "请确保已安装STM32CubeProgrammer或设置STM32_PROGRAMMER_PATH环境变量"
@@ -741,5 +734,5 @@ def get_stm32_programmer_path():
 
 
 if __name__ == '__main__':
-    Bootloader(1, 0, 0)
-    Download_Hex_Stm32(Get_Latest_Hex_File(type_dic[8]))
+    # Bootloader(1, 0, 0)
+    Download_Hex_Stm32(Get_Latest_Hex_File(type_dic[3])[0])

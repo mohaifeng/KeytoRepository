@@ -17,8 +17,10 @@
 #define TMC5160_REG_XACTUAL      0x21  // 实际位置
 #define TMC5160_REG_XTARGET      0x2D  // 目标位置
 #define TMC5160_REG_VSTART       0x23  // 起始速度
+#define TMC5160_REG_V1        	 0x25  // 加速度阈值速度
 #define TMC5160_REG_VMAX         0x27  // 最大速度
 #define TMC5160_REG_A1           0x2A  // 加速度
+#define TMC5160_REG_VSTOP        0x2B  // 停止速度
 #define TMC5160_REG_AMAX         0x29  // 最大加速度
 #define TMC5160_REG_D1           0x2B  // 减速度
 #define TMC5160_REG_CHOPCONF     0x6C  // 斩波器配置
@@ -26,6 +28,16 @@
 #define TMC5160_REG_TPWMTHRS     0x13  // 速度阈值
 #define TMC5160_REG_RAMPMODE     0x20  // 斜坡模式
 
+// TMC5160 细分定义
+#define MRRS_1		0x00
+#define MRRS_2		0x01
+#define MRRS_4		0x02
+#define MRRS_8		0x03
+#define MRRS_16		0x04
+#define MRRS_32		0x05
+#define MRRS_64		0x06
+#define MRRS_128	0x07
+#define MRRS_256  0x08
 
 uint32_t TMC5160_ReadRegister(uint8_t address);
 void TMC5160_WriteRegister(uint8_t address, uint32_t value);
