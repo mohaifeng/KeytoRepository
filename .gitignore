@@ -1,3 +1,5 @@
 .metadata
 /pythonProject/.venv
 /pythonProject/.idea
+/pythonProject/Com/Port/__pycache__
+/pythonProject/Configure/__pycache__
