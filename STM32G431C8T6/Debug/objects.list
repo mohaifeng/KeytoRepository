@@ -2,6 +2,7 @@
 "./Core/Src/gpio.o"
 "./Core/Src/led.o"
 "./Core/Src/main.o"
+"./Core/Src/objectdirectory.o"
 "./Core/Src/protocol.o"
 "./Core/Src/spi.o"
 "./Core/Src/stm32g4xx_hal_msp.o"
