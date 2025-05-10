@@ -6,7 +6,7 @@ import Com.Download.software_upgrade as dl
 import Com.Port.serialport as sp
 import Com.Power.ivytech_3603_power as pw
 import RotaryValve.rotaryvalve as rv
-import Pump.drl as dr
+import Pump.step_drl as dr
 
 dev_default_par_dic = {
     'ADP16': [38400, 1],

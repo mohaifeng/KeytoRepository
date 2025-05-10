@@ -191,7 +191,7 @@ class rv_gen_cmd:
                             '清除错误': '07',
                             }
 
-    def Check_State(self):
+    def Read_State(self):
         """
         读取状态
         :return: 指令字符串

@@ -191,7 +191,7 @@ class keyto_gen_prot:
     def Gen_Cmd_Conf(self, addr: int, cmd: str, data: int):
         """
         输出格式化指令
-        :param addr:
+        :param addr:地址
         :param cmd: 指令参数:16进制str
         :param data: 数据：带符号int
         :return: str
@@ -204,11 +204,10 @@ class keyto_gen_prot:
 
     def Rec_Data_Conf(self, data: str):
         data = data.upper()
-        if data[:2] == self.head:
-            if data[-2:] == ck.Uchar_Checksum_8_Bit(data[:-2]):
-                self.rec_addr = int(data[2:4], 16)
-                self.data = int(data[4:-2], 16)
-                return True
+        if data[:2] == self.head and data[-2:] == ck.Uchar_Checksum_8_Bit(data[:-2]):
+            self.rec_addr = int(data[2:4], 16)
+            self.data = int(data[4:-2], 16)
+            return True
         return False
 
 

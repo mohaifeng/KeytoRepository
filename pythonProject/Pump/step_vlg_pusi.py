@@ -4,16 +4,15 @@ import threading
 import time
 from binascii import a2b_hex
 import Com.Port.check as ck
-from Pump.pusicmd import PUSICMD
 import Com.Port.serialport as sp
-import pusimodbuscmd as pm
+import Pump.pump_cmd as pm
 
 
-class PUSIMODBUS:
+class pusimodbus:
     def __init__(self):
         self.modbus_ser = sp.ser
         self.address = 1
-        self.pusi_modbus_cmd = pm.PUSIMODBUSCMD(self.address)
+        self.pusi_modbus_cmd = pm.pusi_modbus_cmd(self.address)
         self.send_data = ''
         self.get_data = ''
         self.fun_type = {
@@ -29,7 +28,7 @@ class PUSIMODBUS:
 
     def Reset_Address(self, addr: int):
         self.address = addr
-        self.pusi_modbus_cmd = pm.PUSIMODBUSCMD(self.address)
+        self.pusi_modbus_cmd = pm.pusi_modbus_cmd(self.address)
 
     def Modbus_Send(self, dat_str: str):
         """
@@ -97,7 +96,7 @@ class PUSIMODBUS:
                 dat_hex = hex(data).replace('0x', '').zfill(8).upper()
                 data_lst = [dat_hex[:4], dat_hex[4:]]
             elif data < 0:
-                dat_hex = pm.Negative_To_Hex(data).replace('0x', '').zfill(8).upper()
+                dat_hex = pm.Negative_To_Hex(data).zfill(8).upper()
                 data_lst = [dat_hex[:4], dat_hex[4:]]
             else:
                 dat_hex = hex(data).replace('0x', '').zfill(4).upper()
@@ -167,7 +166,7 @@ class PUSIMODBUS:
         return 0
 
 
-class PUSIDRIVER:
+class vlg_pusi:
     def __init__(self):
         self.pusi_ser = sp.ser
         self.protocol = 'PUSI'
@@ -175,7 +174,7 @@ class PUSIDRIVER:
         self.address = 255
         self.state = 0
         self.program_version = ''
-        self.pusi_cmd = PUSICMD(self.address, self.mode)
+        self.pusi_cmd = pm.pusi_cmd(self.address, self.mode)
         self.send_data = ''
         self.rec_data = ''
 
@@ -189,7 +188,7 @@ class PUSIDRIVER:
             self.address = 255
             return 1
         for ad in range(0, 255):
-            self.pusi_cmd = PUSICMD(ad, self.mode)
+            self.pusi_cmd = pm.pusi_cmd(ad, self.mode)
             check_cmd = self.pusi_cmd.pusicmd('查询控制器状态1')
             self.pusi_ser.PortSend(check_cmd)
             rec_state = self.pusi_ser.PortReceive_byte(500)
@@ -282,8 +281,8 @@ def Rec_Data_Config(rec_str: str):
 
 lock = threading.Lock()
 if __name__ == '__main__':
-    sp.Reset_Ser_Baud(0,'com41', 9600)
-    pusi = PUSIDRIVER()
+    sp.Reset_Ser_Baud(0, 'com41', 9600)
+    pusi = vlg_pusi()
     pusi.mode = '485'
     while True:
         pusi.Pusi_Send(pusi.pusi_cmd.pusicmd('置零', 64000))

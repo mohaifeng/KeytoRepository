@@ -33,7 +33,7 @@ class rotaryvalve:
         print('查询旋切阀地址:')
         for ad in range(0, 255):
             self.gen_cmd.address = ad
-            self.RV_Send(self.gen_cmd.Check_State())
+            self.RV_Send(self.gen_cmd.Read_State())
             if not self.RV_Receive():
                 continue
             else:
@@ -138,7 +138,7 @@ class rotaryvalve:
         :param timeout: 超时时间：ms，默认500ms
         :return: 0：空闲 -1：回复超时 else：错误状态
         """
-        check_cmd_byte = self.gen_cmd.Check_State()
+        check_cmd_byte = self.gen_cmd.Read_State()
         while True:
             self.RV_Send(check_cmd_byte)
             if self.RV_Receive(timeout):
