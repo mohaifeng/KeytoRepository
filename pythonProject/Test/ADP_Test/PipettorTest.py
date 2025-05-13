@@ -5,8 +5,8 @@ import Adp.pipette as pi
 import Com.Download.software_upgrade as dl
 import Com.Port.serialport as sp
 import Com.Power.ivytech_3603_power as pw
-import RotaryValve.rotaryvalve as rv
-import Pump.step_drl as dr
+import RotaryValve.rotaryvalve_control as rv_cr
+import Pump.pump_control as pm_cr
 
 dev_default_par_dic = {
     'ADP16': [38400, 1],
@@ -22,26 +22,24 @@ dev_default_par_dic = {
     'VLG-PUSI-柱塞泵': [9600, 255],
 }
 
-r"D:\Download\STM32CubeProgrammer\bin\STM32_Programmer_CLI.exe"
 
-
-def Dev_Get_Addr(value):
-    match value:
+def Dev_Get_Addr(dev_type):
+    match dev_type:
         case 1:
             adp = pi.pipette()
-            if adp.GetAdpAddress():
+            if adp.Get_Address():
                 return adp.address
             else:
                 return -1
         case 2:
             adp = pi.pipette()
-            if adp.GetAdpAddress():
+            if adp.Get_Address():
                 return adp.address
             else:
                 return -1
         case 3:
-            rvc = rv.rotaryvalve()
-            if rvc.Get_RV_Address():
+            rvc = rv_cr.rotaryvalve()
+            if rvc.Get_Address():
                 return rvc.address
             else:
                 return -1
@@ -54,13 +52,17 @@ def Dev_Get_Addr(value):
         case 7:
             print("Case 7")
         case 8:
-            drl = dr.DRL_PLUNGER_PUMP()
-            if drl.GetDrlAddress():
+            drl = pm_cr.step_drl()
+            if drl.Get_Address():
                 return drl.address
             else:
                 return -1
         case 9:
-            print("Case 3")
+            drs = pm_cr.step_drs()
+            if drs.Get_Address():
+                return drs.address
+            else:
+                return -1
         case 10:
             print("Case 3")
         case 11:
@@ -135,88 +137,87 @@ def Download_Test(dev_type: int):
     for idex in range(0, len(baudrate_lst)):
         print('当前下载波特率：', baudrate_lst[idex])
         sp.Reset_Ser_Baud(0, default_com, baudrate_lst[idex])
-        if dev_type == 1 or dev_type == 2:
-            obj = pi.pipette()
-            obj.address = default_addr  # 重设ADP地址
-        elif dev_type == 3:
-            obj = rv.rotaryvalve()
-            obj.Change_RV_Address(default_addr)  # 重设ADP地址
-        elif dev_type == 4:
-            obj = pi.pipette()
-            obj.address = default_addr  # 重设ADP地址
-        elif dev_type == 5:
-            obj = pi.pipette()
-            obj.address = default_addr  # 重设ADP地址
-        elif dev_type == 6:
-            obj = pi.pipette()
-            obj.address = default_addr  # 重设ADP地址
-        elif dev_type == 7:
-            obj = pi.pipette()
-            obj.address = default_addr  # 重设ADP地址
-        elif dev_type == 8:
-            obj = dr.DRL_PLUNGER_PUMP()
-            obj.address = default_addr  # 重设ADP地址
-        elif dev_type == 9:
-            obj = dr.DRL_PLUNGER_PUMP()
-            obj.address = default_addr  # 重设ADP地址
-        elif dev_type == 10:
-            obj = dr.DRL_PLUNGER_PUMP()
-            obj.address = default_addr  # 重设ADP地址
-        elif dev_type == 11:
-            obj = dr.DRL_PLUNGER_PUMP()
-            obj.address = default_addr  # 重设ADP地址
-        else:
-            obj = pi.pipette()
-            obj.address = default_addr  # 重设ADP地址
+        match dev_type:
+            case 1:
+                obj = pi.pipette()
+                obj.address = default_addr  # 重设ADP16地址
+            case 2:
+                obj = pi.pipette()
+                obj.address = default_addr  # 重设ADP18地址
+            case 3:
+                obj = rv_cr.rotaryvalve()
+                obj.Change_RV_Address(default_addr)  # 重设旋转阀地址
+            case 4:
+                obj = pi.pipette()
+                obj.address = default_addr  # 重设旋转阀-编码器地址
+            case 5:
+                obj = pi.pipette()
+                obj.address = default_addr  # 重设旋转阀-I2C地址
+            case 6:
+                obj = pi.pipette()
+                obj.address = default_addr  # 重设旋转阀-VICI地址
+            case 7:
+                obj = pi.pipette()
+                obj.address = default_addr  # 重设DRL-计量泵地址
+            case 8:
+                obj = pm_cr.step_drl()
+                obj.address = default_addr  # 重设DRL-柱塞泵地址
+            case 9:
+                obj = pm_cr.step_drs()
+                obj.Set_DRS_Address(default_addr)  # 重设DRS-柱塞泵地址
+            case 10:
+                obj = pm_cr.step_drl()
+                obj.address = default_addr  # 重设VLG-柱塞泵地址
+            case 11:
+                obj = pm_cr.step_drl()
+                obj.address = default_addr  # 重设VLG-PUSI地址
+            case _:
+                obj = pi.pipette()
+                obj.address = default_addr  # 重设ADP16地址
         if not dl.DownLoadPlus(dev_type, 0):  # 进行升级操作
             print('升级失败')
             return False
         time.sleep(3)
         version = ''
-        if dev_type == 1 or dev_type == 2:
-            obj.adp_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetAdpVersion():
-                version = obj.adp_version
-        elif dev_type == 3:
-            obj.rv_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.Get_RV_Version():
-                version = obj.rv_version
-        elif dev_type == 4:
-            obj.adp_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetAdpVersion():
-                version = obj.adp_version
-        elif dev_type == 5:
-            obj.adp_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetAdpVersion():
-                version = obj.adp_version
-        elif dev_type == 6:
-            obj.adp_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetAdpVersion():
-                version = obj.adp_version
-        elif dev_type == 7:
-            obj.adp_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetAdpVersion():
-                version = obj.adp_version
-        elif dev_type == 8:
-            obj.drl_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetDrlVersion():
-                version = obj.drl_version
-        elif dev_type == 9:
-            obj.drl_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetDrlVersion():
-                version = obj.drl_version
-        elif dev_type == 10:
-            obj.drl_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetDrlVersion():
-                version = obj.drl_version
-        elif dev_type == 11:
-            obj.drl_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetDrlVersion():
-                version = obj.drl_version
-        else:
-            obj.adp_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetAdpVersion():
-                version = obj.adp_version
+        match dev_type:
+            case 1:  # ADP16
+                obj.adp_ser.OpenPort()  # 升完级默认关闭串口
+                if obj.Get_Version():
+                    version = obj.version
+            case 2:  # ADP18
+                obj.adp_ser.OpenPort()  # 升完级默认关闭串口
+                if obj.Get_Version():
+                    version = obj.version
+            case 3:  # 旋转阀
+                obj.rv_ser.OpenPort()  # 升完级默认关闭串口
+                if obj.Get_Version():
+                    version = obj.version
+            case 4:  # 旋转阀-编码器
+                pass
+            case 5:  # 旋转阀-I2C
+                pass
+            case 6:  # 旋转阀-VICI
+                pass
+            case 7:  # DRL-计量泵
+                pass
+            case 8:  # DRL-柱塞泵
+                obj.drl_ser.OpenPort()  # 升完级默认关闭串口
+                if obj.Get_Version():
+                    version = obj.version
+            case 9:  # DRS-柱塞泵
+                obj.drs_ser.OpenPort()  # 升完级默认关闭串口
+                if obj.Get_Version():
+                    version = obj.version
+            case 10:  # VLG-柱塞泵
+                pass
+            case 11:  # VLG-PUSI-柱塞泵
+                obj.drl_ser.OpenPort()  # 升完级默认关闭串口
+                if obj.Get_Version():
+                    version = obj.version
+            case _:  # 默认
+                obj.adp_ser.OpenPort()  # 升完级默认关闭串口
+                if obj.Get_Version():
+                    version = obj.version
         target_version_lst.append(version)  # 获取升级后版本号
         print('回退到上一正式版本：')
         if not dl.DownLoadPlus(dev_type, 1):  # 版本回退到升级之前
@@ -226,32 +227,32 @@ def Download_Test(dev_type: int):
         version = ''
         if dev_type == 1 or dev_type == 2:
             obj.adp_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetAdpVersion():
-                version = obj.adp_version
+            if obj.Get_Version():
+                version = obj.version
         elif dev_type == 3:
             obj.rv_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.Get_RV_Version():
-                version = obj.rv_version
+            if obj.Get_Version():
+                version = obj.version
         elif dev_type == 4:
             pass
         elif dev_type == 5:
             pass
         elif dev_type == 6:
             obj.adp_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetAdpVersion():
-                version = obj.adp_version
+            if obj.Get_Version():
+                version = obj.version
         elif dev_type == 7:
             obj.adp_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetAdpVersion():
-                version = obj.adp_version
+            if obj.Get_Version():
+                version = obj.version
         elif dev_type == 8:
             obj.drl_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetDrlVersion():
-                version = obj.drl_version
+            if obj.Get_Version():
+                version = obj.version
         else:
             obj.adp_ser.OpenPort()  # 升完级默认关闭串口
-            if obj.GetAdpVersion():
-                version = obj.adp_version
+            if obj.Get_Version():
+                version = obj.version
         present_version_lst.append(version)  # 获取回退后版本号
         # 设定下一次升级的波特率，若为最后一次，则修改为之前默认波特率，保证程序下载测试结束后保持原波特率
         if dev_type == 1 or dev_type == 2:
@@ -260,8 +261,8 @@ def Download_Test(dev_type: int):
             else:
                 adp_set_lst = [obj.sys_cmd.Wr(80, baudrate_lst[idex + 1]), obj.sys_cmd.Poweroff_Save()]
             for cmd in adp_set_lst:
-                obj.AdpSend(cmd)
-                obj.AdpReceive()
+                obj.Transmit(cmd)
+                obj.Wait_Rx_Finish()
                 time.sleep(1)
         elif dev_type == 3:
             if idex == (len(baudrate_lst) - 1):
@@ -269,8 +270,8 @@ def Download_Test(dev_type: int):
             else:
                 adp_set_lst = [obj.gen_cmd.Set_Usart_Baudrate(baudrate_lst[idex + 1]), obj.gen_cmd.Set_Poweroff_Save()]
             for cmd in adp_set_lst:
-                obj.RV_Send(cmd)
-                obj.RV_Receive()
+                obj.Transmit(cmd)
+                obj.Wait_Rx_Finish()
                 time.sleep(1)
         elif dev_type == 8:
             if idex == (len(baudrate_lst) - 1):
@@ -278,8 +279,8 @@ def Download_Test(dev_type: int):
             else:
                 adp_set_lst = [obj.sys_cmd.Wr(80, baudrate_lst[idex + 1]), obj.sys_cmd.Poweroff_Save()]
             for cmd in adp_set_lst:
-                obj.DrlSend(cmd)
-                obj.DrlReceive()
+                obj.Transmit(cmd)
+                obj.Wait_Rx_Finish()
                 time.sleep(1)
         power.Power_Output_Control(0)
         time.sleep(2)

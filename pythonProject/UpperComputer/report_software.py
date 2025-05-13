@@ -5,9 +5,9 @@ from tkinter import *
 
 
 def EXECUTE_COMMAND():
-    text_console.insert('end', adp.AdpSend(str(lb_command.get(lb_command.curselection()))[:]))
+    text_console.insert('end', adp.Transmit(str(lb_command.get(lb_command.curselection()))[:]))
     text_console.insert('end', '\n')
-    rec_datas = adp.AdpReceive(500)
+    rec_datas = adp.Wait_Rx_Finish(500)
     if rec_datas != 0:
         text_console.insert('end', rec_datas)
         text_console.insert('end', '\n')

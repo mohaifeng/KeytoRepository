@@ -177,8 +177,7 @@ class keyto_gen_prot:
 
     def __init__(self):
         self.head = 'AA'
-        self.cmd = ''
-        self.data = 0
+        self.rx_data = 0
         self.rec_addr = 0
 
     @staticmethod
@@ -188,25 +187,22 @@ class keyto_gen_prot:
             tmp = (1 << 32) + tmp
         return hex(tmp).removeprefix('0x').zfill(8)
 
-    def Gen_Cmd_Conf(self, addr: int, cmd: str, data: int):
+    def Gen_Cmd_Conf(self, addr: int, cmd: str):
         """
         输出格式化指令
         :param addr:地址
         :param cmd: 指令参数:16进制str
-        :param data: 数据：带符号int
         :return: str
         """
-        self.data = data
         addr_hex = hex(addr).removeprefix('0x').zfill(2)
-        self.cmd = cmd.zfill(2)
-        conf_data = self.head + addr_hex + self.cmd + self.Data_Conf(data)
+        conf_data = self.head + addr_hex + cmd
         return (conf_data + ck.Uchar_Checksum_8_Bit(conf_data)).upper()
 
     def Rec_Data_Conf(self, data: str):
         data = data.upper()
         if data[:2] == self.head and data[-2:] == ck.Uchar_Checksum_8_Bit(data[:-2]):
             self.rec_addr = int(data[2:4], 16)
-            self.data = int(data[4:-2], 16)
+            self.rx_data = int(data[4:-2], 16)
             return True
         return False
 
@@ -215,12 +211,11 @@ class pusi_prot:
     def __init__(self):
         self.head = 'A5'
         self.recv_flag = '7A'
-        self.cmd = ''
         self.rx_data = 0
         self.rec_addr = 0
 
     @staticmethod
-    def data_config(tmp: int):
+    def Tx_Data_config(tmp: int):
         fin_tmp = ''
         tmp_hex = hex(tmp).removeprefix('0x').zfill(8)
         for i in range(0, len(tmp_hex) + 1, 2):
@@ -228,11 +223,17 @@ class pusi_prot:
             fin_tmp = tmp_byte + fin_tmp
         return fin_tmp.upper()
 
-    def Ps_Cmd_Conf(self, addr: int, cmd: str, data: int):
-        self.rx_data = data
-        self.cmd = cmd.zfill(2)
+    @staticmethod
+    def Rx_Data_Config(rec_str: str):
+        fin_data = ''
+        for k in range(0, len(rec_str) + 1, 2):
+            tmp = rec_str[k:k + 2]
+            fin_data = tmp + fin_data
+        return int(fin_data, 16)
+
+    def Ps_Cmd_Conf(self, addr: int, cmd: str):
         addr_hex = hex(addr).removeprefix('0x').zfill(2)
-        conf_data = self.head + addr_hex + self.cmd + self.data_config(data)
+        conf_data = self.head + addr_hex + cmd
         return (conf_data + ck.Uchar_Checksum_8_Bit(conf_data)).upper()
 
     def Rec_Data_Conf(self, data: str):
@@ -240,7 +241,7 @@ class pusi_prot:
         if data[:2] == self.head and data[2:4] == self.recv_flag:
             if data[-2:] == ck.Uchar_Checksum_8_Bit(data[:-2]):
                 self.rec_addr = int(data[4:6], 16)
-                self.rx_data = data[6:-2]
+                self.rx_data = self.Rx_Data_Config(data[6:-2])
                 return True
         return False
 
@@ -250,12 +251,8 @@ class idex_prot:
         self.end_flag = '0D'
         self.rx_data = ''
 
-    def Idex_Cmd_Conf(self, cmd: str, *args: int):
-        cmd_hex = cmd.encode('utf-8').hex()
-        par = ''
-        for i in range(0, len(args)):
-            par += str(args[i]).encode().hex()
-        return (cmd_hex + par + self.end_flag).upper()
+    def Idex_Cmd_Conf(self, cmd: str):
+        return (cmd + self.end_flag).upper()
 
     def Rec_Data_Conf(self, data: str):
         data = data.upper()
