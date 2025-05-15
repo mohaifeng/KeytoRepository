@@ -153,8 +153,8 @@ class DOWNLOAD_PLUS:
         self.receive_data = ''
         while True:
             if self.dlp.PortReceive_Data(1, timeout):
-                self.receive_data += self.dlp.receive_buf
-                if self.dlp.receive_buf == self.frame_end:
+                self.receive_data += self.dlp.rx_buf
+                if self.dlp.rx_buf == self.frame_end:
                     return len(self.receive_data) // 2
             else:
                 return 0
@@ -369,11 +369,11 @@ class BOOTLOADER:
             while True:
                 _rec_flag = self.btl.PortReceive_Data(1, timeout)
                 if _rec_flag:
-                    if ck.CRC_8(self.receive_data) == self.btl.receive_buf:
-                        self.receive_data += self.btl.receive_buf
+                    if ck.CRC_8(self.receive_data) == self.btl.rx_buf:
+                        self.receive_data += self.btl.rx_buf
                         return True
                     else:
-                        self.receive_data += self.btl.receive_buf
+                        self.receive_data += self.btl.rx_buf
                         continue
                 else:
                     return False

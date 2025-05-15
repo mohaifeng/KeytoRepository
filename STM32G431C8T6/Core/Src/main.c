@@ -103,13 +103,13 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-
+  OD_Init();
 	Start_DMA_Receive(); //开启DMA接收
 	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);	//使能空闲中断
-	TMC5160_Init();
-//	TMC5160_Enable();
-//	// 移动到绝对位置10000
-	TMC5160_MoveTo(10000);
+//	TMC5160_Init();
+////	TMC5160_Enable();
+////	// 移动到绝对位置10000
+//	TMC5160_MoveTo(10000);
 //
 //	// 等待到达目标位置
 //	while ((TMC5160_ReadRegister(TMC5160_REG_XACTUAL) != 10000))

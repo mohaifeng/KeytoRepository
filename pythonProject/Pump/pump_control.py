@@ -62,10 +62,10 @@ class step_drl:
         """
         self.rx_data = ''
         if self.drl_ser.PortReceive_Data(1, timeout):
-            self.rx_data += self.drl_ser.receive_buf
+            self.rx_data += self.drl_ser.rx_buf
             while True:
                 if self.drl_ser.PortReceive_Data(1, 5):
-                    self.rx_data += self.drl_ser.receive_buf
+                    self.rx_data += self.drl_ser.rx_buf
                     continue
                 else:
                     if self.RxData_Analysis():
@@ -288,10 +288,10 @@ class step_drs:
         """
         self.rx_data = ''
         if self.drs_ser.PortReceive_Data(1, timeout):
-            self.rx_data += self.drs_ser.receive_buf
+            self.rx_data += self.drs_ser.rx_buf
             while True:
                 if self.drs_ser.PortReceive_Data(1, 5):
-                    self.rx_data += self.drs_ser.receive_buf
+                    self.rx_data += self.drs_ser.rx_buf
                     continue
                 else:
                     if self.RxData_Analysis():
@@ -380,7 +380,7 @@ class pusimodbus:
         self.get_data = ''
         while True:
             if self.modbus_ser.PortReceive_byte(timeout):
-                self.get_data += self.modbus_ser.receive_buf
+                self.get_data += self.modbus_ser.rx_buf
                 if len(self.get_data) > 4:
                     crc16_modbus = ck.CRC16_MODBUS(self.get_data[:-4])
                     if crc16_modbus == self.get_data[-4:]:
@@ -551,10 +551,10 @@ class vlg_pusi:
         """
         self.rx_data = ''
         if self.pusi_ser.PortReceive_Data(1, timeout):
-            self.rx_data += self.pusi_ser.receive_buf
+            self.rx_data += self.pusi_ser.rx_buf
             while True:
                 if self.pusi_ser.PortReceive_Data(1, 5):
-                    self.rx_data += self.pusi_ser.receive_buf
+                    self.rx_data += self.pusi_ser.rx_buf
                     continue
                 else:
                     if self.Protocol_Check():

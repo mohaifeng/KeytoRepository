@@ -9,9 +9,12 @@
 #define INC_OBJECTDIRECTORY_H_
 
 #include <stdint.h>
+#include "main.h"
+
 // 在文件头部定义实际变量
-#define CALIB_DATA_SIZE 255  // 假设校准数组有10个元素
-#define OD_ARRAY_ENTRY(index, sub, ptr, name)	{index, sub, OD_I32, OD_READ_WRITE, ptr, 8, name}
+#define OD_SIZE 255 //定义对象字典
+#define OD_ARRAY_ENTRY(index, sub, ptr, name) 	{index, sub, OD_I32, OD_READ_WRITE, ptr, 8, name}
+
 // 对象字典数据类型定义
 typedef enum
 {
@@ -42,9 +45,17 @@ typedef struct
 	uint8_t sub_index;      // 子索引(0表示主条目)
 	OD_DATATYPEDEF type;    // 数据类型
 	OD_ACCESSTYPEDEF access;     // 访问权限
-	void *data_ptr;         // 数据指针
+	int32_t *data_ptr;         // 数据指针
+	int32_t Deftval;
+	int32_t Maxval;
+	int32_t Minval;
 	uint8_t data_size;     // 数据大小(字节)
-	const char *name;       // 条目名称(可选)
 } OD_ENTRYTYPEDEF;
+
+
+void OD_Init(void);
+
+
+
 
 #endif /* INC_OBJECTDIRECTORY_H_ */

@@ -17,10 +17,10 @@ class POWER:
         """
         self.receive_data = ''
         if self.pw_ser.PortReceive_Data(1, timeout):
-            self.receive_data += self.pw_ser.receive_buf
+            self.receive_data += self.pw_ser.rx_buf
             while True:
                 if self.pw_ser.PortReceive_Data(1, 5):
-                    self.receive_data += self.pw_ser.receive_buf
+                    self.receive_data += self.pw_ser.rx_buf
                     continue
                 else:
                     print(datetime.datetime.now(), end=':')

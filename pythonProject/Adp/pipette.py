@@ -59,10 +59,10 @@ class z_axis:
         """
         self.rx_data = ''
         if self.z_ser.PortReceive_Data(1, timeout):
-            self.rx_data += self.z_ser.receive_buf
+            self.rx_data += self.z_ser.rx_buf
             while True:
                 if self.z_ser.PortReceive_Data(1, 5):
-                    self.rx_data += self.z_ser.receive_buf
+                    self.rx_data += self.z_ser.rx_buf
                     continue
                 else:
                     if self.RxData_Analysis():
@@ -255,10 +255,10 @@ class pipette:
         """
         self.rx_data = ''
         if self.adp_ser.PortReceive_Data(1, timeout):
-            self.rx_data += self.adp_ser.receive_buf
+            self.rx_data += self.adp_ser.rx_buf
             while True:
                 if self.adp_ser.PortReceive_Data(1, 5):
-                    self.rx_data += self.adp_ser.receive_buf
+                    self.rx_data += self.adp_ser.rx_buf
                     continue
                 else:
                     if self.RxData_Analysis():

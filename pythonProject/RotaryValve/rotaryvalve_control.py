@@ -108,10 +108,10 @@ class rotaryvalve:
         """
         self.rx_data = ''
         if self.rv_ser.PortReceive_Data(1, timeout):
-            self.rx_data += self.rv_ser.receive_buf
+            self.rx_data += self.rv_ser.rx_buf
             while True:
                 if self.rv_ser.PortReceive_Data(1, 5):
-                    self.rx_data += self.rv_ser.receive_buf
+                    self.rx_data += self.rv_ser.rx_buf
                     continue
                 else:
                     if self.RxData_Analysis():
@@ -138,7 +138,7 @@ class rotaryvalve:
 
     def Idex_Wait_Complete(self):
         if self.rv_ser.PortReceive_Data(1, 3000):
-            if self.rv_ser.receive_buf == '0D':
+            if self.rv_ser.rx_buf == '0D':
                 return True
         return False
 
@@ -227,10 +227,10 @@ class stepia02:
         """
         self.rx_data = ''
         if self.ia_ser.PortReceive_Data(1, timeout):
-            self.rx_data += self.ia_ser.receive_buf
+            self.rx_data += self.ia_ser.rx_buf
             while True:
                 if self.ia_ser.PortReceive_Data(1, 5):
-                    self.rx_data += self.ia_ser.receive_buf
+                    self.rx_data += self.ia_ser.rx_buf
                     continue
                 else:
                     if self.RxData_Analysis():

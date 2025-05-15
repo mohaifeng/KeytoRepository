@@ -26,8 +26,8 @@ class serialport:
         self.open_com = serial.Serial()
         self.open_com.port = self.port
         self.open_com.baudrate = self.baud
-        self.send_buf = ''
-        self.receive_buf = ''
+        self.tx_buf = ''
+        self.rx_buf = ''
 
     def OpenPort(self):
         """
@@ -65,7 +65,7 @@ class serialport:
         :param data: 字节类型
         :return: True:发送成功，False：发送失败
         """
-        self.send_buf = data
+        self.tx_buf = data
         if self.open_com.is_open:
             length = self.open_com.write(data)
             if length == len(data) // 2:
@@ -86,7 +86,7 @@ class serialport:
         if over_time == 0:
             while True:
                 if self.open_com.in_waiting >= data_len:
-                    self.receive_buf = self.open_com.read(data_len).hex().upper()
+                    self.rx_buf = self.open_com.read(data_len).hex().upper()
                     return data_len
         else:
             start_time = time.perf_counter()
@@ -94,14 +94,36 @@ class serialport:
                 end_time = time.perf_counter()
                 if (end_time - start_time) * 1000 < over_time:
                     if self.open_com.in_waiting >= data_len:
-                        self.receive_buf = self.open_com.read(data_len).hex().upper()
+                        self.rx_buf = self.open_com.read(data_len).hex().upper()
                         return data_len
                 else:
                     return 0
 
+    def Wait_Rx_Finish(self, timeout=1000):
+        """
+        等待接收完成，5ms没有接收到数据视为接收完成
+        :param timeout: 超时时间：毫秒,0:不检测超时
+        :return: 0：无返回，else：接收到数据字节个数
+        """
+        rx_buf = ''
+        if self.PortReceive_Data(1, timeout):
+            rx_buf += self.rx_buf
+            while True:
+                if self.PortReceive_Data(1, 5):
+                    rx_buf += self.rx_buf
+                    continue
+                else:
+                    print(datetime.datetime.now(), end=':')
+                    print('RX:', rx_buf)
+                    return len(rx_buf) // 2
+        else:
+            print(datetime.datetime.now(), end=':')
+            print('数据无返回！')
+            return 0
+
     def PortClean(self):
-        self.send_buf = ''
-        self.receive_buf = ''
+        self.tx_buf = ''
+        self.rx_buf = ''
         self.open_com.reset_input_buffer()
         self.open_com.reset_output_buffer()
 
@@ -147,24 +169,8 @@ def Reset_Ser_Baud(ser_type, com, baud):
 
 
 if __name__ == '__main__':
-    Reset_Ser_Baud(0,'com56', 9600)
+    Reset_Ser_Baud(0, 'com2', 9600)
     ser.OpenPort()
-    check_stat_cmd = 'A5FF6A000000000E'  # 检查状态
-    init_cmd = 'A5FF3800000000DC'  # 初始化
-    reverse_direction_cmd = 'A5FF640100000009'  # 反向
-    forward_direction_cmd = 'A5FF640000000008'  # 正向
-    move_cmd = 'A5FF73B80B0000DA'  # 运动3000 ustep
-    count = 0
     while True:
-        ser.PortClean()
-        ser.PortSend(bytes.fromhex(hex(random.randint(0, 255)).replace('0x', '').zfill(2) * random.randint(1, 10)))
-        idex = random.randrange(0, 17, 2)
-        ser.PortSend(bytes.fromhex(check_stat_cmd[0:idex]))
-        time.sleep(random.random() * 2)
-        ser.PortSend(bytes.fromhex(check_stat_cmd[idex:16]))
-        if not ser.PortReceive_Data(8, 1000):
-            print('无返回')
-            print('count:', count)
-            sys.exit()
-        count += 1
-        print('count:', count)
+        if ser.Wait_Rx_Finish(0):
+            ser.PortSend('0'.encode())

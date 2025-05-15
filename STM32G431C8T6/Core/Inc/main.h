@@ -35,6 +35,7 @@ extern "C" {
 #include "usart.h"
 #include "led.h"
 #include "tmc5160.h"
+#include "objectdirectory.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -44,6 +45,43 @@ typedef struct
 	uint8_t addr;
 	uint8_t status;
 } DEV_TYPEDEF;
+
+typedef enum
+{
+	DEV_IDLE = 0,
+	DEV_BUSY,
+	EXECUTE_SUCCESS,
+	COMPLETE,
+	OVER_LIMIT = 10,
+	PARAMETER_ERROR,
+	SYNTAX_ERROR,
+	INVALID_CMD,
+	REG_ERROR,
+	READ_WRITE_ONLY,
+	CMD_OVERFLOW,
+	NO_INIT
+} DEV_STATUSTYPEDEF;
+
+// 假设有以下全局变量
+typedef struct
+{
+	uint8_t protocolswitch;
+	uint8_t addr;
+	uint8_t status;
+	uin32_t permission;
+	uint8_t is_tip;
+	int32_t pressure;
+
+} SysConfig_t;
+
+typedef struct
+{
+	int32_t PWMFre;
+	uint8_t Dir;
+	uint16_t ReverseDelay;
+	uint8_t PWMMaxPulse;
+// 其他电机配置...
+} BMConfig_t;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
