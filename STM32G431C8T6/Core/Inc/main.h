@@ -40,53 +40,71 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-typedef struct
-{
-	uint8_t addr;
-	uint8_t status;
-} DEV_TYPEDEF;
 
-typedef enum
-{
-	DEV_IDLE = 0,
-	DEV_BUSY,
-	EXECUTE_SUCCESS,
-	COMPLETE,
-	OVER_LIMIT = 10,
-	PARAMETER_ERROR,
-	SYNTAX_ERROR,
-	INVALID_CMD,
-	REG_ERROR,
-	READ_WRITE_ONLY,
-	CMD_OVERFLOW,
-	NO_INIT
-} DEV_STATUSTYPEDEF;
-
-// 假设有以下全局变量
-typedef struct
-{
-	uint8_t protocolswitch;
-	uint8_t addr;
-	uint8_t status;
-	uin32_t permission;
-	uint8_t is_tip;
-	int32_t pressure;
-
-} SysConfig_t;
-
-typedef struct
-{
-	int32_t PWMFre;
-	uint8_t Dir;
-	uint16_t ReverseDelay;
-	uint8_t PWMMaxPulse;
-// 其他电机配置...
-} BMConfig_t;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+	typedef enum
+	{
+		DEV_IDLE = 0,
+		DEV_BUSY,
+		EXECUTE_SUCCESS,
+		COMPLETE,
+		OVER_LIMIT = 10,
+		PARAMETER_ERROR,
+		SYNTAX_ERROR,
+		INVALID_CMD,
+		REG_ERROR,
+		READ_WRITE_ONLY,
+		CMD_OVERFLOW,
+		NO_INIT
+	} DEV_STATUSTYPEDEF;
 
+	// 系统配置结构体
+	typedef struct
+	{
+		uint8_t protocolswitch;
+		uint8_t addr;
+		uint8_t status;
+		uint32_t permission;
+		uint8_t is_tip;
+		int32_t pressure;
+		uint8_t gpo1_out_mode;
+		uint16_t max_volume;
+		uint8_t check_tip;
+		uint32_t ser_baudrate;
+		uint16_t can_baudrate;
+		uint8_t report_flag;
+		uint32_t can_heart;
+		uint32_t version;
+		uint32_t model;
+	} SysConfig_t;
+
+	typedef struct
+	{
+		uint8_t plld_par;
+
+
+	} PlldConfig_t;
+
+	typedef struct
+	{
+		uint8_t detect_enable;
+		uint8_t clot_par;
+		uint8_t empty_par;
+		uint8_t foam_par;
+
+	} PressureAbnormalConfig_t;
+
+	typedef struct
+	{
+		int32_t PWMFre;
+		uint8_t Dir;
+		uint16_t ReverseDelay;
+		uint8_t PWMMaxPulse;
+	// 其他电机配置...
+	} BMConfig_t;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

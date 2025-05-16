@@ -11,7 +11,7 @@
 int32_t oddata_arr[OD_SIZE] = { 0 }; //对象字典数据数组
 OD_ENTRYTYPEDEF object_dictionary[OD_SIZE] = { 0 }; // 定义对象字典
 uint8_t od_count = 0; //对象字典数组序号
-extern DEV_TYPEDEF dev_msg;
+extern SysConfig_t SysConfig;
 
 static void OD_Config_Callback(uint16_t index, uint8_t sub, OD_ACCESSTYPEDEF access, int32_t Deftval, int32_t Minval,
 		int32_t Maxval)
@@ -74,7 +74,7 @@ uint8_t OD_Read_Value(uint16_t index, uint8_t sub_index, int32_t *pdata)
 	{
 		if (!(entry->access & OD_READ))
 		{
-			dev_msg.status = READ_WRITE_ONLY;
+			SysConfig.status = READ_WRITE_ONLY;
 			*pdata = READ_WRITE_ONLY;
 			return -2;
 		}
@@ -95,14 +95,14 @@ uint8_t OD_write(uint16_t index, uint8_t sub_index, int32_t value)
 	{
 		if (!(entry->access & OD_WRITE))
 		{
-			dev_msg.status = READ_WRITE_ONLY;
+			SysConfig.status = READ_WRITE_ONLY;
 			return -2;
 		}
 		else
 		{
 			if (value < entry->Minval && value > entry->Maxval)
 			{
-				dev_msg.status = OVER_LIMIT;
+				SysConfig.status = OVER_LIMIT;
 				return -2;
 			}
 			else

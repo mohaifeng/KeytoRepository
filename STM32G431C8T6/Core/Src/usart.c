@@ -28,7 +28,7 @@ extern volatile uint8_t protocol_type;
 extern volatile uint8_t protocol_pass_flag;
 extern OEM_TYPEDEF oem_struct; //oem结构体变量
 extern DT_TYPEDEF dt_struct; //dt结构体变量
-extern DEV_TYPEDEF dev_msg;
+extern SysConfig_t SysConfig;
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
@@ -415,14 +415,14 @@ void Rec_Conf(void)
 	switch(protocol_type)
 		{
 		case 0:
-			dt_struct.addr = dev_msg.addr;
+			dt_struct.addr = SysConfig.addr;
 			dt_struct.dt_flag = 0x3C;
 			dt_struct.state = 2;
 			dt_struct.data_buff_len = 0;
 			break;
 		case 1:
 			oem_struct.head = 0x55;
-			oem_struct.addr = dev_msg.addr;
+			oem_struct.addr = SysConfig.addr;
 			oem_struct.state = 2;
 			oem_struct.cmd_len = 0;
 			break;

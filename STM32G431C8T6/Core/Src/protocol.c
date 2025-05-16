@@ -11,7 +11,7 @@ DT_TYPEDEF dt_struct; //dt结构体变量
 volatile uint8_t protocol_type = 0; //-1:未通过协议解析;0:DT;1:OEM
 volatile uint8_t protocol_pass_flag = 0; //协议解析成功标志位
 extern USART_RX_TYPEDEF usart_rx_struct;
-extern DEV_TYPEDEF dev_msg;
+extern SysConfig_t SysConfig;
 //功能：检查接收数据是否符合DT协议规范，符合写入dt_struct结构体变量，返回1，否则返回0
 uint8_t DT_Rec_Conf(const uint8_t *rx_buff,uint8_t len)
 {
@@ -82,7 +82,7 @@ void Protocol_Analyze(const uint8_t *rx_buff,uint8_t len)
 		switch(protocol_type)
 			{
 			case 0:
-				if(dt_struct.addr == dev_msg.addr)
+				if(dt_struct.addr == SysConfig.addr)
 				{
 					protocol_pass_flag = 1;
 				}
@@ -92,7 +92,7 @@ void Protocol_Analyze(const uint8_t *rx_buff,uint8_t len)
 				}
 				break;
 			case 1:
-				if(oem_struct.addr == dev_msg.addr)
+				if(oem_struct.addr == SysConfig.addr)
 				{
 					protocol_pass_flag = 1;
 				}

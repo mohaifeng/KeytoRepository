@@ -6,7 +6,7 @@
  */
 #include "register.h"
 
-SysConfig_t SysConfig = { 0 };
+extern SysConfig_t SysConfig;
 BMConfig_t BMConfig = { 0 };
 
 // 回调函数示例
@@ -18,20 +18,19 @@ void setMotorDirCallback(void *reg_ptr, RegValue new_value)
 }
 
 // 寄存器列表
-// 地址 | 权限            | 类型   | 数据指针               | 最小值     | 最大值       | 默认值     | 回调函数
-static KtCmdRegSubNode KtcmdFactoryRegSubNodeList[] = {
-		{ 1, REG_READ_WRITE, REG_U8, &SysConfig.protocolswitch, { .u8v =0 }, { .u8v = 1 }, { .u8v = 0 }, NULL },
-		{ 10, REG_READ_WRITE, REG_I32, &BMConfig.PWMFre, { .i32v = 0 }, { .i32v =0x7FFFFFFF }, { .i32v = 0 }, NULL },
-		{ 11, REG_READ_WRITE, REG_U8, &BMConfig.Dir, { .u8v = 0 }, { .u8v = 1 }, {.u8v = 0 }, setMotorDirCallback },
-		{ 12, REG_READ_WRITE, REG_U16, &BMConfig.ReverseDelay, { .u16v = 0 }, { .u16v =0xFFFF }, { .u16v = 0 }, NULL },
-		{ 13, REG_WRITE_ONLY, REG_U8, &BMConfig.PWMMaxPulse, { .u8v = 0 }, { .u8v = 0x64 },{ .u8v = 0 }, NULL }
-};
+// 地址 | 权限            | 类型   | 数据指针               | 最小值     | 最大值       | 默认值     |是否可以掉点保存| 回调函数
+static RegConfigTypedef reg_list[] =
+{	REG_CONFIG( 1, READ_WRITE, REG_U8, &SysConfig.protocolswitch,{.u8v = 0},{	.u8v = 1},{	.u8v = 0}, Per_enable, NULL ),//状态
+	REG_CONFIG( 2, READ_WRITE, REG_I32, &BMConfig.PWMFre,{.i32v = 0},{.i32v = 0x7FFFFFFF},{.i32v = 0}, Per_enable, NULL ),//探测到液面标志
+	REG_CONFIG( 11, READ_WRITE, REG_U8,&BMConfig.Dir,{.u8v = 0},{.u8v = 1},{.u8v = 0}, Per_enable, setMotorDirCallback),//
+	REG_CONFIG( 12,READ_WRITE, REG_U16, &BMConfig.ReverseDelay,{.u16v = 0},{.u16v = 0xFFFF},{.u16v = 0},Per_enable, NULL ),//
+	REG_CONFIG( 13, READ_WRITE, REG_U8, &BMConfig.PWMMaxPulse,{.u8v = 0},{.u8v = 0x64},{.u8v = 0}, Per_enable, NULL )};//
 
 void Init_Registers(void)
 {
-	for (size_t i = 0; i < REG_LIST_SIZE; i++)
+	for (uint8_t i = 0; i < REG_LIST_SIZE; i++)
 	{
-		KtCmdRegSubNode *node = &KtcmdFactoryRegSubNodeList[i];
+		RegConfigTypedef *node = &reg_list[i];
 		// 设置默认值
 		switch (node->data_type)
 		{
@@ -62,13 +61,13 @@ void Init_Registers(void)
 	}
 }
 
-KtCmdRegSubNode* find_reg_node(uint16_t addr)
+RegConfigTypedef* find_reg_node(uint16_t addr)
 {
 	for (size_t i = 0; i < REG_LIST_SIZE; i++)
 	{
-		if (KtcmdFactoryRegSubNodeList[i].addr == addr)
+		if (reg_list[i].addr == addr)
 		{
-			return &KtcmdFactoryRegSubNodeList[i];
+			return &reg_list[i];
 		}
 	}
 	return NULL;
@@ -77,8 +76,8 @@ KtCmdRegSubNode* find_reg_node(uint16_t addr)
 // 读取寄存器值
 int read_register(uint16_t addr, RegValue *out_value)
 {
-	KtCmdRegSubNode *node = find_reg_node(addr);
-	if (!node || !(node->permission & REG_READ_ONLY))
+	RegConfigTypedef *node = find_reg_node(addr);
+	if (!node || !(node->permission & READ_ONLY))
 	{
 		return -1; // 寄存器不存在或不可读
 	}
@@ -115,8 +114,8 @@ int read_register(uint16_t addr, RegValue *out_value)
 // 写入寄存器值
 int write_register(uint16_t addr, RegValue new_value)
 {
-	KtCmdRegSubNode *node = find_reg_node(addr);
-	if (!node || !(node->permission & REG_WRITE_ONLY))
+	RegConfigTypedef *node = find_reg_node(addr);
+	if (!node || !(node->permission & WRITE_ONLY))
 	{
 		return -1; // 寄存器不存在或不可写
 	}
