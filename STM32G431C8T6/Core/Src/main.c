@@ -60,7 +60,10 @@ static void MX_NVIC_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 extern USART_RX_TYPEDEF usart_rx_struct;
+extern BMConfig_t BMConfig;
 SysConfig_t SysConfig = { 0 };
+PlldConfig_t PlldConfig = { 0 };
+PressureAbnormalConfig_t PressureAbnormalConfig = { 0 };
 volatile uint8_t ow1_status = 0;
 /* USER CODE END 0 */
 
@@ -74,7 +77,9 @@ int main(void)
 	/* USER CODE BEGIN 1 */
 	SysConfig.addr = 0;
 	SysConfig.status = 0;
-	SysConfig.model = 0x00200001;
+	SysConfig.model = DEV_TYPE;
+	SysConfig.version = SOFTWARE_VERSION;
+	Init_Registers();
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/

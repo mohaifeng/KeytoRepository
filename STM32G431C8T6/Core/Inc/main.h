@@ -31,80 +31,74 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "gpio.h"
 #include "usart.h"
+#include "register.h"
 #include "led.h"
 #include "tmc5160.h"
 #include "objectdirectory.h"
+#include "verification.h"
+#include "motor_control.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+#define DEV_TYPE	0x00200001	//设备类型
+#define SOFTWARE_VERSION 250519100 //软件日期
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-	typedef enum
-	{
-		DEV_IDLE = 0,
-		DEV_BUSY,
-		EXECUTE_SUCCESS,
-		COMPLETE,
-		OVER_LIMIT = 10,
-		PARAMETER_ERROR,
-		SYNTAX_ERROR,
-		INVALID_CMD,
-		REG_ERROR,
-		READ_WRITE_ONLY,
-		CMD_OVERFLOW,
-		NO_INIT
-	} DEV_STATUSTYPEDEF;
+typedef enum
+{
+	DEV_IDLE = 0,//空闲
+	DEV_BUSY,//忙
+	EXECUTE_SUCCESS,//执行成功
+	COMPLETE,//上报完成
+	OVER_LIMIT = 10,//超限
+	PARAMETER_ERROR,//参数错误
+	SYNTAX_ERROR,//语法错误
+	INVALID_CMD,//非法指令
+	REG_ERROR,//寄存器地址错误
+	READ_WRITE_ONLY,//只读/写
+	CMD_OVERFLOW,//指令溢出
+	NO_INIT//未初始化
+} DEV_STATUSTYPEDEF;
 
-	// 系统配置结构体
-	typedef struct
-	{
-		uint8_t protocolswitch;
-		uint8_t addr;
-		uint8_t status;
-		uint32_t permission;
-		uint8_t is_tip;
-		int32_t pressure;
-		uint8_t gpo1_out_mode;
-		uint16_t max_volume;
-		uint8_t check_tip;
-		uint32_t ser_baudrate;
-		uint16_t can_baudrate;
-		uint8_t report_flag;
-		uint32_t can_heart;
-		uint32_t version;
-		uint32_t model;
-	} SysConfig_t;
+// 系统配置结构体
+typedef struct __attribute__((packed))
+{
+	uint8_t protocolswitch; //协议类型
+	uint8_t addr; //地址
+	uint8_t status; //状态
+	uint32_t permission; //权限
+	uint8_t is_tip; //tip在位标志
+	int32_t pressure; //压力值
+	uint8_t gpo1_out_mode; //gpo1输出模式
+	uint16_t max_volume; //最大体积
+	uint8_t check_tip; //是否检测tip
+	uint32_t ser_baudrate; //串口波特率
+	uint16_t can_baudrate; //can波特率
+	uint8_t report_flag; //主动上报标志
+	uint32_t can_heart; //can心跳
+	uint32_t version; //版本
+	uint32_t model; //型号
+	uint32_t crc; // 添加CRC校验字段
+} SysConfig_t;
 
-	typedef struct
-	{
-		uint8_t plld_par;
+typedef struct
+{
+	uint8_t plld_flag;
+} PlldConfig_t;
 
+typedef struct
+{
+	uint8_t detect_enable;
+	uint8_t clot_par;
+	uint8_t empty_par;
+	uint8_t foam_par;
 
-	} PlldConfig_t;
+} PressureAbnormalConfig_t;
 
-	typedef struct
-	{
-		uint8_t detect_enable;
-		uint8_t clot_par;
-		uint8_t empty_par;
-		uint8_t foam_par;
-
-	} PressureAbnormalConfig_t;
-
-	typedef struct
-	{
-		int32_t PWMFre;
-		uint8_t Dir;
-		uint16_t ReverseDelay;
-		uint8_t PWMMaxPulse;
-	// 其他电机配置...
-	} BMConfig_t;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

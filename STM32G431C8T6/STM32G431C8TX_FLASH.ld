@@ -45,7 +45,8 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
   RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 32K
-  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 128K
+  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 126K
+  CONFIG (rx)     : ORIGIN = 0x0801F800, LENGTH = 2K   /* 最后2KB作为配置区 */
 }
 
 /* Sections */
@@ -58,7 +59,15 @@ SECTIONS
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
   } >FLASH
-
+   /* 配置数据段 */
+   .config_data :
+   {
+     . = ALIGN(4);
+     PROVIDE(__config_start = .);
+     KEEP(*(.config_data))  /* 保留配置数据 */
+     PROVIDE(__config_end = .);
+     . = ALIGN(4);
+   } >CONFIG
   /* The program code and other data into "FLASH" Rom type memory */
   .text :
   {
