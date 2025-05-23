@@ -23,7 +23,7 @@
 
 /* USER CODE BEGIN 0 */
 #include "string.h"
-extern USART_RX_TYPEDEF usart_rx_struct;
+extern USART_RX_TYPEDEF usart1_rx_struct;
 /* USER CODE END 0 */
 
 /*----------------------------------------------------------------------------*/
@@ -64,10 +64,10 @@ void MX_DMA_Init(void)
 void Start_DMA_Receive(void)
 {
 	// 启动DMA接收
-	usart_rx_struct.rx_len = 0;  //清除计数
-	usart_rx_struct.recv_end_flag = 0;  //清除接收结束标志位
-	memset(usart_rx_struct.rx_buffer,0,BUFFER_SIZE);  //清空缓存区
-	while(HAL_UART_Receive_DMA(&huart1,usart_rx_struct.rx_buffer,BUFFER_SIZE))
+	usart1_rx_struct.rx_len = 0;  //清除计数
+	usart1_rx_struct.usart_rx_flag = 0;  //清除接收结束标志位
+	memset(usart1_rx_struct.rx_buffer,0,BUFFER_SIZE);  //清空缓存区
+	while(HAL_UART_Receive_DMA(&huart1,usart1_rx_struct.rx_buffer,BUFFER_SIZE))
 	{
 		huart1.gState = HAL_UART_STATE_READY;  // 发送状态复位
 		huart1.RxState = HAL_UART_STATE_READY; // 接收状态复位

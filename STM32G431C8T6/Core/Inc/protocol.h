@@ -11,6 +11,13 @@
 #include "verification.h"
 #define PROTOCOL_DATA_LEN 255
 
+typedef enum
+{
+	PROTOCOL_NULL = 0,
+	PROTOCOL_DT,
+	PROTOCOL_OEM
+} ProtocolType;
+
 typedef struct
 {
 	uint8_t addr;
@@ -32,8 +39,8 @@ typedef struct
 	uint8_t checksum;
 } OEM_TYPEDEF;
 
-uint8_t DT_Rec_Conf(const uint8_t *rx_buff,uint8_t len);
-uint8_t OEM_Rec_Conf(const uint8_t *rx_buff,uint8_t len);
-void Protocol_Analyze(const uint8_t *rx_buff,uint8_t len);
-
+uint8_t DT_Rec_Conf(const uint8_t *rx_buff, uint8_t len);
+uint8_t OEM_Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len);
+uint8_t Protocol_Analyze(const uint8_t *rx_buff, uint16_t len);
+void Send_Data_Conf(UART_HandleTypeDef *uartHandle, const void *data_struct);
 #endif /* INC_PROTOCOL_H_ */

@@ -38,12 +38,12 @@ extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN Private defines */
-#define BUFFER_SIZE 255
+#define BUFFER_SIZE 256
 
 typedef struct
 {
 	uint8_t rx_len;  //接收一帧数据的长度
-	volatile uint8_t recv_end_flag; //一帧数据接收完成标志
+	volatile uint8_t usart_rx_flag; //一帧数据接收完成标志
 	uint8_t rx_buffer[BUFFER_SIZE]; //接收缓存数组
 } USART_RX_TYPEDEF;
 
@@ -59,8 +59,8 @@ void MX_USART2_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 
-void RS232_SendData(void);
-void ProcessReceivedData(void);
+void Usart_SendData(UART_HandleTypeDef *huart, const void *pro_struct);
+void ProcessReceivedData(UART_HandleTypeDef *huart);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

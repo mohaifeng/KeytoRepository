@@ -59,7 +59,7 @@ static void MX_NVIC_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-extern USART_RX_TYPEDEF usart_rx_struct;
+extern USART_RX_TYPEDEF usart1_rx_struct;
 extern BMConfig_t BMConfig;
 SysConfig_t SysConfig = { 0 };
 PlldConfig_t PlldConfig = { 0 };
@@ -132,9 +132,9 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		if (usart_rx_struct.recv_end_flag)  //接收完成标志
+		if (usart1_rx_struct.usart_rx_flag)  //接收完成标志
 		{
-			ProcessReceivedData();
+			ProcessReceivedData(&huart1);
 		}
 	}
 	/* USER CODE END 3 */

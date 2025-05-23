@@ -51,7 +51,7 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-extern USART_RX_TYPEDEF usart_rx_struct;
+extern USART_RX_TYPEDEF usart1_rx_struct;
 extern volatile uint8_t ow1_status;
 /* USER CODE END 0 */
 
@@ -337,7 +337,7 @@ void USER_UART_IRQHandler(UART_HandleTypeDef *huart)
 void USER_UART_IDLECallback(UART_HandleTypeDef *huart)
 {
 	HAL_UART_DMAStop(&huart1);  //停止本次DMA传输
-	usart_rx_struct.rx_len = BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);  //计算接收到的数据长度
-	usart_rx_struct.recv_end_flag = 1;    // 接受完成标志位置1
+	usart1_rx_struct.rx_len = BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);  //计算接收到的数据长度
+	usart1_rx_struct.usart_rx_flag = 1;    // 接受完成标志位置1
 }
 /* USER CODE END 1 */
