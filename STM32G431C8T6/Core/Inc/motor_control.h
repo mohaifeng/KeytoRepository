@@ -8,7 +8,9 @@
 #ifndef INC_MOTOR_CONTROL_H_
 #define INC_MOTOR_CONTROL_H_
 
-#include "main.h"
+#include "register.h"
+#include "stm32g4xx_hal.h"
+
 typedef struct
 {
 	int32_t PWMFre;
@@ -18,6 +20,7 @@ typedef struct
 // 其他电机配置...
 } BMConfig_t;
 
+extern BMConfig_t BMConfig;
 
 void setMotorDirCallback(void *reg_ptr, RegValue new_value);
 

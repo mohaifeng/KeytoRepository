@@ -4,14 +4,10 @@
  *  Created on: May 14, 2025
  *      Author: 莫海峰
  */
-#include "motor_control.h"
+
 #include "register.h"
 #include "flash.h"
-extern SysConfig_t SysConfig;
-extern PlldConfig_t PlldConfig;
-extern PressureAbnormalConfig_t PressureAbnormalConfig;
-extern BMConfig_t BMConfig;
-
+#include "motor_control.h"
 // 寄存器列表
 // 地址 | 权限            | 类型   | 数据指针               | 最小值     | 最大值       | 默认值     |是否可以掉点保存| 回调函数
 // @formatter:off
@@ -23,14 +19,14 @@ static RegConfigTypedef reg_user_list[] =
 	REG_CONFIG( 4,READ_ONLY, REG_I32, &SysConfig.pressure,{.i32v = 0x80000000},{.i32v = 0x7FFFFFFF},{.i32v = 0},SAVE_DISABLE,NULL ), //当前气压值
 	REG_CONFIG( 10, READ_WRITE, REG_U8, &SysConfig.gpo1_out_mode,{.u8v = 0},{.u8v = 2},{.u8v = 0}, SAVE_ENABLE,NULL ),//GPO1输出配置
 	REG_CONFIG( 80, READ_WRITE, REG_U32, &SysConfig.ser_baudrate,{.u32v = 9600},{.u32v = 115200},{.u32v = 38400},SAVE_ENABLE, NULL ),//串口波特率
-	REG_CONFIG( 90, READ_ONLY, REG_U32, &SysConfig.version,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = SOFTWARE_VERSION},SAVE_DISABLE, NULL ),//GPO1输出配置
-	REG_CONFIG( 91, READ_ONLY, REG_U32, &SysConfig.model,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = DEV_TYPE}, SAVE_DISABLE,NULL ),//GPO1输出配置
+	REG_CONFIG( 90, READ_ONLY, REG_U32, &SysConfig.version,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = SOFTWARE_VERSION},SAVE_DISABLE, NULL ),//软件版本
+	REG_CONFIG( 91, READ_ONLY, REG_U32, &SysConfig.model,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = DEV_TYPE}, SAVE_DISABLE,NULL ),//设备类型
 };
 // @formatter:on
 void Init_Registers(void)
 {
 	SysConfig_t flash_SysConfig;
-	if (Read_Config_Flash(&flash_SysConfig) != HAL_OK)
+	if (Read_Config_Flash(&flash_SysConfig))
 	{
 		for (uint8_t i = 0; i < REG_LIST_SIZE; i++)
 		{
@@ -173,7 +169,6 @@ uint8_t Write_Register(uint16_t addr, RegValue new_value)
 			}
 			*(uint8_t*) node->data_ptr = new_value.u8v;
 			break;
-
 		case REG_U16:
 			if (new_value.u16v < node->min_value.u16v || new_value.u16v > node->max_value.u16v)
 			{
@@ -187,7 +182,6 @@ uint8_t Write_Register(uint16_t addr, RegValue new_value)
 		default:
 			return -2;						 						// 不支持的数据类型
 	}
-
 	// 调用回调函数
 	if (node->callback)
 	{

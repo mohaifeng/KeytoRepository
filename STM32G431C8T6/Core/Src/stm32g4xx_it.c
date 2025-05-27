@@ -22,6 +22,7 @@
 #include "stm32g4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,8 +52,7 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-extern USART_RX_TYPEDEF usart1_rx_struct;
-extern volatile uint8_t ow1_status;
+
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/

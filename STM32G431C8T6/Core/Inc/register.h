@@ -8,7 +8,7 @@
 #ifndef INC_REGISTER_H_
 #define INC_REGISTER_H_
 
-#include "main.h"
+#include "stm32g4xx_hal.h"
 
 
 #define REG_LIST_SIZE	 (sizeof(reg_user_list)/sizeof(RegConfigTypedef))

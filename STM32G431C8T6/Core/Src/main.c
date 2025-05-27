@@ -26,7 +26,13 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+//#include "usart.h"
+#include "register.h"
+#include "led.h"
+//#include "tmc5160.h"
+#include "objectdirectory.h"
+//#include "verification.h"
+//#include "motor_control.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,11 +65,9 @@ static void MX_NVIC_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-extern USART_RX_TYPEDEF usart1_rx_struct;
-extern BMConfig_t BMConfig;
-SysConfig_t SysConfig = { 0 };
-PlldConfig_t PlldConfig = { 0 };
-PressureAbnormalConfig_t PressureAbnormalConfig = { 0 };
+SysConfig_t SysConfig;
+PlldConfig_t PlldConfig;
+PressureAbnormalConfig_t PressureAbnormalConfig;
 volatile uint8_t ow1_status = 0;
 /* USER CODE END 0 */
 
@@ -75,7 +79,7 @@ int main(void)
 {
 
 	/* USER CODE BEGIN 1 */
-	SysConfig.addr = 0;
+	SysConfig.addr = 1;
 	SysConfig.status = 0;
 	SysConfig.model = DEV_TYPE;
 	SysConfig.version = SOFTWARE_VERSION;
@@ -134,7 +138,7 @@ int main(void)
 		/* USER CODE BEGIN 3 */
 		if (usart1_rx_struct.usart_rx_flag)  //接收完成标志
 		{
-			ProcessReceivedData(&huart1);
+			Usart_ProcessReceivedData(&huart1);
 		}
 	}
 	/* USER CODE END 3 */

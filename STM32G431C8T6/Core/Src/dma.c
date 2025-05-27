@@ -23,7 +23,6 @@
 
 /* USER CODE BEGIN 0 */
 #include "string.h"
-extern USART_RX_TYPEDEF usart1_rx_struct;
 /* USER CODE END 0 */
 
 /*----------------------------------------------------------------------------*/

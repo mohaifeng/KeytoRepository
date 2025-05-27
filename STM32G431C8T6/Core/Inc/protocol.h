@@ -8,14 +8,15 @@
 #ifndef INC_PROTOCOL_H_
 #define INC_PROTOCOL_H_
 
-#include "verification.h"
+#include "stm32g4xx_hal.h"
 #define PROTOCOL_DATA_LEN 255
 
 typedef enum
 {
 	PROTOCOL_NULL = 0,
 	PROTOCOL_DT,
-	PROTOCOL_OEM
+	PROTOCOL_OEM,
+	PROTOCOL_IdexSame
 } ProtocolType;
 
 typedef struct
@@ -24,7 +25,8 @@ typedef struct
 	uint8_t state;
 	uint8_t dt_flag;
 	uint8_t data_buff[PROTOCOL_DATA_LEN];
-	uint8_t data_buff_len; //数据数组长度
+	uint8_t cmd_len; //数据数组长度
+	uint8_t end_flag;
 } DT_TYPEDEF;
 
 typedef struct
@@ -39,8 +41,12 @@ typedef struct
 	uint8_t checksum;
 } OEM_TYPEDEF;
 
+extern OEM_TYPEDEF oem_struct; //oem结构体变量
+extern DT_TYPEDEF dt_struct; //dt结构体变量
+extern volatile ProtocolType protocol_type;
+
 uint8_t DT_Rec_Conf(const uint8_t *rx_buff, uint8_t len);
-uint8_t OEM_Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len);
+void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len);
 uint8_t Protocol_Analyze(const uint8_t *rx_buff, uint16_t len);
 void Send_Data_Conf(UART_HandleTypeDef *uartHandle, const void *data_struct);
 #endif /* INC_PROTOCOL_H_ */

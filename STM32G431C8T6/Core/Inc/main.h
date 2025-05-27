@@ -31,13 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "usart.h"
-#include "register.h"
-#include "led.h"
-#include "tmc5160.h"
-#include "objectdirectory.h"
-#include "verification.h"
-#include "motor_control.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -65,7 +59,7 @@ typedef enum
 } DEV_STATUSTYPEDEF;
 
 // 系统配置结构体
-typedef struct __attribute__((packed))
+typedef struct
 {
 	uint8_t protocolswitch; //协议类型
 	uint8_t addr; //地址
@@ -93,9 +87,9 @@ typedef struct
 typedef struct
 {
 	uint8_t detect_enable;
-	uint8_t clot_par;
-	uint8_t empty_par;
-	uint8_t foam_par;
+	uint8_t clot_par;//吸堵参数
+	uint8_t empty_par;//吸空参数
+	uint8_t foam_par;//吸气泡参数
 
 } PressureAbnormalConfig_t;
 
@@ -103,7 +97,10 @@ typedef struct
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-
+extern SysConfig_t SysConfig;
+extern PlldConfig_t PlldConfig;
+extern PressureAbnormalConfig_t PressureAbnormalConfig;
+extern volatile uint8_t ow1_status;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

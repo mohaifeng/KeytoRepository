@@ -28,11 +28,6 @@ USART_TX_TYPEDEF usart1_tx_struct; //串口1发送数据结构体
 USART_RX_TYPEDEF usart2_rx_struct; //串口2接收数据结构体
 USART_TX_TYPEDEF usart2_tx_struct; //串口2发送数据结构体
 
-extern volatile uint8_t protocol_type;
-extern volatile uint8_t protocol_pass_flag;
-extern OEM_TYPEDEF oem_struct; //oem结构体变量
-extern DT_TYPEDEF dt_struct; //dt结构体变量
-extern SysConfig_t SysConfig;
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
@@ -357,7 +352,7 @@ void Rec_Conf(void)
 			dt_struct.addr = SysConfig.addr;
 			dt_struct.dt_flag = 0x3C;
 			dt_struct.state = 2;
-			dt_struct.data_buff_len = 0;
+			dt_struct.cmd_len = 0;
 			break;
 		case PROTOCOL_OEM:
 			oem_struct.head = 0x55;
@@ -370,27 +365,29 @@ void Rec_Conf(void)
 	}
 }
 //接收到数据后处理函数
-void ProcessReceivedData(UART_HandleTypeDef *huart)
+void Usart_ProcessReceivedData(UART_HandleTypeDef *huart)
 {
-	if (Protocol_Analyze(usart1_rx_struct.rx_buffer, usart1_rx_struct.rx_len))
+	if (huart->Instance == USART1)
 	{
-		Rec_Conf();
+		Rxdata_Analyze(usart1_rx_struct.rx_buffer, usart1_rx_struct.rx_len);
 		switch (protocol_type)
 		{
 			case PROTOCOL_DT:
+				Rec_Conf();
 				Usart_SendData(huart, &dt_struct);
 				break;
 			case PROTOCOL_OEM:
+				Rec_Conf();
+				Usart_SendData(huart, &oem_struct);
+				break;
+			case PROTOCOL_IdexSame:
 				Usart_SendData(huart, &oem_struct);
 				break;
 			default:
 				break;
 		}
-	}
-	else
-	{
 		Start_DMA_Receive();
-	}
+}
 
 }
 /* USER CODE END 1 */

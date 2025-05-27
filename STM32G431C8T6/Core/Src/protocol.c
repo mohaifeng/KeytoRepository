@@ -5,13 +5,14 @@
  *      Author: 莫海峰
  */
 #include "protocol.h"
+#include "main.h"
+#include "string.h"
+#include "usart.h"
+#include "verification.h"
 
 OEM_TYPEDEF oem_struct; //oem结构体变量
 DT_TYPEDEF dt_struct; //dt结构体变量
 volatile ProtocolType protocol_type = PROTOCOL_NULL;
-extern USART_RX_TYPEDEF usart1_rx_struct;
-extern USART_TX_TYPEDEF usart1_tx_struct;
-extern SysConfig_t SysConfig;
 //功能：检查接收数据是否符合DT协议规范，符合写入dt_struct结构体变量，返回1，否则返回0
 uint8_t DT_Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 {
@@ -29,7 +30,7 @@ uint8_t DT_Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 		}
 		if (rx_flag_idex)
 		{
-			dt_struct.data_buff_len = len - rx_flag_idex - 2;
+			dt_struct.cmd_len = len - rx_flag_idex - 2;
 			dt_struct.dt_flag = rx_buff[rx_flag_idex];
 			if (rx_flag_idex > 1)
 			{
@@ -39,7 +40,7 @@ uint8_t DT_Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 			{
 				dt_struct.addr = rx_buff[0] - 0x30;
 			}
-			for (uint8_t i = 0; i < dt_struct.data_buff_len; i++)
+			for (uint8_t i = 0; i < dt_struct.cmd_len; i++)
 			{
 				dt_struct.data_buff[i] = rx_buff[rx_flag_idex + 1 + i];
 			}
@@ -51,67 +52,109 @@ uint8_t DT_Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 	return 0;
 }
 
-//功能：检查接收数据是否符合oem协议规范，地址是否为设备地址，符合写入oem_struct结构体变量，将协议类型置相应位
-uint8_t OEM_Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
+//功能：检查接收数据是否符合oem/DT协议规范，，符合写入相应结构体变量，将协议类型置相应位
+void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 {
-//	uint8_t *pdata = rx_buff;
-	uint16_t data_len = 0;
+	const uint8_t *tmp_dt_pdata = rx_buff;
+	const uint8_t *tmp_oem_pdata = rx_buff;
+	uint8_t tmp_flag = 0;
+	uint8_t start_data_idex = 0;
+	DT_TYPEDEF tmp_dt_stu = { 0 };
+	OEM_TYPEDEF tmp_oem_stu = { 0 };
+	//DT协议解析
+	for (uint16_t i = 0; i < len; i++) //找到0x3E
+	{
+		if ((*tmp_dt_pdata == 0x3E) && (~tmp_flag))
+		{
+			if (SysConfig.addr > 9)
+			{
+				if (i > 1)
+				{
+					tmp_dt_stu.addr = (*(tmp_dt_pdata - 1) - 0x30) + (*(tmp_dt_pdata - 2) - 0x30) * 10;
+				}
+			}
+			else
+			{
+				tmp_dt_stu.addr = (*(tmp_dt_pdata - 1) - 0x30);
+			}
+			if (tmp_dt_stu.addr == SysConfig.addr)
+			{
+				tmp_flag = 1;
+				start_data_idex = i;
+			}
+		}
+		if ((*tmp_dt_pdata == 0x0D) && (tmp_flag))
+		{
+			tmp_dt_stu.cmd_len = i - start_data_idex - 1;
+			memcpy(tmp_dt_stu.data_buff, tmp_dt_pdata - tmp_dt_stu.cmd_len, tmp_dt_stu.cmd_len);
+			memcpy(&dt_struct, &tmp_dt_stu, sizeof(DT_TYPEDEF));
+			protocol_type = PROTOCOL_DT;
+			tmp_flag = 0;
+			return;
+		}
+		else
+		{
+			tmp_dt_pdata++;
+		}
+	}
+	//OEM协议解析
 	for (uint16_t i = 0; i < len; i++) //找到0xAA帧头
 	{
-		if ((*rx_buff) == 0xAA)
+		if ((*tmp_oem_pdata) == 0xAA)
 		{
-			data_len = len - i;
-			for (uint8_t j = 0; j < data_len; j++) //校验数据是否合法
+			tmp_oem_stu.idex = *(tmp_oem_pdata + 1);
+			tmp_oem_stu.addr = *(tmp_oem_pdata + 2);
+			tmp_oem_stu.cmd_len = *(tmp_oem_pdata + 3);
+			if (tmp_oem_stu.cmd_len < len - i - 5)
 			{
-				if (*(rx_buff + j + 1) == Checksum_8(rx_buff, j + 1))
+				if (*(tmp_oem_pdata + 4 + tmp_oem_stu.cmd_len) == Checksum_8(tmp_oem_pdata, 4 + tmp_oem_stu.cmd_len))
 				{
-					protocol_type = PROTOCOL_OEM;
-					oem_struct.data_len = j + 2;
-					oem_struct.head = *rx_buff;
-					oem_struct.idex = *(rx_buff + 1);
-					oem_struct.addr = *(rx_buff + 2);
-					oem_struct.cmd_len = *(rx_buff + 3);
-					for (uint8_t k = 0; k < oem_struct.cmd_len; k++)
+					if (tmp_oem_stu.addr == SysConfig.addr)
 					{
-						oem_struct.data[k] = *(rx_buff + 4 + k);
+						if (tmp_oem_stu.idex == oem_struct.idex)
+						{
+							protocol_type = PROTOCOL_IdexSame;
+							return;
+						}
+						if (tmp_oem_stu.idex > 0x80)
+						{
+							tmp_oem_stu.checksum = *(tmp_oem_pdata + 4 + tmp_oem_stu.cmd_len);
+							memcpy(tmp_oem_stu.data, tmp_oem_pdata + 4, tmp_oem_stu.cmd_len);
+							memcpy(&oem_struct, &tmp_oem_stu, sizeof(OEM_TYPEDEF));
+							protocol_type = PROTOCOL_OEM;
+							return;
+						}
 					}
-					return 1;
+
 				}
 			}
 		}
 		else
 		{
-			rx_buff++;
+			tmp_oem_pdata++;
 		}
 	}
 	protocol_type = PROTOCOL_NULL;
-	return 0;
 }
 
-//协议解析
+//协议解析,通过返回1，否则返回0，
 uint8_t Protocol_Analyze(const uint8_t *rx_buff, uint16_t len)
 {
 	if (len > BUFFER_SIZE)
 	{
 		len = BUFFER_SIZE;
 	}
-	if (OEM_Rxdata_Analyze(rx_buff, len) || DT_Rxdata_Analyze(rx_buff, len))
+	Rxdata_Analyze(rx_buff, len);
+	switch (protocol_type)
 	{
-		switch (protocol_type)
-		{
-			case PROTOCOL_DT:
-				if (dt_struct.addr == SysConfig.addr)
-				{
-					return 1;
-				}
-			case PROTOCOL_OEM:
-				if (oem_struct.addr == SysConfig.addr)
-				{
-					return 1;
-				}
-			default:
-				return 0;
-		}
+		case PROTOCOL_DT:
+				return 1;
+		case PROTOCOL_OEM:
+				return 1;
+		case PROTOCOL_IdexSame:
+
+		default:
+			return 0;
 	}
 	return 0;
 }
@@ -175,17 +218,17 @@ void Send_Data_Conf(UART_HandleTypeDef *uartHandle, const void *data_struct)
 					break;
 				}
 			}
-			if (dt_str->data_buff_len > 0)
+			if (dt_str->cmd_len > 0)
 			{
 				*pdata_1++ = 0x3A;
 				count++;
-				for (uint8_t i = 0; i < dt_str->data_buff_len; i++)
+				for (uint8_t i = 0; i < dt_str->cmd_len; i++)
 				{
 					*pdata_1++ = dt_str->data_buff[i];
 				}
 			}
 			*pdata_1 = 0x0D;
-			usart1_tx_struct.tx_len = count + dt_str->data_buff_len + 3;
+			usart1_tx_struct.tx_len = count + dt_str->cmd_len + 3;
 		}
 		else if (protocol_type == PROTOCOL_OEM)
 		{

@@ -8,7 +8,8 @@
 #ifndef INC_LED_H_
 #define INC_LED_H_
 
-#include "main.h"
+#include "stm32g4xx_hal.h"
+#include "gpio.h"
 
 void Led_Init(void);
 void LED_Toggle(void);
