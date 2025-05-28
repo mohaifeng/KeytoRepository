@@ -76,7 +76,7 @@ typedef struct
 	uint32_t can_heart; //can心跳
 	uint32_t version; //版本
 	uint32_t model; //型号
-	uint32_t crc; // 添加CRC校验字段
+
 } SysConfig_t;
 
 typedef struct
@@ -91,7 +91,7 @@ typedef struct
 	uint8_t empty_par;//吸空参数
 	uint8_t foam_par;//吸气泡参数
 
-} PressureAbnormalConfig_t;
+} PressureDectConfig_t;
 
 /* USER CODE END EC */
 
@@ -99,7 +99,7 @@ typedef struct
 /* USER CODE BEGIN EM */
 extern SysConfig_t SysConfig;
 extern PlldConfig_t PlldConfig;
-extern PressureAbnormalConfig_t PressureAbnormalConfig;
+extern PressureDectConfig_t PressureDectConfig;
 extern volatile uint8_t ow1_status;
 /* USER CODE END EM */
 

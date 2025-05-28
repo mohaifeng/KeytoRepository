@@ -329,15 +329,18 @@ void USER_UART_IRQHandler(UART_HandleTypeDef *huart)
 		if(RESET != __HAL_UART_GET_FLAG(&huart1,UART_FLAG_IDLE))  //判断是否是空闲中断
 		{
 			__HAL_UART_CLEAR_IDLEFLAG(&huart1);  //清楚空闲中断标志（否则会一直不断进入中断）
-			USER_UART_IDLECallback(huart);  //调用中断处理函数
+			USER_UART_IDLECallback(&huart1);  //调用中断处理函数
 		}
 	}
 }
 
 void USER_UART_IDLECallback(UART_HandleTypeDef *huart)
 {
-	HAL_UART_DMAStop(&huart1);  //停止本次DMA传输
-	usart1_rx_struct.rx_len = BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);  //计算接收到的数据长度
-	usart1_rx_struct.usart_rx_flag = 1;    // 接受完成标志位置1
+	if(huart->Instance==USART1)
+	{
+		HAL_UART_DMAStop(&huart1);  //停止本次DMA传输
+		usart1_rx_struct.rx_len = BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);  //计算接收到的数据长度
+		usart1_rx_struct.usart_rx_flag = 1;    // 接受完成标志位置1
+	}
 }
 /* USER CODE END 1 */

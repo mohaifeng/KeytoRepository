@@ -9,6 +9,7 @@
 #define INC_REGISTER_H_
 
 #include "stm32g4xx_hal.h"
+#include "main.h"
 
 
 #define REG_LIST_SIZE	 (sizeof(reg_user_list)/sizeof(RegConfigTypedef))
@@ -67,6 +68,7 @@ typedef struct
 } RegConfigTypedef;
 
 void Init_Registers(void);
-uint8_t Read_Register(uint16_t addr, RegValue *out_value);
-uint8_t Write_Register(uint16_t addr, RegValue new_value);
+HAL_StatusTypeDef Read_Register(uint16_t addr, RegValue *out_value);
+HAL_StatusTypeDef Write_Register(uint16_t addr, RegValue new_value);
+HAL_StatusTypeDef Save_Register(void);
 #endif /* INC_REGISTER_H_ */

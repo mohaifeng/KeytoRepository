@@ -8,6 +8,7 @@
 #include "register.h"
 #include "flash.h"
 #include "motor_control.h"
+
 // 寄存器列表
 // 地址 | 权限            | 类型   | 数据指针               | 最小值     | 最大值       | 默认值     |是否可以掉点保存| 回调函数
 // @formatter:off
@@ -25,8 +26,8 @@ static RegConfigTypedef reg_user_list[] =
 // @formatter:on
 void Init_Registers(void)
 {
-	SysConfig_t flash_SysConfig;
-	if (Read_Config_Flash(&flash_SysConfig))
+	FlashData_t flash_data;
+	if (Read_Config_Flash(&flash_data) != HAL_OK)
 	{
 		for (uint8_t i = 0; i < REG_LIST_SIZE; i++)
 		{
@@ -63,7 +64,9 @@ void Init_Registers(void)
 	}
 	else
 	{
-		memcpy(&SysConfig, &flash_SysConfig, sizeof(SysConfig_t));
+		memcpy(&SysConfig, &flash_data.flash_sysconfig, sizeof(SysConfig_t));
+		memcpy(&PlldConfig, &flash_data.flash_plld_Config, sizeof(PlldConfig_t));
+		memcpy(&PressureDectConfig, &flash_data.flash_pressuredect_Config, sizeof(PressureDectConfig_t));
 		for (uint8_t i = 0; i < REG_LIST_SIZE; i++)
 		{
 			RegConfigTypedef *node = &reg_user_list[i];
@@ -113,13 +116,19 @@ static RegConfigTypedef* Find_Reg_Node(uint16_t addr)
 }
 
 // 读取寄存器值
-uint8_t Read_Register(uint16_t addr, RegValue *out_value)
+HAL_StatusTypeDef Read_Register(uint16_t addr, RegValue *out_value)
 {
 	RegConfigTypedef *node = Find_Reg_Node(addr);
-	if (!node || !(node->permission & READ_ONLY))
+	if (!node)
 	{
+		SysConfig.status = REG_ERROR;
+		return HAL_ERROR; // 寄存器地址错误
+	}
 
-		return -1; // 寄存器不存在或不可读
+	if (!(node->permission & READ_ONLY))
+	{
+		SysConfig.status = READ_WRITE_ONLY;
+		return HAL_ERROR; // 寄存器地址错误
 	}
 	switch (node->data_type)
 	{
@@ -145,48 +154,109 @@ uint8_t Read_Register(uint16_t addr, RegValue *out_value)
 			out_value->fv = *(float*) node->data_ptr;
 			break;
 		default:
-			return -2; // 不支持的数据类型
+			return HAL_ERROR; // 不支持的数据类型
 	}
-	return 0;
+	SysConfig.status = EXECUTE_SUCCESS;
+	return HAL_OK;
 }
 
 // 写入寄存器值
-uint8_t Write_Register(uint16_t addr, RegValue new_value)
+HAL_StatusTypeDef Write_Register(uint16_t addr, RegValue new_value)
 {
 	RegConfigTypedef *node = Find_Reg_Node(addr);
-	if (!node || !(node->permission & WRITE_ONLY))
+	if (!node)
 	{
-		return -1;						 						// 寄存器不存在或不可写
+		SysConfig.status = REG_ERROR;
+		return HAL_ERROR; // 寄存器地址错误
 	}
-
+	if (!(node->permission & WRITE_ONLY))
+	{
+		SysConfig.status = READ_WRITE_ONLY;
+		return HAL_ERROR; // 寄存器地址错误
+	}
 	// 检查值范围
 	switch (node->data_type)
 	{
 		case REG_U8:
 			if (new_value.u8v < node->min_value.u8v || new_value.u8v > node->max_value.u8v)
 			{
-				return -3;									 									// 超出范围
+				SysConfig.status = OVER_LIMIT;
+				return HAL_ERROR; // 寄存器地址错误
 			}
 			*(uint8_t*) node->data_ptr = new_value.u8v;
 			break;
 		case REG_U16:
 			if (new_value.u16v < node->min_value.u16v || new_value.u16v > node->max_value.u16v)
 			{
-				return -3;
+				SysConfig.status = OVER_LIMIT;
+				return HAL_ERROR; // 寄存器地址错误
 			}
 			*(uint16_t*) node->data_ptr = new_value.u16v;
 			break;
-
-			// 其他类型类似处理...
-
+		case REG_U32:
+			if (new_value.u32v < node->min_value.u32v || new_value.u32v > node->max_value.u32v)
+			{
+				SysConfig.status = OVER_LIMIT;
+				return HAL_ERROR; // 寄存器地址错误
+			}
+			*(uint32_t*) node->data_ptr = new_value.u32v;
+			break;
+		case REG_I8:
+			if (new_value.i8v < node->min_value.i8v || new_value.i8v > node->max_value.i8v)
+			{
+				SysConfig.status = OVER_LIMIT;
+				return HAL_ERROR; // 寄存器地址错误
+			}
+			*(int8_t*) node->data_ptr = new_value.i8v;
+			break;
+		case REG_I16:
+			if (new_value.i16v < node->min_value.i16v || new_value.i16v > node->max_value.i16v)
+			{
+				SysConfig.status = OVER_LIMIT;
+				return HAL_ERROR; // 寄存器地址错误
+			}
+			*(int16_t*) node->data_ptr = new_value.i16v;
+			break;
+		case REG_I32:
+			if (new_value.i32v < node->min_value.i32v || new_value.i32v > node->max_value.i32v)
+			{
+				SysConfig.status = OVER_LIMIT;
+				return HAL_ERROR; // 寄存器地址错误
+			}
+			*(int32_t*) node->data_ptr = new_value.i32v;
+			break;
+		case REG_FLOAT:
+			if (new_value.fv < node->min_value.fv || new_value.fv > node->max_value.fv)
+			{
+				SysConfig.status = OVER_LIMIT;
+				return HAL_ERROR; // 寄存器地址错误
+			}
+			*(float*) node->data_ptr = new_value.fv;
+			break;
 		default:
-			return -2;						 						// 不支持的数据类型
+			return HAL_ERROR; // 不支持的数据类型
 	}
 	// 调用回调函数
 	if (node->callback)
 	{
 		node->callback(node->data_ptr, new_value);
 	}
-	return 0;
+	SysConfig.status = EXECUTE_SUCCESS;
+	return HAL_OK;
+}
+
+HAL_StatusTypeDef Save_Register(void)
+{
+	FlashData_t flash_data;
+	Erase_Config_Sector();
+	flash_data.flash_sysconfig = SysConfig;
+	flash_data.flash_plld_Config = PlldConfig;
+	flash_data.flash_pressuredect_Config = PressureDectConfig;
+	if (Write_Config_Flash(&flash_data) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	SysConfig.status = EXECUTE_SUCCESS;
+	return HAL_OK;
 }
 

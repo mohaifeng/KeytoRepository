@@ -29,7 +29,7 @@
 //#include "usart.h"
 #include "register.h"
 #include "led.h"
-//#include "tmc5160.h"
+#include "flash.h"
 #include "objectdirectory.h"
 //#include "verification.h"
 //#include "motor_control.h"
@@ -67,7 +67,7 @@ static void MX_NVIC_Init(void);
 /* USER CODE BEGIN 0 */
 SysConfig_t SysConfig;
 PlldConfig_t PlldConfig;
-PressureAbnormalConfig_t PressureAbnormalConfig;
+PressureDectConfig_t PressureDectConfig;
 volatile uint8_t ow1_status = 0;
 /* USER CODE END 0 */
 
@@ -83,7 +83,6 @@ int main(void)
 	SysConfig.status = 0;
 	SysConfig.model = DEV_TYPE;
 	SysConfig.version = SOFTWARE_VERSION;
-	Init_Registers();
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/
@@ -94,6 +93,7 @@ int main(void)
 	/* USER CODE BEGIN Init */
 	MX_GPIO_Init();
 	Led_Init();
+	Init_Registers();
 	/* USER CODE END Init */
 
 	/* Configure the system clock */
@@ -127,6 +127,7 @@ int main(void)
 //		HAL_Delay(10);
 //	}
 //	TMC5160_Move(5000);
+
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -214,6 +215,8 @@ void Error_Handler(void)
 	__disable_irq();
 	while (1)
 	{
+		LED_Toggle();
+		HAL_Delay(2000);
 	}
 	/* USER CODE END Error_Handler_Debug */
 }
