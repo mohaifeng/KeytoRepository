@@ -22,7 +22,7 @@
 #include "dma.h"
 
 /* USER CODE BEGIN 0 */
-#include "string.h"
+#include <string.h>
 /* USER CODE END 0 */
 
 /*----------------------------------------------------------------------------*/
@@ -68,9 +68,7 @@ void Start_DMA_Receive(void)
 	memset(usart1_rx_struct.rx_buffer,0,BUFFER_SIZE);  //清空缓存区
 	while(HAL_UART_Receive_DMA(&huart1,usart1_rx_struct.rx_buffer,BUFFER_SIZE))
 	{
-		huart1.gState = HAL_UART_STATE_READY;  // 发送状态复位
-		huart1.RxState = HAL_UART_STATE_READY; // 接收状态复位
-		__HAL_UART_CLEAR_FLAG(&huart1,UART_CLEAR_OREF);
+		HAL_DMA_Abort(huart1.hdmarx);
 	}
 }
 /* USER CODE END 2 */

@@ -5,7 +5,7 @@
  *      Author: 莫海峰
  */
 #include "flash.h"
-#include "stdlib.h"
+#include <stdlib.h>
 #include "usart.h"
 
 uint8_t flash_w_flag = 0;

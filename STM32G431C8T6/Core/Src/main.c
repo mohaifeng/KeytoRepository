@@ -80,7 +80,7 @@ int main(void)
 
 	/* USER CODE BEGIN 1 */
 	SysConfig.addr = 1;
-	SysConfig.status = 0;
+	SysConfig.status = DEV_IDLE;
 	SysConfig.model = DEV_TYPE;
 	SysConfig.version = SOFTWARE_VERSION;
 	/* USER CODE END 1 */
@@ -91,8 +91,7 @@ int main(void)
 	HAL_Init();
 
 	/* USER CODE BEGIN Init */
-	MX_GPIO_Init();
-	Led_Init();
+
 	Init_Registers();
 	/* USER CODE END Init */
 
@@ -104,6 +103,7 @@ int main(void)
 	/* USER CODE END SysInit */
 
 	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
 	MX_DMA_Init();
 	MX_USART1_UART_Init();
 	MX_SPI1_Init();
@@ -114,6 +114,7 @@ int main(void)
 	MX_NVIC_Init();
 	/* USER CODE BEGIN 2 */
 	OD_Init();
+	Led_Init();
 	Start_DMA_Receive(); //开启DMA接收
 	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);	//使能空闲中断
 //	TMC5160_Init();
@@ -137,9 +138,13 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		if (usart1_rx_struct.usart_rx_flag)  //接收完成标志
+		if (usart1_rx_struct.usart_rx_flag == 1)  //接收完成标志
 		{
 			Usart_ProcessReceivedData(&huart1);
+		}
+		if(usart2_rx_struct.usart_rx_flag == 1)
+		{
+			Usart_ProcessReceivedData(&huart2);
 		}
 	}
 	/* USER CODE END 3 */
@@ -177,7 +182,8 @@ void SystemClock_Config(void)
 
 	/** Initializes the CPU, AHB and APB buses clocks
 	 */
-	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;

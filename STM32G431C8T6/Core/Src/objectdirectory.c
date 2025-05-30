@@ -5,29 +5,33 @@
  *      Author: 莫海峰
  */
 #include "objectdirectory.h"
-#include "string.h"
+#include "main.h"
+#include <string.h>
 
 // 定义对象字典数据数组
 int32_t oddata_arr[OD_SIZE] = { 0 }; //对象字典数据数组
-OD_ENTRYTYPEDEF object_dictionary[OD_SIZE] = { 0 }; // 定义对象字典
+OD_ENTRYTYPEDEF object_dictionary[OD_SIZE] = { 0 };
 uint8_t od_count = 0; //对象字典数组序号
 extern SysConfig_t SysConfig;
 
 static void OD_Config_Callback(uint16_t index, uint8_t sub, OD_ACCESSTYPEDEF access, int32_t Deftval, int32_t Minval,
 		int32_t Maxval)
 {
-	object_dictionary[od_count].index = index;
-	object_dictionary[od_count].sub_index = sub;
-	object_dictionary[od_count].type = OD_I32;
-	object_dictionary[od_count].access = access;
-	object_dictionary[od_count].data_ptr = &oddata_arr[od_count];
-	object_dictionary[od_count].Deftval = Deftval;
-	object_dictionary[od_count].Minval = Minval;
-	object_dictionary[od_count].Maxval = Maxval;
-	object_dictionary[od_count].data_size = 7; //主索引（2字节）+子索引（1字节）+数据（4字节）
-	*object_dictionary[od_count].data_ptr = object_dictionary[od_count].Deftval;
-	oddata_arr[od_count] = object_dictionary[od_count].Deftval;
-	od_count++;
+	if (od_count < OD_SIZE)
+	{
+		object_dictionary[od_count].index = index;
+		object_dictionary[od_count].sub_index = sub;
+		object_dictionary[od_count].type = OD_I32;
+		object_dictionary[od_count].access = access;
+		object_dictionary[od_count].data_ptr = &oddata_arr[od_count];
+		object_dictionary[od_count].Deftval = Deftval;
+		object_dictionary[od_count].Minval = Minval;
+		object_dictionary[od_count].Maxval = Maxval;
+		object_dictionary[od_count].data_size = 7; //主索引（2字节）+子索引（1字节）+数据（4字节）
+		*object_dictionary[od_count].data_ptr = object_dictionary[od_count].Deftval;
+		oddata_arr[od_count] = object_dictionary[od_count].Deftval;
+		od_count++;
+	}
 }
 
 void OD_Init(void)
@@ -66,8 +70,8 @@ const OD_ENTRYTYPEDEF* OD_Find_Entry(uint16_t index, uint8_t sub_index)
 	return NULL;
 }
 
-// 读取对象字典值0:执行成功；-1：无该字典；-2：状态错误
-uint8_t OD_Read_Value(uint16_t index, uint8_t sub_index, int32_t *pdata)
+// 读取对象字典值
+HAL_StatusTypeDef OD_Read(uint16_t index, uint8_t sub_index, int32_t *pdata)
 {
 	const OD_ENTRYTYPEDEF *entry = OD_Find_Entry(index, sub_index);
 	if (entry)
@@ -75,20 +79,19 @@ uint8_t OD_Read_Value(uint16_t index, uint8_t sub_index, int32_t *pdata)
 		if (!(entry->access & OD_READ))
 		{
 			SysConfig.status = READ_WRITE_ONLY;
-			*pdata = READ_WRITE_ONLY;
-			return -2;
+			return HAL_ERROR;
 		}
 		else
 		{
 			*pdata = *entry->data_ptr;
-			return 0;
+			return HAL_OK;
 		}
 	}
-	return -1;
+	return HAL_TIMEOUT;
 }
 
 // 写入对象字典值0:执行成功；-1：无该字典；-2：状态错误
-uint8_t OD_write(uint16_t index, uint8_t sub_index, int32_t value)
+HAL_StatusTypeDef OD_Write(uint16_t index, uint8_t sub_index, int32_t value)
 {
 	const OD_ENTRYTYPEDEF *entry = OD_Find_Entry(index, sub_index);
 	if (entry)
@@ -96,22 +99,22 @@ uint8_t OD_write(uint16_t index, uint8_t sub_index, int32_t value)
 		if (!(entry->access & OD_WRITE))
 		{
 			SysConfig.status = READ_WRITE_ONLY;
-			return -2;
+			return HAL_ERROR;
 		}
 		else
 		{
 			if (value < entry->Minval && value > entry->Maxval)
 			{
 				SysConfig.status = OVER_LIMIT;
-				return -2;
+				return HAL_ERROR;
 			}
 			else
 			{
 				*entry->data_ptr = value;
-				return 0;
+				return HAL_OK;
 			}
 		}
 	}
-	return -1;
+	return HAL_TIMEOUT;
 }
 

@@ -63,7 +63,7 @@ typedef struct
 {
 	uint8_t protocolswitch; //协议类型
 	uint8_t addr; //地址
-	uint8_t status; //状态
+	DEV_STATUSTYPEDEF status; //状态
 	uint32_t permission; //权限
 	uint8_t is_tip; //tip在位标志
 	int32_t pressure; //压力值

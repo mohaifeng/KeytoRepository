@@ -22,6 +22,8 @@
 
 /* USER CODE BEGIN 0 */
 #include "register.h"
+#include "cmd.h"
+#include <string.h>
 
 USART_RX_TYPEDEF usart1_rx_struct; //串口1接收数据结构体
 USART_TX_TYPEDEF usart1_tx_struct; //串口1发送数据结构体
@@ -341,29 +343,32 @@ void Usart_SendData(UART_HandleTypeDef *huart, const void *pro_struct)
 		{
 		}
 	}
-
 	Start_DMA_Receive();
 }
-void Rec_Conf(void)
+
+void Tx_Data_Config(ProtocolType protocol_type)
 {
 	switch (protocol_type)
 	{
 		case PROTOCOL_DT:
 			dt_struct.addr = SysConfig.addr;
 			dt_struct.dt_flag = 0x3C;
-			dt_struct.state = 2;
-			dt_struct.cmd_len = 0;
+			dt_struct.state = SysConfig.status;
+			dt_struct.cmd_len = CMD_LEN;
+			memcpy(dt_struct.data_buff,cmd_stu.cmd_init, CMD_LEN);
 			break;
 		case PROTOCOL_OEM:
 			oem_struct.head = 0x55;
 			oem_struct.addr = SysConfig.addr;
-			oem_struct.state = 2;
+			oem_struct.state = SysConfig.status;
 			oem_struct.cmd_len = 0;
 			break;
 		default:
 			break;
 	}
 }
+
+
 //接收到数据后处理函数
 void Usart_ProcessReceivedData(UART_HandleTypeDef *huart)
 {
@@ -373,21 +378,22 @@ void Usart_ProcessReceivedData(UART_HandleTypeDef *huart)
 		switch (protocol_type)
 		{
 			case PROTOCOL_DT:
-				Rec_Conf();
+				Cmd_Data_Config(dt_struct.data_buff, dt_struct.cmd_len);
+
 				Usart_SendData(huart, &dt_struct);
 				break;
 			case PROTOCOL_OEM:
-				Rec_Conf();
+				Cmd_Data_Config(oem_struct.data_buff, oem_struct.cmd_len);
 				Usart_SendData(huart, &oem_struct);
 				break;
 			case PROTOCOL_IdexSame:
 				Usart_SendData(huart, &oem_struct);
 				break;
 			default:
+				Start_DMA_Receive();
 				break;
 		}
-		Start_DMA_Receive();
-}
+	}
 
 }
 /* USER CODE END 1 */

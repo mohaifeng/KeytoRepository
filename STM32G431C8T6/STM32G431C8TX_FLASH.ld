@@ -45,8 +45,8 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
   RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 32K
-  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 126K
-  CONFIG (rx)     : ORIGIN = 0x0801F800, LENGTH = 2K   /* 最后2KB作为配置区 */
+  FLASH    (rx)   : ORIGIN = 0x08000000,   LENGTH = 62K
+  CONFIG (rx)     : ORIGIN = 0x0800F800,   LENGTH = 2K   /* 最后2KB作为配置区 */
 }
 
 /* Sections */

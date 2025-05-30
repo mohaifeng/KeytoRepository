@@ -36,14 +36,14 @@ typedef struct
 	uint8_t addr;
 	uint8_t state;
 	uint8_t cmd_len;
-	uint8_t data[PROTOCOL_DATA_LEN];
+	uint8_t data_buff[PROTOCOL_DATA_LEN];
 	uint8_t data_len; //数据帧长度
 	uint8_t checksum;
 } OEM_TYPEDEF;
 
 extern OEM_TYPEDEF oem_struct; //oem结构体变量
 extern DT_TYPEDEF dt_struct; //dt结构体变量
-extern volatile ProtocolType protocol_type;
+extern ProtocolType protocol_type;
 
 uint8_t DT_Rec_Conf(const uint8_t *rx_buff, uint8_t len);
 void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len);

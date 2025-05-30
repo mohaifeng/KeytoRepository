@@ -38,7 +38,7 @@ extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN Private defines */
-#define BUFFER_SIZE 256
+#define BUFFER_SIZE 255
 
 typedef struct
 {

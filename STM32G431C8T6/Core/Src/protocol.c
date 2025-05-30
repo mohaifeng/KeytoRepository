@@ -6,13 +6,13 @@
  */
 #include "protocol.h"
 #include "main.h"
-#include "string.h"
+#include <string.h>
 #include "usart.h"
 #include "verification.h"
 
 OEM_TYPEDEF oem_struct; //oem结构体变量
 DT_TYPEDEF dt_struct; //dt结构体变量
-volatile ProtocolType protocol_type = PROTOCOL_NULL;
+ProtocolType protocol_type = PROTOCOL_NULL;
 //功能：检查接收数据是否符合DT协议规范，符合写入dt_struct结构体变量，返回1，否则返回0
 uint8_t DT_Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 {
@@ -89,6 +89,7 @@ void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 			memcpy(tmp_dt_stu.data_buff, tmp_dt_pdata - tmp_dt_stu.cmd_len, tmp_dt_stu.cmd_len);
 			memcpy(&dt_struct, &tmp_dt_stu, sizeof(DT_TYPEDEF));
 			protocol_type = PROTOCOL_DT;
+			SysConfig.status = EXECUTE_SUCCESS;
 			tmp_flag = 0;
 			return;
 		}
@@ -105,7 +106,7 @@ void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 			tmp_oem_stu.idex = *(tmp_oem_pdata + 1);
 			tmp_oem_stu.addr = *(tmp_oem_pdata + 2);
 			tmp_oem_stu.cmd_len = *(tmp_oem_pdata + 3);
-			if (tmp_oem_stu.cmd_len < len - i - 5)
+			if (len - i > 4 + tmp_oem_stu.cmd_len)
 			{
 				if (*(tmp_oem_pdata + 4 + tmp_oem_stu.cmd_len) == Checksum_8(tmp_oem_pdata, 4 + tmp_oem_stu.cmd_len))
 				{
@@ -119,20 +120,17 @@ void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 						if (tmp_oem_stu.idex > 0x80)
 						{
 							tmp_oem_stu.checksum = *(tmp_oem_pdata + 4 + tmp_oem_stu.cmd_len);
-							memcpy(tmp_oem_stu.data, tmp_oem_pdata + 4, tmp_oem_stu.cmd_len);
+							memcpy(tmp_oem_stu.data_buff, tmp_oem_pdata + 4, tmp_oem_stu.cmd_len);
 							memcpy(&oem_struct, &tmp_oem_stu, sizeof(OEM_TYPEDEF));
 							protocol_type = PROTOCOL_OEM;
 							return;
 						}
 					}
-
+					return;
 				}
 			}
 		}
-		else
-		{
-			tmp_oem_pdata++;
-		}
+		tmp_oem_pdata++;
 	}
 	protocol_type = PROTOCOL_NULL;
 }
@@ -148,9 +146,9 @@ uint8_t Protocol_Analyze(const uint8_t *rx_buff, uint16_t len)
 	switch (protocol_type)
 	{
 		case PROTOCOL_DT:
-				return 1;
+			return 1;
 		case PROTOCOL_OEM:
-				return 1;
+			return 1;
 		case PROTOCOL_IdexSame:
 
 		default:
@@ -178,12 +176,12 @@ static void Hex_To_Ascii_Byte(uint8_t num, uint8_t *output)
 	}
 }
 
-void Send_Data_Conf(UART_HandleTypeDef *uartHandle, const void *data_struct)
+void Send_Data_Conf(UART_HandleTypeDef *huart, const void *data_struct)
 {
 	uint8_t ascii_arr[3] = { 0 };
 	uint8_t count = 0;
 	uint8_t *pdata_1 = usart1_tx_struct.tx_buffer;
-	if (uartHandle->Instance == USART1)
+	if (huart->Instance == USART1)
 	{
 		if (protocol_type == PROTOCOL_DT)
 		{
@@ -204,6 +202,7 @@ void Send_Data_Conf(UART_HandleTypeDef *uartHandle, const void *data_struct)
 
 			}
 			*pdata_1++ = dt_str->dt_flag;
+			count++;
 			Hex_To_Ascii_Byte(dt_str->state, ascii_arr);
 			for (uint8_t i = 0; i < 3; i++)
 			{
@@ -228,7 +227,8 @@ void Send_Data_Conf(UART_HandleTypeDef *uartHandle, const void *data_struct)
 				}
 			}
 			*pdata_1 = 0x0D;
-			usart1_tx_struct.tx_len = count + dt_str->cmd_len + 3;
+			count++;
+			usart1_tx_struct.tx_len = count + dt_str->cmd_len;
 		}
 		else if (protocol_type == PROTOCOL_OEM)
 		{
@@ -243,11 +243,11 @@ void Send_Data_Conf(UART_HandleTypeDef *uartHandle, const void *data_struct)
 			{
 				for (uint8_t i = 0; i < oem_str->cmd_len; i++)
 				{
-					*pdata_1++ = oem_str->data[i];
+					*pdata_1++ = oem_str->data_buff[i];
 					count++;
 				}
 			}
-			oem_str->checksum = Checksum_8(oem_str->data, count);
+			oem_str->checksum = Checksum_8(oem_str->data_buff, count);
 			*pdata_1 = oem_str->checksum;
 			count++;
 			usart1_tx_struct.tx_len = count;
