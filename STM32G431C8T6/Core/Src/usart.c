@@ -346,27 +346,7 @@ void Usart_SendData(UART_HandleTypeDef *huart, const void *pro_struct)
 	Start_DMA_Receive();
 }
 
-void Tx_Data_Config(ProtocolType protocol_type)
-{
-	switch (protocol_type)
-	{
-		case PROTOCOL_DT:
-			dt_struct.addr = SysConfig.addr;
-			dt_struct.dt_flag = 0x3C;
-			dt_struct.state = SysConfig.status;
-			dt_struct.cmd_len = CMD_LEN;
-			memcpy(dt_struct.data_buff,cmd_stu.cmd_init, CMD_LEN);
-			break;
-		case PROTOCOL_OEM:
-			oem_struct.head = 0x55;
-			oem_struct.addr = SysConfig.addr;
-			oem_struct.state = SysConfig.status;
-			oem_struct.cmd_len = 0;
-			break;
-		default:
-			break;
-	}
-}
+
 
 
 //接收到数据后处理函数
@@ -378,13 +358,10 @@ void Usart_ProcessReceivedData(UART_HandleTypeDef *huart)
 		switch (protocol_type)
 		{
 			case PROTOCOL_DT:
-				Cmd_Data_Config(dt_struct.data_buff, dt_struct.cmd_len);
-
-				Usart_SendData(huart, &dt_struct);
+				Cmd_Data_Config(huart,dt_struct.data_buff, dt_struct.cmd_len);
 				break;
 			case PROTOCOL_OEM:
-				Cmd_Data_Config(oem_struct.data_buff, oem_struct.cmd_len);
-				Usart_SendData(huart, &oem_struct);
+				Cmd_Data_Config(huart,oem_struct.data_buff, oem_struct.cmd_len);
 				break;
 			case PROTOCOL_IdexSame:
 				Usart_SendData(huart, &oem_struct);

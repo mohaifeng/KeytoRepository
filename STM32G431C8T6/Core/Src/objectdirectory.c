@@ -5,6 +5,7 @@
  *      Author: 莫海峰
  */
 #include "objectdirectory.h"
+#include "register.h"
 #include "main.h"
 #include <string.h>
 
@@ -57,6 +58,20 @@ void OD_Init(void)
 
 	OD_Config_Callback(0xFFFF, 0, OD_READ, 0, 0, 0); //对象字典结束标志
 }
+
+uint8_t OD_Idex_Count(uint16_t index)
+{
+	uint8_t count = 0;
+	for (const OD_ENTRYTYPEDEF *entry = object_dictionary; entry->index != 0xFFFF; entry++)
+	{
+		if (entry->index == index)
+		{
+			count++;
+		}
+	}
+	return count;
+}
+
 // 通过索引和子索引查找字典条目
 const OD_ENTRYTYPEDEF* OD_Find_Entry(uint16_t index, uint8_t sub_index)
 {
@@ -73,6 +88,16 @@ const OD_ENTRYTYPEDEF* OD_Find_Entry(uint16_t index, uint8_t sub_index)
 // 读取对象字典值
 HAL_StatusTypeDef OD_Read(uint16_t index, uint8_t sub_index, int32_t *pdata)
 {
+	if (index == 0x2000)
+	{
+		RegValue data = { 0 };
+		if (Read_Register(sub_index, &data) == HAL_OK)
+		{
+			*pdata = data.i32v;
+			SysConfig.status = EXECUTE_SUCCESS;
+			return HAL_OK;
+		}
+	}
 	const OD_ENTRYTYPEDEF *entry = OD_Find_Entry(index, sub_index);
 	if (entry)
 	{
@@ -84,15 +109,23 @@ HAL_StatusTypeDef OD_Read(uint16_t index, uint8_t sub_index, int32_t *pdata)
 		else
 		{
 			*pdata = *entry->data_ptr;
+			SysConfig.status = EXECUTE_SUCCESS;
 			return HAL_OK;
 		}
 	}
-	return HAL_TIMEOUT;
+	SysConfig.status = PARAMETER_ERROR;
+	return HAL_ERROR;
 }
 
 // 写入对象字典值0:执行成功；-1：无该字典；-2：状态错误
 HAL_StatusTypeDef OD_Write(uint16_t index, uint8_t sub_index, int32_t value)
 {
+	if (index == 0x2000)
+	{
+		RegValue data = { 0 };
+		data.i32v = value;
+		return Write_Register(sub_index, &data);
+	}
 	const OD_ENTRYTYPEDEF *entry = OD_Find_Entry(index, sub_index);
 	if (entry)
 	{
@@ -111,10 +144,12 @@ HAL_StatusTypeDef OD_Write(uint16_t index, uint8_t sub_index, int32_t value)
 			else
 			{
 				*entry->data_ptr = value;
+				SysConfig.status = EXECUTE_SUCCESS;
 				return HAL_OK;
 			}
 		}
 	}
-	return HAL_TIMEOUT;
+	SysConfig.status = PARAMETER_ERROR;
+	return HAL_ERROR;
 }
 

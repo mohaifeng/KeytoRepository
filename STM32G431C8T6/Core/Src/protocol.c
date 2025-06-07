@@ -13,44 +13,6 @@
 OEM_TYPEDEF oem_struct; //oem结构体变量
 DT_TYPEDEF dt_struct; //dt结构体变量
 ProtocolType protocol_type = PROTOCOL_NULL;
-//功能：检查接收数据是否符合DT协议规范，符合写入dt_struct结构体变量，返回1，否则返回0
-uint8_t DT_Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
-{
-	uint16_t rx_flag_idex = 0;
-	if (rx_buff[len - 1] == 0x0D)
-	{
-		for (uint16_t i = 0; i < len - 2; i++)
-		{
-			if (rx_buff[i] == 0x3E)
-			{
-				protocol_type = PROTOCOL_DT;
-				rx_flag_idex = i;
-				break;
-			}
-		}
-		if (rx_flag_idex)
-		{
-			dt_struct.cmd_len = len - rx_flag_idex - 2;
-			dt_struct.dt_flag = rx_buff[rx_flag_idex];
-			if (rx_flag_idex > 1)
-			{
-				dt_struct.addr = (rx_buff[0] - 0x30) * 10 + (rx_buff[1] - 0x30);
-			}
-			else
-			{
-				dt_struct.addr = rx_buff[0] - 0x30;
-			}
-			for (uint8_t i = 0; i < dt_struct.cmd_len; i++)
-			{
-				dt_struct.data_buff[i] = rx_buff[rx_flag_idex + 1 + i];
-			}
-			return 1;
-		}
-
-	}
-	protocol_type = PROTOCOL_NULL;
-	return 0;
-}
 
 //功能：检查接收数据是否符合oem/DT协议规范，，符合写入相应结构体变量，将协议类型置相应位
 void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
@@ -135,28 +97,6 @@ void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 	protocol_type = PROTOCOL_NULL;
 }
 
-//协议解析,通过返回1，否则返回0，
-uint8_t Protocol_Analyze(const uint8_t *rx_buff, uint16_t len)
-{
-	if (len > BUFFER_SIZE)
-	{
-		len = BUFFER_SIZE;
-	}
-	Rxdata_Analyze(rx_buff, len);
-	switch (protocol_type)
-	{
-		case PROTOCOL_DT:
-			return 1;
-		case PROTOCOL_OEM:
-			return 1;
-		case PROTOCOL_IdexSame:
-
-		default:
-			return 0;
-	}
-	return 0;
-}
-
 static void Hex_To_Ascii_Byte(uint8_t num, uint8_t *output)
 {
 	if (num >= 100)
@@ -174,6 +114,50 @@ static void Hex_To_Ascii_Byte(uint8_t num, uint8_t *output)
 	{
 		output[0] = '0' + num;               // 个位
 	}
+}
+
+static void Reverse_String(uint8_t *str, uint8_t length)
+{
+	uint8_t start = 0;
+	uint8_t end = length - 1;
+	while (start < end)
+	{
+		uint8_t temp = str[start];
+		str[start] = str[end];
+		str[end] = temp;
+		start++;
+		end--;
+	}
+}
+
+uint32_t Int_to_Ascii(int32_t num, uint8_t *buffer)
+{
+	uint32_t buf_size = 0;
+	uint8_t is_negative = 0;
+	if (num < 0)
+	{
+		is_negative = 1;
+		num = -num;
+	}
+	// 处理 0 的情况
+	if (num == 0)
+	{
+		buffer[buf_size++] = '0';
+	}
+	// 逐位提取数字（反向存储）
+	while (num != 0)
+	{
+		buffer[buf_size++] = '0' + (num % 10);
+		num /= 10;
+	}
+	// 如果是负数，添加 '-'
+	if (is_negative)
+	{
+		buffer[buf_size] = '-';
+	}
+	// 反转字符串（因为数字是反向存储的）
+	Reverse_String(buffer, buf_size);
+	return buf_size;
 }
 
 void Send_Data_Conf(UART_HandleTypeDef *huart, const void *data_struct)

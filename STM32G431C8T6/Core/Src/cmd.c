@@ -6,60 +6,151 @@
  */
 
 #include "cmd.h"
+#include "usart.h"
+#include "protocol.h"
 #include <string.h>
 #include <ctype.h>
+#include "objectdirectory.h"
 
-const CMD_Typedef cmd_stu =
+CmdControlFlag dev_control_flag;
+
+void Fun_Init()
+{
+
+}
+
+void Cmd_Response(UART_HandleTypeDef *huart, ProtocolType protocol_type, uint8_t *pdata, uint8_t datalen)
+{
+	if (huart->Instance == USART1)
+	{
+		switch (protocol_type)
 		{
-				.cmd_init = CMD_INTI,
-				.cmd_aspirate = CMD_ASPIRATE,
-				.cmd_dispense = CMD_DISPENSE,
-				.cmd_read_register = CMD_READ_REGISTER,
-				.cmd_write_register = CMD_WRITE_REGISTER,
-		};
+			case PROTOCOL_DT:
+				dt_struct.addr = SysConfig.addr;
+				dt_struct.dt_flag = 0x3C;
+				dt_struct.state = SysConfig.status;
+				dt_struct.cmd_len = datalen;
+				if (datalen)
+				{
+					memcpy(dt_struct.data_buff, pdata, datalen);
+				}
+				Usart_SendData(huart, &dt_struct);
+				break;
+			case PROTOCOL_OEM:
+				oem_struct.head = 0x55;
+				oem_struct.addr = SysConfig.addr;
+				oem_struct.state = SysConfig.status;
+				oem_struct.cmd_len = datalen;
+				if (datalen)
+				{
+					memcpy(oem_struct.data_buff, pdata, datalen);
+				}
+				Usart_SendData(huart, &oem_struct);
+				break;
+			default:
+				break;
+		}
+	}
+}
+
+HAL_StatusTypeDef ControlCmd_LegalCheck_Callback(UART_HandleTypeDef *huart, uint16_t idex, const uint8_t *cmd_buff,
+		uint8_t buff_size)
+{
+	uint8_t separator = ',';
+	uint32_t num = 0;
+	uint8_t subidex = 0;
+
+	for (uint8_t i = CMD_LEN; i < buff_size; i++)
+	{
+		if (*(cmd_buff + i) == separator)
+		{
+			if (*(cmd_buff + i - 1) != separator)
+			{
+				if (OD_Write(idex, subidex, num) != HAL_OK)
+				{
+					Cmd_Response(huart, protocol_type, NULL, 0);
+					return HAL_ERROR;
+				}
+			}
+			num = 0;
+			subidex++;
+		}
+		else
+		{
+			num = num * 10 + (*(cmd_buff + i) - 0x30);
+		}
+	}
+	return HAL_OK;
+}
 
 //指令数据处理函数
-void Cmd_Data_Config(const uint8_t *cmd_buff, uint8_t buff_size)
+void Cmd_Data_Config(UART_HandleTypeDef *huart, const uint8_t *cmd_buff, uint8_t buff_size)
 {
-	CMD_Config_t cmd_par = { 0 };
-	cmd_par.cmd_par_Len = 0;
-	uint8_t delimiter = ',';
-	if (cmd_buff == NULL || buff_size == 0)
+	uint8_t separator = ',';
+	uint32_t num = 0;
+	uint8_t subidex = 0;
+	if (cmd_buff == NULL || buff_size == 0 || buff_size < CMD_LEN)
 	{
 		return;
 	}
-	memcpy(cmd_par.cmd_arr, cmd_buff, CMD_LEN);
+	if (buff_size > CMD_LEN)
+	{
+		if (*cmd_buff == 'I' && *(cmd_buff + 1) == 't')
+		{
+			if (ControlCmd_LegalCheck_Callback(huart, 0x4000, cmd_buff, buff_size) == HAL_OK)
+			{
+				Fun_Init();
+			}
+		}
+		if (*cmd_buff == 'W' && *(cmd_buff + 1) == 'r')
+		{
+			for (uint8_t i = CMD_LEN; i < buff_size; i++)
+			{
+				if (*(cmd_buff + i) == separator)
+				{
+					subidex = num;
+					num = 0;
+				}
+				else
+				{
+					num = num * 10 + (*(cmd_buff + i) - 0x30);
+				}
+			}
+			OD_Write(0x2000, subidex, num);
+			Cmd_Response(huart, protocol_type, NULL, 0);
+			return;
 
-	uint8_t num = 0, index = 0;
-	for (uint8_t i = CMD_LEN; i < buff_size; i++)
-	{
-		if (isdigit(cmd_buff[i]))
-		{
-			num = num * 10 + (cmd_buff[i] - '0');
 		}
-		else if (cmd_buff[i] == delimiter)
+		if (*cmd_buff == 'R' && *(cmd_buff + 1) == 'r')
 		{
-			cmd_par.cmd_par[index++] = num;
-			cmd_par.cmd_par_Len++;
-			num = 0;
+			for (uint8_t i = CMD_LEN; i < buff_size; i++)
+			{
+				if (*(cmd_buff + i) == separator)
+				{
+					subidex = num;
+					num = 0;
+				}
+				else
+				{
+					num = num * 10 + (*(cmd_buff + i) - 0x30);
+				}
+			}
+			if (subidex == 0)
+			{
+				subidex = num;
+			}
+			int32_t data = 0;
+			if (OD_Read(0x2000, subidex, &data) == HAL_OK)
+			{
+				uint8_t *ascii_buf = NULL;
+				uint32_t datalen = Int_to_Ascii(data, ascii_buf);
+				Cmd_Response(huart, protocol_type, ascii_buf, datalen);
+				return;
+			}
+
 		}
 	}
-	cmd_par.cmd_par[index] = num; // 最后一个数字
-	cmd_par.cmd_par_Len++;
-	//检测参数是否符合规范，是否可以运行
-	switch (*(uint16_t*) cmd_par.cmd_arr)
-	{
-		case *(uint16_t*) cmd_stu.cmd_init:
-			break;
-		case *(uint16_t*) cmd_stu.cmd_aspirate:
-			break;
-		case *(uint16_t*) cmd_stu.cmd_dispense:
-			break;
-		case *(uint16_t*) cmd_stu.cmd_read_register:
-			break;
-		case *(uint16_t*) cmd_stu.cmd_write_register:
-			break;
-	}
+
 }
 
 HAL_StatusTypeDef Cmd_Execute()

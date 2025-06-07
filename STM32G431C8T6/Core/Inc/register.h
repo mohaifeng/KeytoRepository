@@ -52,7 +52,7 @@ typedef union
 	float fv;
 } RegValue;
 
-typedef void (*RegWriteCallback)(void *reg_ptr, RegValue new_value); //定义写寄存器值函数指针
+typedef void (*RegWriteCallback)(void *reg_ptr, RegValue *new_value); //定义写寄存器值函数指针
 
 typedef struct
 {
@@ -69,6 +69,6 @@ typedef struct
 
 void Init_Registers(void);
 HAL_StatusTypeDef Read_Register(uint16_t addr, RegValue *out_value);
-HAL_StatusTypeDef Write_Register(uint16_t addr, RegValue new_value);
-HAL_StatusTypeDef Save_Register(void);
+HAL_StatusTypeDef Write_Register(uint16_t addr, RegValue *new_value);
+void Save_Register(void);
 #endif /* INC_REGISTER_H_ */

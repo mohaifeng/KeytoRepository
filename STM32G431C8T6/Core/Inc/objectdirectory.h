@@ -51,6 +51,9 @@ typedef struct
 	int32_t Deftval;
 } OD_ENTRYTYPEDEF;
 
-void OD_Init(void);
 
+void OD_Init(void);
+uint8_t OD_Idex_Count(uint16_t index);
+HAL_StatusTypeDef OD_Read(uint16_t index, uint8_t sub_index, int32_t *pdata);
+HAL_StatusTypeDef OD_Write(uint16_t index, uint8_t sub_index, int32_t value);
 #endif /* INC_OBJECTDIRECTORY_H_ */

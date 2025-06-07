@@ -154,6 +154,7 @@ HAL_StatusTypeDef Read_Register(uint16_t addr, RegValue *out_value)
 			out_value->fv = *(float*) node->data_ptr;
 			break;
 		default:
+			SysConfig.status = PARAMETER_ERROR;
 			return HAL_ERROR; // 不支持的数据类型
 	}
 	SysConfig.status = EXECUTE_SUCCESS;
@@ -161,80 +162,81 @@ HAL_StatusTypeDef Read_Register(uint16_t addr, RegValue *out_value)
 }
 
 // 写入寄存器值
-HAL_StatusTypeDef Write_Register(uint16_t addr, RegValue new_value)
+HAL_StatusTypeDef Write_Register(uint16_t addr, RegValue *new_value)
 {
 	RegConfigTypedef *node = Find_Reg_Node(addr);
 	if (!node)
 	{
 		SysConfig.status = REG_ERROR;
-		return HAL_ERROR; // 寄存器地址错误
+		return HAL_ERROR;
 	}
 	if (!(node->permission & WRITE_ONLY))
 	{
 		SysConfig.status = READ_WRITE_ONLY;
-		return HAL_ERROR; // 寄存器地址错误
+		return HAL_ERROR;
 	}
 	// 检查值范围
 	switch (node->data_type)
 	{
 		case REG_U8:
-			if (new_value.u8v < node->min_value.u8v || new_value.u8v > node->max_value.u8v)
+			if (new_value->u8v < node->min_value.u8v || new_value->u8v > node->max_value.u8v)
 			{
 				SysConfig.status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
-			*(uint8_t*) node->data_ptr = new_value.u8v;
+			*(uint8_t*) node->data_ptr = new_value->u8v;
 			break;
 		case REG_U16:
-			if (new_value.u16v < node->min_value.u16v || new_value.u16v > node->max_value.u16v)
+			if (new_value->u16v < node->min_value.u16v || new_value->u16v > node->max_value.u16v)
 			{
 				SysConfig.status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
-			*(uint16_t*) node->data_ptr = new_value.u16v;
+			*(uint16_t*) node->data_ptr = new_value->u16v;
 			break;
 		case REG_U32:
-			if (new_value.u32v < node->min_value.u32v || new_value.u32v > node->max_value.u32v)
+			if (new_value->u32v < node->min_value.u32v || new_value->u32v > node->max_value.u32v)
 			{
 				SysConfig.status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
-			*(uint32_t*) node->data_ptr = new_value.u32v;
+			*(uint32_t*) node->data_ptr = new_value->u32v;
 			break;
 		case REG_I8:
-			if (new_value.i8v < node->min_value.i8v || new_value.i8v > node->max_value.i8v)
+			if (new_value->i8v < node->min_value.i8v || new_value->i8v > node->max_value.i8v)
 			{
 				SysConfig.status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
-			*(int8_t*) node->data_ptr = new_value.i8v;
+			*(int8_t*) node->data_ptr = new_value->i8v;
 			break;
 		case REG_I16:
-			if (new_value.i16v < node->min_value.i16v || new_value.i16v > node->max_value.i16v)
+			if (new_value->i16v < node->min_value.i16v || new_value->i16v > node->max_value.i16v)
 			{
 				SysConfig.status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
-			*(int16_t*) node->data_ptr = new_value.i16v;
+			*(int16_t*) node->data_ptr = new_value->i16v;
 			break;
 		case REG_I32:
-			if (new_value.i32v < node->min_value.i32v || new_value.i32v > node->max_value.i32v)
+			if (new_value->i32v < node->min_value.i32v || new_value->i32v > node->max_value.i32v)
 			{
 				SysConfig.status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
-			*(int32_t*) node->data_ptr = new_value.i32v;
+			*(int32_t*) node->data_ptr = new_value->i32v;
 			break;
 		case REG_FLOAT:
-			if (new_value.fv < node->min_value.fv || new_value.fv > node->max_value.fv)
+			if (new_value->fv < node->min_value.fv || new_value->fv > node->max_value.fv)
 			{
 				SysConfig.status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
-			*(float*) node->data_ptr = new_value.fv;
+			*(float*) node->data_ptr = new_value->fv;
 			break;
 		default:
-			return HAL_ERROR; // 不支持的数据类型
+			SysConfig.status = PARAMETER_ERROR;
+			return HAL_ERROR; // 寄存器地址错误
 	}
 	// 调用回调函数
 	if (node->callback)
@@ -242,10 +244,10 @@ HAL_StatusTypeDef Write_Register(uint16_t addr, RegValue new_value)
 		node->callback(node->data_ptr, new_value);
 	}
 	SysConfig.status = EXECUTE_SUCCESS;
-	return HAL_OK;
+	return HAL_OK; // 寄存器地址错误
 }
 
-HAL_StatusTypeDef Save_Register(void)
+void Save_Register(void)
 {
 	FlashData_t flash_data;
 	Erase_Config_Sector();
@@ -257,6 +259,5 @@ HAL_StatusTypeDef Save_Register(void)
 		Error_Handler();
 	}
 	SysConfig.status = EXECUTE_SUCCESS;
-	return HAL_OK;
 }
 

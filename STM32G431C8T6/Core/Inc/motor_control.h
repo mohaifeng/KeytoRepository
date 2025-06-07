@@ -22,7 +22,7 @@ typedef struct
 
 extern BMConfig_t BMConfig;
 
-void setMotorDirCallback(void *reg_ptr, RegValue new_value);
+void setMotorDirCallback(void *reg_ptr, RegValue *new_value);
 
 
 #endif /* INC_MOTOR_CONTROL_H_ */
