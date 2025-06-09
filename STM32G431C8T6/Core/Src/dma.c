@@ -34,42 +34,57 @@
 /* USER CODE END 1 */
 
 /**
-  * Enable DMA controller clock
-  */
+ * Enable DMA controller clock
+ */
 void MX_DMA_Init(void)
 {
 
-  /* DMA controller clock enable */
-  __HAL_RCC_DMAMUX1_CLK_ENABLE();
-  __HAL_RCC_DMA1_CLK_ENABLE();
+	/* DMA controller clock enable */
+	__HAL_RCC_DMAMUX1_CLK_ENABLE();
+	__HAL_RCC_DMA1_CLK_ENABLE();
 
-  /* DMA interrupt init */
-  /* DMA1_Channel1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
-  /* DMA1_Channel2_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
-  /* DMA1_Channel3_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel3_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel3_IRQn);
-  /* DMA1_Channel4_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
+	/* DMA interrupt init */
+	/* DMA1_Channel1_IRQn interrupt configuration */
+	HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+	/* DMA1_Channel2_IRQn interrupt configuration */
+	HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
+	/* DMA1_Channel3_IRQn interrupt configuration */
+	HAL_NVIC_SetPriority(DMA1_Channel3_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(DMA1_Channel3_IRQn);
+	/* DMA1_Channel4_IRQn interrupt configuration */
+	HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
 
 }
 
 /* USER CODE BEGIN 2 */
-void Start_DMA_Receive(void)
+void Start_DMA_Receive(UART_HandleTypeDef *huart)
 {
-	// 启动DMA接收
-	usart1_rx_struct.rx_len = 0;  //清除计数
-	usart1_rx_struct.usart_rx_flag = 0;  //清除接收结束标志位
-	memset(usart1_rx_struct.rx_buffer,0,BUFFER_SIZE);  //清空缓存区
-	while(HAL_UART_Receive_DMA(&huart1,usart1_rx_struct.rx_buffer,BUFFER_SIZE))
+	if (huart->Instance == USART1)
 	{
-		HAL_DMA_Abort(huart1.hdmarx);
+		// 启动DMA接收
+		usart1_rx_struct.rx_len = 0;  //清除计数
+		usart1_rx_struct.usart_rx_flag = 0;  //清除接收结束标志位
+		memset(usart1_rx_struct.rx_buffer, 0, BUFFER_SIZE);  //清空缓存区
+		while (HAL_UART_Receive_DMA(&huart1, usart1_rx_struct.rx_buffer, BUFFER_SIZE))
+		{
+			HAL_DMA_Abort(huart1.hdmarx);
+		}
 	}
+	if (huart->Instance == USART2)
+	{
+		// 启动DMA接收
+		usart2_rx_struct.rx_len = 0;  //清除计数
+		usart2_rx_struct.usart_rx_flag = 0;  //清除接收结束标志位
+		memset(usart2_rx_struct.rx_buffer, 0, BUFFER_SIZE);  //清空缓存区
+		while (HAL_UART_Receive_DMA(&huart2, usart2_rx_struct.rx_buffer, BUFFER_SIZE))
+		{
+			HAL_DMA_Abort(huart2.hdmarx);
+		}
+	}
+
 }
 /* USER CODE END 2 */
 

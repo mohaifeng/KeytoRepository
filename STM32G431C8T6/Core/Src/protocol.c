@@ -51,7 +51,6 @@ void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 			memcpy(tmp_dt_stu.data_buff, tmp_dt_pdata - tmp_dt_stu.cmd_len, tmp_dt_stu.cmd_len);
 			memcpy(&dt_struct, &tmp_dt_stu, sizeof(DT_TYPEDEF));
 			protocol_type = PROTOCOL_DT;
-			SysConfig.status = EXECUTE_SUCCESS;
 			tmp_flag = 0;
 			return;
 		}
@@ -95,25 +94,6 @@ void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 		tmp_oem_pdata++;
 	}
 	protocol_type = PROTOCOL_NULL;
-}
-
-static void Hex_To_Ascii_Byte(uint8_t num, uint8_t *output)
-{
-	if (num >= 100)
-	{
-		output[0] = '0' + (num / 100);        // 百位
-		output[1] = '0' + ((num / 10) % 10);  // 十位
-		output[2] = '0' + (num % 10);        // 个位
-	}
-	else if (num >= 10)
-	{
-		output[0] = '0' + (num / 10);        // 十位
-		output[1] = '0' + (num % 10);        // 个位
-	}
-	else
-	{
-		output[0] = '0' + num;               // 个位
-	}
 }
 
 static void Reverse_String(uint8_t *str, uint8_t length)
@@ -162,7 +142,7 @@ uint32_t Int_to_Ascii(int32_t num, uint8_t *buffer)
 
 void Send_Data_Conf(UART_HandleTypeDef *huart, const void *data_struct)
 {
-	uint8_t ascii_arr[3] = { 0 };
+	uint8_t ascii_arr[ADDR_MAX_LEN] = { 0 };
 	uint8_t count = 0;
 	uint8_t *pdata_1 = usart1_tx_struct.tx_buffer;
 	if (huart->Instance == USART1)
@@ -170,36 +150,21 @@ void Send_Data_Conf(UART_HandleTypeDef *huart, const void *data_struct)
 		if (protocol_type == PROTOCOL_DT)
 		{
 			DT_TYPEDEF *dt_str = (DT_TYPEDEF*) data_struct;
-			Hex_To_Ascii_Byte(dt_str->addr, ascii_arr);
-			for (uint8_t i = 0; i < 3; i++)
+			uint8_t num = Int_to_Ascii(dt_str->addr, ascii_arr);
+			for (uint8_t i = 0; i < num; i++)
 			{
-				if (ascii_arr[i] != 0)
-				{
-					*pdata_1++ = ascii_arr[i];
-					count++;
-				}
-				else
-				{
-					memset(ascii_arr, 0, 3);  //清空
-					break;
-				}
-
+				*pdata_1++ = ascii_arr[i];
+				count++;
 			}
+			memset(ascii_arr, 0, num);  //清空
 			*pdata_1++ = dt_str->dt_flag;
 			count++;
-			Hex_To_Ascii_Byte(dt_str->state, ascii_arr);
-			for (uint8_t i = 0; i < 3; i++)
+			num = Int_to_Ascii(dt_str->state, ascii_arr);
+			for (uint8_t i = 0; i < num; i++)
 			{
-				if (ascii_arr[i] != 0)
-				{
-					*pdata_1++ = ascii_arr[i];
-					count++;
-				}
-				else
-				{
-					memset(ascii_arr, 0, 3);  //清空
-					break;
-				}
+
+				*pdata_1++ = ascii_arr[i];
+				count++;
 			}
 			if (dt_str->cmd_len > 0)
 			{

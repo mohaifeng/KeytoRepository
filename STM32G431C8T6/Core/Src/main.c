@@ -115,19 +115,10 @@ int main(void)
 	/* USER CODE BEGIN 2 */
 	OD_Init();
 	Led_Init();
-	Start_DMA_Receive(); //开启DMA接收
+	Start_DMA_Receive(&huart1); //开启DMA接收
+	Start_DMA_Receive(&huart2); //开启DMA接收
 	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);	//使能空闲中断
-//	TMC5160_Init();
-////	TMC5160_Enable();
-////	// 移动到绝对位置10000
-//	TMC5160_MoveTo(10000);
-//
-//	// 等待到达目标位置
-//	while ((TMC5160_ReadRegister(TMC5160_REG_XACTUAL) != 10000))
-//	{
-//		HAL_Delay(10);
-//	}
-//	TMC5160_Move(5000);
+	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);	//使能空闲中断
 
 	/* USER CODE END 2 */
 

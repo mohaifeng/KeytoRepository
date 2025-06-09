@@ -7,6 +7,7 @@
 #include "objectdirectory.h"
 #include "register.h"
 #include "main.h"
+#include "cmd.h"
 #include <string.h>
 
 // 定义对象字典数据数组
@@ -94,7 +95,6 @@ HAL_StatusTypeDef OD_Read(uint16_t index, uint8_t sub_index, int32_t *pdata)
 		if (Read_Register(sub_index, &data) == HAL_OK)
 		{
 			*pdata = data.i32v;
-			SysConfig.status = EXECUTE_SUCCESS;
 			return HAL_OK;
 		}
 	}
@@ -103,17 +103,17 @@ HAL_StatusTypeDef OD_Read(uint16_t index, uint8_t sub_index, int32_t *pdata)
 	{
 		if (!(entry->access & OD_READ))
 		{
-			SysConfig.status = READ_WRITE_ONLY;
+			cmd_finish_flag = READ_WRITE_ONLY;
 			return HAL_ERROR;
 		}
 		else
 		{
 			*pdata = *entry->data_ptr;
-			SysConfig.status = EXECUTE_SUCCESS;
+			cmd_finish_flag = EXECUTE_SUCCESS;
 			return HAL_OK;
 		}
 	}
-	SysConfig.status = PARAMETER_ERROR;
+	cmd_finish_flag = PARAMETER_ERROR;
 	return HAL_ERROR;
 }
 
@@ -131,25 +131,25 @@ HAL_StatusTypeDef OD_Write(uint16_t index, uint8_t sub_index, int32_t value)
 	{
 		if (!(entry->access & OD_WRITE))
 		{
-			SysConfig.status = READ_WRITE_ONLY;
+			cmd_finish_flag = READ_WRITE_ONLY;
 			return HAL_ERROR;
 		}
 		else
 		{
 			if (value < entry->Minval && value > entry->Maxval)
 			{
-				SysConfig.status = OVER_LIMIT;
+				cmd_finish_flag = OVER_LIMIT;
 				return HAL_ERROR;
 			}
 			else
 			{
 				*entry->data_ptr = value;
-				SysConfig.status = EXECUTE_SUCCESS;
+				cmd_finish_flag = EXECUTE_SUCCESS;
 				return HAL_OK;
 			}
 		}
 	}
-	SysConfig.status = PARAMETER_ERROR;
+	cmd_finish_flag = PARAMETER_ERROR;
 	return HAL_ERROR;
 }
 

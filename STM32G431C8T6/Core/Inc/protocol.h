@@ -10,6 +10,7 @@
 
 #include "stm32g4xx_hal.h"
 #define PROTOCOL_DATA_LEN 255
+#define ADDR_MAX_LEN      3
 
 typedef enum
 {

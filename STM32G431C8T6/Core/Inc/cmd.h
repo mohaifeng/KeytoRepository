@@ -30,6 +30,8 @@ typedef enum
 	PLLD,
 } CmdControlFlag;
 
+extern DEV_STATUSTYPEDEF cmd_finish_flag;
+
 HAL_StatusTypeDef ControlCmd_LegalCheck_Callback(UART_HandleTypeDef *huart, uint16_t idex, const uint8_t *cmd_buff,
 		uint8_t buff_size);
 void Cmd_Data_Config(UART_HandleTypeDef *huart, const uint8_t *cmd_buff, uint8_t buff_size);

@@ -299,7 +299,7 @@ void USART2_IRQHandler(void)
 	/* USER CODE END USART2_IRQn 0 */
 	HAL_UART_IRQHandler(&huart2);
 	/* USER CODE BEGIN USART2_IRQn 1 */
-
+	USER_UART_IRQHandler(&huart2);
 	/* USER CODE END USART2_IRQn 1 */
 }
 
@@ -332,6 +332,14 @@ void USER_UART_IRQHandler(UART_HandleTypeDef *huart)
 			USER_UART_IDLECallback(&huart1);  //调用中断处理函数
 		}
 	}
+	if (huart->Instance == USART2) //判断是否是串口1
+	{
+		if (RESET != __HAL_UART_GET_FLAG(&huart2, UART_FLAG_IDLE))  //判断是否是空闲中断
+		{
+			__HAL_UART_CLEAR_IDLEFLAG(&huart2);  //清楚空闲中断标志（否则会一直不断进入中断）
+			USER_UART_IDLECallback(&huart2);  //调用中断处理函数
+		}
+	}
 }
 
 void USER_UART_IDLECallback(UART_HandleTypeDef *huart)
@@ -347,8 +355,23 @@ void USER_UART_IDLECallback(UART_HandleTypeDef *huart)
 		else
 		{
 			usart1_rx_struct.usart_rx_flag = 0;
-			Start_DMA_Receive(); //开启DMA接收
+			Start_DMA_Receive(&huart1); //开启DMA接收
 			__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);	//使能空闲中断
+		}
+	}
+	if (huart->Instance == USART2)
+	{
+		HAL_UART_DMAStop(&huart2);  //停止本次DMA传输
+		usart2_rx_struct.rx_len = BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart2_rx);  //计算接收到的数据长度
+		if (usart2_rx_struct.rx_len != 0)
+		{
+			usart2_rx_struct.usart_rx_flag = 1;    // 接受完成标志位置1
+		}
+		else
+		{
+			usart2_rx_struct.usart_rx_flag = 0;
+			Start_DMA_Receive(&huart2); //开启DMA接收
+			__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);	//使能空闲中断
 		}
 	}
 }
