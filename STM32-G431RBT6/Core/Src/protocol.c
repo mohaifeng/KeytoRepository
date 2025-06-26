@@ -1,141 +1,199 @@
 #include "protocol.h"
+#include "main.h"
+#include <string.h>
+#include "usart.h"
+#include "verification.h"
 
-OEM_TYPEDEF oem_send_data_instance; //发送数据oem结构体变量
-OEM_TYPEDEF oem_rec_data_instance; //接收到数据oem结构体变量
-DT_TYPEDEF dt_send_data_instance; //发送数据dt结构体变量
-DT_TYPEDEF dt_rec_data_instance; //接收到数据dt结构体变量
-volatile uint8_t protocol_type = 0; //0:DT;1:OEM
-extern uint8_t rx_buffer[BUFFER_SIZE];  // 接收缓冲区
-extern uint8_t tx_buffer[BUFFER_SIZE];  // 输出缓冲区
+OEM_TYPEDEF oem_struct; //oem结构体变量
+DT_TYPEDEF dt_struct; //dt结构体变量
+ProtocolType protocol_type = PROTOCOL_NULL;
 
-//功能：检查接收数据是否符合DT协议规范，符合写入dt_rec_data_instance结构体变量，返回1，否则返回0
-uint8_t DT_Rec_Conf(uint8_t *rx_buff,uint32_t len)
+//功能：检查接收数据是否符合oem/DT协议规范，，符合写入相应结构体变量，将协议类型置相应位
+void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 {
-	uint32_t rx_flag_idex = 0;
-	if(rx_buff[len - 1] == 0x0D)
+	const uint8_t *tmp_dt_pdata = rx_buff;
+	const uint8_t *tmp_oem_pdata = rx_buff;
+	uint8_t tmp_flag = 0;
+	uint8_t start_data_idex = 0;
+	DT_TYPEDEF tmp_dt_stu = { 0 };
+	OEM_TYPEDEF tmp_oem_stu = { 0 };
+	//DT协议解析
+	for (uint16_t i = 0; i < len; i++) //找到0x3E
 	{
-		for(uint32_t i = 0; i < len - 2; i++)
+		if ((*tmp_dt_pdata == 0x3E) && (~tmp_flag))
 		{
-			if(rx_buff[i] == 0x3E)
+			if (SysConfig.addr > 9)
 			{
-				rx_flag_idex = i;
-				break;
-			}
-		}
-		if(rx_flag_idex)
-		{
-			dt_rec_data_instance.data_len = len;
-			dt_rec_data_instance.dt_flag = rx_buff[rx_flag_idex];
-			if(rx_flag_idex > 1)
-			{
-				dt_rec_data_instance.addr = (rx_buff[0] - 0x30) * 10 + (rx_buff[1] - 0x30);
+				if (i > 1)
+				{
+					tmp_dt_stu.addr = (*(tmp_dt_pdata - 1) - 0x30) + (*(tmp_dt_pdata - 2) - 0x30) * 10;
+				}
 			}
 			else
 			{
-				dt_rec_data_instance.addr = rx_buff[0] - 0x30;
+				tmp_dt_stu.addr = (*(tmp_dt_pdata - 1) - 0x30);
 			}
-			for(uint32_t i = 0; i < len - rx_flag_idex - 2; i++)
+			if (tmp_dt_stu.addr == SysConfig.addr)
 			{
-				dt_rec_data_instance.data[i] = rx_buff[rx_flag_idex + 1 + i];
+				tmp_flag = 1;
+				start_data_idex = i;
 			}
-			return 1;
 		}
-
-	}
-	return 0;
-}
-
-//功能：检查接收数据是否符合oem协议规范，符合写入oem_rec_data_instance结构体变量，返回1，否则返回0
-uint8_t OEM_Rec_Conf(uint8_t *rx_buff,uint32_t len)
-{
-	if(rx_buff[0] == 0xAA)
-	{
-		if(rx_buff[len - 1] == Checksum_8(rx_buff,len - 1))
+		if ((*tmp_dt_pdata == 0x0D) && (tmp_flag))
 		{
-			oem_rec_data_instance.data_len = len;
-			oem_rec_data_instance.head = rx_buff[0];
-			oem_rec_data_instance.idex = rx_buff[1];
-			oem_rec_data_instance.addr = rx_buff[2];
-			oem_rec_data_instance.cmd_len = rx_buff[3];
-			for(uint8_t i = 0; i < oem_rec_data_instance.cmd_len; i++)
+			tmp_dt_stu.cmd_len = i - start_data_idex - 1;
+			memcpy(tmp_dt_stu.data_buff, tmp_dt_pdata - tmp_dt_stu.cmd_len, tmp_dt_stu.cmd_len);
+			memcpy(&dt_struct, &tmp_dt_stu, sizeof(DT_TYPEDEF));
+			protocol_type = PROTOCOL_DT;
+			tmp_flag = 0;
+			return;
+		}
+		else
+		{
+			tmp_dt_pdata++;
+		}
+	}
+	//OEM协议解析
+	for (uint16_t i = 0; i < len; i++) //找到0xAA帧头
+	{
+		if ((*tmp_oem_pdata) == 0xAA)
+		{
+			tmp_oem_stu.idex = *(tmp_oem_pdata + 1);
+			tmp_oem_stu.addr = *(tmp_oem_pdata + 2);
+			tmp_oem_stu.cmd_len = *(tmp_oem_pdata + 3);
+			if (len - i > 4 + tmp_oem_stu.cmd_len)
 			{
-				oem_rec_data_instance.data[i] = rx_buff[i + 4];
+				if (*(tmp_oem_pdata + 4 + tmp_oem_stu.cmd_len) == Checksum_8(tmp_oem_pdata, 4 + tmp_oem_stu.cmd_len))
+				{
+					if (tmp_oem_stu.addr == SysConfig.addr)
+					{
+						if (tmp_oem_stu.idex == oem_struct.idex)
+						{
+							protocol_type = PROTOCOL_IdexSame;
+							return;
+						}
+						if (tmp_oem_stu.idex > 0x80)
+						{
+							tmp_oem_stu.checksum = *(tmp_oem_pdata + 4 + tmp_oem_stu.cmd_len);
+							memcpy(tmp_oem_stu.data_buff, tmp_oem_pdata + 4, tmp_oem_stu.cmd_len);
+							memcpy(&oem_struct, &tmp_oem_stu, sizeof(OEM_TYPEDEF));
+							protocol_type = PROTOCOL_OEM;
+							return;
+						}
+					}
+					return;
+				}
 			}
-			return 1;
 		}
+		tmp_oem_pdata++;
 	}
-	return 0;
+	protocol_type = PROTOCOL_NULL;
 }
 
-void DT_Send_Conf(void)
+static void Reverse_String(uint8_t *str, uint8_t length)
 {
-	uint8_t tmp_buff[BUFFER_SIZE] = { 0 };
-	uint8_t *buf_p = tmp_buff;
-	tmp_buff[0] = (dt_send_data_instance.addr / 10) + 0x30;
-	tmp_buff[1] = (dt_send_data_instance.addr % 10) + 0x30;
-	tmp_buff[2] = dt_send_data_instance.dt_flag;
-	tmp_buff[3] = dt_send_data_instance.state;
-	tmp_buff[4] = 0x0D;
-	if(tmp_buff[0] == 0x30)
+	uint8_t start = 0;
+	uint8_t end = length - 1;
+	while (start < end)
 	{
-		buf_p = tmp_buff + 1;
-	}
-	for(uint8_t i = 0; i < dt_send_data_instance.data_len; i++)
-	{
-		tx_buffer[i] = buf_p[i];
+		uint8_t temp = str[start];
+		str[start] = str[end];
+		str[end] = temp;
+		start++;
+		end--;
 	}
 }
 
-//将发送oem数据结构体转为数组
-void OEM_Send_Conf(void)
+uint32_t Int_to_Ascii(int32_t num, uint8_t *buffer)
 {
-	tx_buffer[0] = oem_send_data_instance.head;
-	tx_buffer[1] = oem_send_data_instance.idex;
-	tx_buffer[2] = oem_send_data_instance.addr;
-	tx_buffer[3] = oem_send_data_instance.state;
-	tx_buffer[4] = oem_send_data_instance.cmd_len;
-	if(oem_send_data_instance.cmd_len > 0)
+	uint32_t buf_size = 0;
+	uint8_t is_negative = 0;
+	if (num < 0)
 	{
-		for(uint8_t i = 0; i < oem_rec_data_instance.cmd_len; i++)
+		is_negative = 1;
+		num = -num;
+	}
+	// 处理 0 的情况
+	if (num == 0)
+	{
+		buffer[buf_size++] = '0';
+	}
+	// 逐位提取数字（反向存储）
+	while (num != 0)
+	{
+		buffer[buf_size++] = '0' + (num % 10);
+		num /= 10;
+	}
+	// 如果是负数，添加 '-'
+	if (is_negative)
+	{
+		buffer[buf_size] = '-';
+	}
+	// 反转字符串（因为数字是反向存储的）
+	Reverse_String(buffer, buf_size);
+	return buf_size;
+}
+
+void Send_Data_Conf(UART_HandleTypeDef *huart, const void *data_struct)
+{
+	uint8_t ascii_arr[ADDR_MAX_LEN] = { 0 };
+	uint8_t count = 0;
+	uint8_t *pdata_1 = usart1_tx_struct.tx_buffer;
+	if (huart->Instance == USART1)
+	{
+		if (protocol_type == PROTOCOL_DT)
 		{
-			tx_buffer[i + 5] = oem_send_data_instance.data[i];
+			DT_TYPEDEF *dt_str = (DT_TYPEDEF*) data_struct;
+			uint8_t num = Int_to_Ascii(dt_str->addr, ascii_arr);
+			for (uint8_t i = 0; i < num; i++)
+			{
+				*pdata_1++ = ascii_arr[i];
+				count++;
+			}
+			memset(ascii_arr, 0, num);  //清空
+			*pdata_1++ = dt_str->dt_flag;
+			count++;
+			num = Int_to_Ascii(dt_str->state, ascii_arr);
+			for (uint8_t i = 0; i < num; i++)
+			{
+
+				*pdata_1++ = ascii_arr[i];
+				count++;
+			}
+			if (dt_str->cmd_len > 0)
+			{
+				*pdata_1++ = 0x3A;
+				count++;
+				for (uint8_t i = 0; i < dt_str->cmd_len; i++)
+				{
+					*pdata_1++ = dt_str->data_buff[i];
+				}
+			}
+			*pdata_1 = 0x0D;
+			count++;
+			usart1_tx_struct.tx_len = count + dt_str->cmd_len;
 		}
-	}
-	tx_buffer[5 + oem_send_data_instance.cmd_len] = Checksum_8(tx_buffer,4 + oem_send_data_instance.cmd_len);
-}
-//协议解析
-void Protocol_Analyze(uint8_t *rx_buff,uint8_t len)
-{
-	if(len > PROTOCOL_DATA_LEN)
-	{
-		len = PROTOCOL_DATA_LEN;
-	}
-	if(OEM_Rec_Conf(rx_buff,len))
-	{
-		protocol_type = 1;
-		oem_send_data_instance.head = 0x55;
-		oem_send_data_instance.idex = oem_rec_data_instance.idex;
-		oem_send_data_instance.addr = oem_rec_data_instance.addr;
-		oem_send_data_instance.state = 0;
-		oem_send_data_instance.cmd_len = 0;
-		oem_send_data_instance.data_len = 6;
-		OEM_Send_Conf();
-	}
-	else
-	{
-		oem_send_data_instance.data_len = 0;
-	}
-	if(DT_Rec_Conf(rx_buff,len))
-	{
-		protocol_type = 0;
-		dt_send_data_instance.addr = dt_rec_data_instance.addr;
-		dt_send_data_instance.dt_flag = 0x3C;
-		dt_send_data_instance.state = 2 + 0x30;
-		dt_send_data_instance.data_len = 4;
-		DT_Send_Conf();
-	}
-	else
-	{
-		dt_send_data_instance.data_len = 0;
+		else if (protocol_type == PROTOCOL_OEM)
+		{
+			OEM_TYPEDEF *oem_str = (OEM_TYPEDEF*) data_struct;
+			*pdata_1++ = oem_str->head;
+			*pdata_1++ = oem_str->idex;
+			*pdata_1++ = oem_str->addr;
+			*pdata_1++ = oem_str->state;
+			*pdata_1++ = oem_str->cmd_len;
+			count = 5;
+			if (oem_str->cmd_len)
+			{
+				for (uint8_t i = 0; i < oem_str->cmd_len; i++)
+				{
+					*pdata_1++ = oem_str->data_buff[i];
+					count++;
+				}
+			}
+			oem_str->checksum = Checksum_8(oem_str->data_buff, count);
+			*pdata_1 = oem_str->checksum;
+			count++;
+			usart1_tx_struct.tx_len = count;
+		}
 	}
 }

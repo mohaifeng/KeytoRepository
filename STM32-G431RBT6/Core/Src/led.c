@@ -6,59 +6,49 @@
  */
 #include "led.h"
 
-extern uint8_t ow1_state;
-
-void Led_Init(void)
+extern TIM_HandleTypeDef htim8;
+// 设置RGB颜色 (0-255)
+static void RGBLED_SetColor(uint8_t r, uint8_t g, uint8_t b)
 {
-	HAL_GPIO_WritePin(GPIOC,LED1_RED_Pin | LED2_GREEN_Pin,GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(LED3_BLUE_GPIO_Port,LED3_BLUE_Pin,GPIO_PIN_RESET);
-	HAL_Delay(1000);
-	HAL_GPIO_WritePin(GPIOC,LED1_RED_Pin | LED2_GREEN_Pin,GPIO_PIN_SET);
-	HAL_GPIO_WritePin(LED3_BLUE_GPIO_Port,LED3_BLUE_Pin,GPIO_PIN_SET);
+	// 将8位颜色值映射到PWM占空比
+	uint16_t pulse_r = (uint16_t) ((htim8.Init.Period + 1) * (255 - r) / 255);
+	uint16_t pulse_g = (uint16_t) ((htim8.Init.Period + 1) * (255 - g) / 255);
+	uint16_t pulse_b = (uint16_t) ((htim8.Init.Period + 1) * (255 - b) / 255);
+
+	__HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, pulse_r);
+	__HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_2, pulse_g);
+	__HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3, pulse_b);
 }
 
-void Led_Color_Set(LED_COLOR_TYPEDEF idex)
+void Led_SetCorlor(ColorTypedef corlor)
 {
-	switch(idex)
-		//红绿蓝
-		{
-		case 0:
-			HAL_GPIO_WritePin(GPIOC,LED2_GREEN_Pin,GPIO_PIN_SET);
-			HAL_GPIO_WritePin(LED3_BLUE_GPIO_Port,LED3_BLUE_Pin,GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOC,LED1_RED_Pin,GPIO_PIN_RESET);
+	switch (corlor)
+	{
+		case COLOR_RED: //红色
+			RGBLED_SetColor(100, 0, 0);
 			break;
-		case 1:
-			HAL_GPIO_WritePin(LED3_BLUE_GPIO_Port,LED3_BLUE_Pin,GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOC,LED1_RED_Pin,GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOC,LED2_GREEN_Pin,GPIO_PIN_RESET);
+		case COLOR_GREEN: //绿色
+			RGBLED_SetColor(0, 100, 0);
 			break;
-		case 2:
-			HAL_GPIO_WritePin(GPIOC,LED2_GREEN_Pin,GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOC,LED1_RED_Pin,GPIO_PIN_SET);
-			HAL_GPIO_WritePin(LED3_BLUE_GPIO_Port,LED3_BLUE_Pin,GPIO_PIN_RESET);
+		case COLOR_BLUE: //蓝色
+			RGBLED_SetColor(0, 0, 100);
+			break;
+		case COLOR_YELLOW: //黄色
+			RGBLED_SetColor(100, 100, 0);
+			break;
+		case COLOR_CYAN: //青色
+			RGBLED_SetColor(0, 100, 100);
+			break;
+		case COLOR_MAGENTA: //紫色
+			RGBLED_SetColor(100, 0, 100);
+			break;
+		case COLOR_WHITE: //白色
+			RGBLED_SetColor(100, 100, 100);
+			break;
+		case COLOR_OFF: //关闭
+			RGBLED_SetColor(0, 0, 0);
 			break;
 		default:
-			HAL_GPIO_WritePin(GPIOC,LED2_GREEN_Pin,GPIO_PIN_SET);
-			HAL_GPIO_WritePin(LED3_BLUE_GPIO_Port,LED3_BLUE_Pin,GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOC,LED1_RED_Pin,GPIO_PIN_SET);
 			break;
-		}
-}
-
-void Ow_Init(void)
-{
-	ow1_state = HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_5);
-}
-
-void Ow_Set(void)
-{
-	if(ow1_state == GPIO_PIN_RESET)
-	{
-		Led_Color_Set(RED);
-	}
-	else
-	{
-		Led_Color_Set(BLUE);
 	}
 }
-

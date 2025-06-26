@@ -18,15 +18,14 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdio.h>
-#include <string.h>
-
+#include "led.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,7 +57,9 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-extern volatile uint8_t rx_finish_flag;
+SysConfig_t SysConfig;
+PlldConfig_t PlldConfig;
+PressureDectConfig_t PressureDectConfig;
 /* USER CODE END 0 */
 
 /**
@@ -67,53 +68,75 @@ extern volatile uint8_t rx_finish_flag;
  */
 int main(void)
 {
-	
-	/* USER CODE BEGIN 1 */
 
+	/* USER CODE BEGIN 1 */
+	SysConfig.addr = 1;
+	SysConfig.status = DEV_IDLE;
+	SysConfig.model = DEV_TYPE;
+	SysConfig.version = SOFTWARE_VERSION;
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/
 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
-	
+
 	/* USER CODE BEGIN Init */
 
 	/* USER CODE END Init */
 
 	/* Configure the system clock */
 	SystemClock_Config();
-	
+
 	/* USER CODE BEGIN SysInit */
 
 	/* USER CODE END SysInit */
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
+	MX_DMA_Init();
 	MX_USART1_UART_Init();
 	MX_TIM6_Init();
+	MX_USART2_UART_Init();
+	MX_TIM2_Init();
+	MX_TIM8_Init();
 	/* USER CODE BEGIN 2 */
-	Ow_Init();
-	
+
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 //	uint8_t ch[] = { 'I', 't', 0x0D }; //你好
 //	uint8_t ow_state = 0;
-	while(1)
+	while (1)
 	{
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		Ow_Set();
-		// 检查是否超时
-		if(rx_finish_flag)
-		{
-			// 处理接收完成的数据
-			ProcessReceivedData();
-			rx_finish_flag = 0;
-		}
+		Led_SetCorlor(COLOR_RED);
+		HAL_Delay(1000);
+		Led_SetCorlor(COLOR_GREEN);
+		HAL_Delay(1000);
+		Led_SetCorlor(COLOR_BLUE);
+		HAL_Delay(1000);
+		Led_SetCorlor(COLOR_YELLOW);
+		HAL_Delay(1000);
+		Led_SetCorlor(COLOR_CYAN);
+		HAL_Delay(1000);
+		Led_SetCorlor(COLOR_MAGENTA);
+		HAL_Delay(1000);
+		Led_SetCorlor(COLOR_WHITE);
+		HAL_Delay(1000);
+		Led_SetCorlor(COLOR_OFF);
+		HAL_Delay(1000);
+//		if(usart1_rx_struct.usart_rx_flag == 1)  //接收完成标志
+//		{
+//			Usart_ProcessReceivedData(&huart1);
+//		}
+//		if(usart2_rx_struct.usart_rx_flag == 1)
+//		{
+//			Usart_ProcessReceivedData(&huart2);
+//		}
 	}
 	/* USER CODE END 3 */
 }
@@ -126,11 +149,11 @@ void SystemClock_Config(void)
 {
 	RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
 	RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
-	
+
 	/** Configure the main internal regulator output voltage
 	 */
 	HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);
-	
+
 	/** Initializes the RCC Oscillators according to the specified parameters
 	 * in the RCC_OscInitTypeDef structure.
 	 */
@@ -143,20 +166,21 @@ void SystemClock_Config(void)
 	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
 	RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
 	RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
-	if(HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
 	{
 		Error_Handler();
 	}
-	
+
 	/** Initializes the CPU, AHB and APB buses clocks
 	 */
-	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-	
-	if(HAL_RCC_ClockConfig(&RCC_ClkInitStruct,FLASH_LATENCY_4) != HAL_OK)
+
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
 	{
 		Error_Handler();
 	}
@@ -175,7 +199,7 @@ void Error_Handler(void)
 	/* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
 	__disable_irq();
-	while(1)
+	while (1)
 	{
 	}
 	/* USER CODE END Error_Handler_Debug */

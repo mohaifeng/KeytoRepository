@@ -167,6 +167,7 @@ class keyto_dt_prot:
                 self.state = int(bytes.fromhex(data_hex.split('3A')[0]))
                 self.rx_data = data_hex.split('3A')[1]
             else:
+                self.state = int(bytes.fromhex(data_hex[0:2]))
                 self.rx_data = ''
             return True
         return False

@@ -8,16 +8,20 @@
 #ifndef INC_LED_H_
 #define INC_LED_H_
 
-#include "main.h"
-
+#include "stm32g4xx_hal.h"
+// 颜色和闪烁状态变量
 typedef enum
 {
-	RED, GREEN, BLUE,
-} LED_COLOR_TYPEDEF;
+	COLOR_RED,//红色
+	COLOR_GREEN,//绿色
+	COLOR_BLUE,//蓝色
+	COLOR_YELLOW,//黄色
+	COLOR_CYAN,//青色
+	COLOR_MAGENTA,//紫色
+	COLOR_WHITE,//白色
+	COLOR_OFF//关闭
+} ColorTypedef;
 
-void Led_Init(void);
-void Led_Color_Set(LED_COLOR_TYPEDEF idex);
-void Ow_Init(void);
-void Ow_Set(void);
+void Led_SetCorlor(ColorTypedef corlor);
 
 #endif /* INC_LED_H_ */

@@ -1,38 +1,38 @@
 /**
- ******************************************************************************
- * @file    stm32g4xx.h
- * @author  MCD Application Team
- * @brief   CMSIS STM32G4xx Device Peripheral Access Layer Header File.
- *
- *          The file is the unique include file that the application programmer
- *          is using in the C source code, usually in main.c. This file contains:
- *           - Configuration section that allows to select:
- *              - The STM32G4xx device used in the target application
- *              - To use or not the peripheralï¿½s drivers in application code(i.e.
- *                code will be based on direct access to peripheralï¿½s registers
- *                rather than drivers API), this option is controlled by
- *                "#define USE_HAL_DRIVER"
- *
- ******************************************************************************
- * @attention
- *
- * Copyright (c) 2019 STMicroelectronics.
- * All rights reserved.
- *
- * This software is licensed under terms that can be found in the LICENSE file
- * in the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- *
- ******************************************************************************
- */
+  ******************************************************************************
+  * @file    stm32g4xx.h
+  * @author  MCD Application Team
+  * @brief   CMSIS STM32G4xx Device Peripheral Access Layer Header File.
+  *
+  *          The file is the unique include file that the application programmer
+  *          is using in the C source code, usually in main.c. This file contains:
+  *           - Configuration section that allows to select:
+  *              - The STM32G4xx device used in the target application
+  *              - To use or not the peripheral’s drivers in application code(i.e.
+  *                code will be based on direct access to peripheral’s registers
+  *                rather than drivers API), this option is controlled by
+  *                "#define USE_HAL_DRIVER"
+  *
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2019 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
 
 /** @addtogroup CMSIS
- * @{
- */
+  * @{
+  */
 
 /** @addtogroup stm32g4xx
- * @{
- */
+  * @{
+  */
 
 #ifndef __STM32G4xx_H
 #define __STM32G4xx_H
@@ -42,19 +42,19 @@
 #endif /* __cplusplus */
 
 /** @addtogroup Library_configuration_section
- * @{
- */
+  * @{
+  */
 
 /**
- * @brief STM32 Family
- */
+  * @brief STM32 Family
+  */
 #if !defined (STM32G4)
 #define STM32G4
 #endif /* STM32G4 */
 
 /* Uncomment the line below according to the target STM32G4 device used in your
- application
- */
+   application
+  */
 
 #if !defined (STM32G431xx) && !defined (STM32G441xx) && !defined (STM32G471xx) && \
     !defined (STM32G473xx) && !defined (STM32G474xx) && !defined (STM32G484xx) && \
@@ -76,8 +76,8 @@
 #endif
 
 /*  Tip: To avoid modifying this file each time you need to switch between these
- devices, you can define the device in your toolchain compiler preprocessor.
- */
+        devices, you can define the device in your toolchain compiler preprocessor.
+  */
 #if !defined  (USE_HAL_DRIVER)
 /**
  * @brief Comment the line below if you will not use the peripherals drivers.
@@ -88,8 +88,8 @@
 #endif /* USE_HAL_DRIVER */
 
 /**
- * @brief CMSIS Device version number V1.2.5
- */
+  * @brief CMSIS Device version number V1.2.5
+  */
 #define __STM32G4_CMSIS_VERSION_MAIN   (0x01U) /*!< [31:24] main version */
 #define __STM32G4_CMSIS_VERSION_SUB1   (0x02U) /*!< [23:16] sub1 version */
 #define __STM32G4_CMSIS_VERSION_SUB2   (0x05U) /*!< [15:8]  sub2 version */
@@ -100,15 +100,15 @@
                                        |(__STM32G4_CMSIS_VERSION_RC))
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @addtogroup Device_Included
- * @{
- */
+  * @{
+  */
 
 #if defined(STM32G431xx)
-#include "stm32g431xx.h"
+  #include "stm32g431xx.h"
 #elif defined(STM32G441xx)
   #include "stm32g441xx.h"
 #elif defined(STM32G471xx)
@@ -138,35 +138,39 @@
 #endif
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @addtogroup Exported_types
- * @{
- */
+  * @{
+  */
 typedef enum
 {
-	RESET = 0, SET = !RESET
+  RESET = 0,
+  SET = !RESET
 } FlagStatus, ITStatus;
 
 typedef enum
 {
-	DISABLE = 0, ENABLE = !DISABLE
+  DISABLE = 0,
+  ENABLE = !DISABLE
 } FunctionalState;
 #define IS_FUNCTIONAL_STATE(STATE) (((STATE) == DISABLE) || ((STATE) == ENABLE))
 
 typedef enum
 {
-	SUCCESS = 0, ERROR = !SUCCESS
+  SUCCESS = 0,
+  ERROR = !SUCCESS
 } ErrorStatus;
 
 /**
- * @}
- */
+  * @}
+  */
+
 
 /** @addtogroup Exported_macros
- * @{
- */
+  * @{
+  */
 #define SET_BIT(REG, BIT)     ((REG) |= (BIT))
 
 #define CLEAR_BIT(REG, BIT)   ((REG) &= ~(BIT))
@@ -238,12 +242,13 @@ typedef enum
     } while ((__STREXH(val,(__IO uint16_t *)&(REG))) != 0U);               \
   } while(0)
 
+
 /**
- * @}
- */
+  * @}
+  */
 
 #if defined (USE_HAL_DRIVER)
-#include "stm32g4xx_hal.h"
+ #include "stm32g4xx_hal.h"
 #endif /* USE_HAL_DRIVER */
 
 #ifdef __cplusplus
@@ -252,10 +257,13 @@ typedef enum
 
 #endif /* __STM32G4xx_H */
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
+
+
+
 

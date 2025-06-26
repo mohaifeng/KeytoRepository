@@ -1,3 +1,4 @@
+import sys
 import time
 from binascii import a2b_hex
 import Com.Port.check as ck
@@ -212,7 +213,7 @@ class step_drs:
         self.protocol = 'KEYTO'  # KEYTO:keyto通用协议
         self.address = 0
         self.version = ''
-        self.status=0
+        self.status = 0
         self.gen_prot = pr.keyto_gen_prot()
         self.gen_cmd = cmd.drs_cmd()
         self.tx_data = ''
@@ -537,8 +538,8 @@ class vlg_pusi:
     def Pusi_Send(self, data: str):
         self.tx_data = self.pusi_prot.Ps_Cmd_Conf(self.address, data)
         print(datetime.datetime.now(), end=':')
-        print('Send:', data)
-        return self.pusi_ser.PortSend(bytes.fromhex(data))
+        print('Send:', self.tx_data)
+        return self.pusi_ser.PortSend(bytes.fromhex(self.tx_data))
 
     def Protocol_Check(self):
         return self.pusi_prot.Rec_Data_Conf(self.rx_data)
@@ -588,10 +589,16 @@ class vlg_pusi:
 
 
 if __name__ == '__main__':
-    sp.Reset_Ser_Baud(0, 'com36', 38400)
-    drs = step_drs()
-    drs.Transmit(drs.gen_cmd.Valve_Control(2))
-    drs.Wait_Rx_Finish()
-    time.sleep(2)
-    drs.Transmit(drs.gen_cmd.Valve_Control(0))
-    drs.Wait_Rx_Finish()
+    sp.Reset_Ser_Baud(0, 'com36', 9600)
+    pusi = vlg_pusi()
+    pusi.Get_Pusi_Address()
+    pusi.Pusi_Send(pusi.pusi_cmd.Init(0))
+    if not pusi.Pusi_Receive():
+        sys.exit()
+    pusi.Check_Pusi_State()
+    # drs = step_drs()
+    # drs.Transmit(drs.gen_cmd.Valve_Control(2))
+    # drs.Wait_Rx_Finish()
+    # time.sleep(2)
+    # drs.Transmit(drs.gen_cmd.Valve_Control(0))
+    # drs.Wait_Rx_Finish()

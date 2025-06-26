@@ -1,61 +1,61 @@
 /**
- ******************************************************************************
- * @file    stm32g4xx_hal_flash_ramfunc.c
- * @author  MCD Application Team
- * @brief   FLASH RAMFUNC driver.
- *          This file provides a Flash firmware functions which should be
- *          executed from internal SRAM
- *            + FLASH Power Down in Run mode
- *            + FLASH DBANK User Option Byte
- *
- *
- @verbatim
- ==============================================================================
- ##### Flash RAM functions #####
- ==============================================================================
+  ******************************************************************************
+  * @file    stm32g4xx_hal_flash_ramfunc.c
+  * @author  MCD Application Team
+  * @brief   FLASH RAMFUNC driver.
+  *          This file provides a Flash firmware functions which should be
+  *          executed from internal SRAM
+  *            + FLASH Power Down in Run mode
+  *            + FLASH DBANK User Option Byte
+  *
+  *
+  @verbatim
+  ==============================================================================
+                   ##### Flash RAM functions #####
+  ==============================================================================
 
- *** ARM Compiler ***
- --------------------
- [..] RAM functions are defined using the toolchain options.
- Functions that are executed in RAM should reside in a separate
- source module. Using the 'Options for File' dialog you can simply change
- the 'Code / Const' area of a module to a memory space in physical RAM.
- Available memory areas are declared in the 'Target' tab of the
- Options for Target' dialog.
+    *** ARM Compiler ***
+    --------------------
+    [..] RAM functions are defined using the toolchain options.
+         Functions that are executed in RAM should reside in a separate
+         source module. Using the 'Options for File' dialog you can simply change
+         the 'Code / Const' area of a module to a memory space in physical RAM.
+         Available memory areas are declared in the 'Target' tab of the
+         Options for Target' dialog.
 
- *** ICCARM Compiler ***
- -----------------------
- [..] RAM functions are defined using a specific toolchain keyword "__ramfunc".
+    *** ICCARM Compiler ***
+    -----------------------
+    [..] RAM functions are defined using a specific toolchain keyword "__ramfunc".
 
- *** GNU Compiler ***
- --------------------
- [..] RAM functions are defined using a specific toolchain attribute
- "__attribute__((section(".RamFunc")))".
+    *** GNU Compiler ***
+    --------------------
+    [..] RAM functions are defined using a specific toolchain attribute
+         "__attribute__((section(".RamFunc")))".
 
- @endverbatim
- ******************************************************************************
- * @attention
- *
- * Copyright (c) 2019 STMicroelectronics.
- * All rights reserved.
- *
- * This software is licensed under terms that can be found in the LICENSE file in
- * the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- ******************************************************************************
- */
+  @endverbatim
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2019 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  ******************************************************************************
+  */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32g4xx_hal.h"
 
 /** @addtogroup STM32G4xx_HAL_Driver
- * @{
- */
+  * @{
+  */
 
 /** @defgroup FLASH_RAMFUNC FLASH_RAMFUNC
- * @brief FLASH functions executed from RAM
- * @{
- */
+  * @brief FLASH functions executed from RAM
+  * @{
+  */
 
 #ifdef HAL_FLASH_MODULE_ENABLED
 
@@ -67,48 +67,48 @@
 /* Exported functions -------------------------------------------------------*/
 
 /** @defgroup FLASH_RAMFUNC_Exported_Functions FLASH_RAMFUNC Exported Functions
- * @{
- */
+  * @{
+  */
 
 /** @defgroup FLASH_RAMFUNC_Exported_Functions_Group1 Peripheral features functions
  *  @brief   Data transfers functions
  *
- @verbatim
+@verbatim
  ===============================================================================
- ##### ramfunc functions #####
+                      ##### ramfunc functions #####
  ===============================================================================
- [..]
- This subsection provides a set of functions that should be executed from RAM.
+    [..]
+    This subsection provides a set of functions that should be executed from RAM.
 
- @endverbatim
- * @{
- */
+@endverbatim
+  * @{
+  */
 
 /**
- * @brief  Enable the Power down in Run Mode
- * @note   This function should be called and executed from SRAM memory.
- * @retval None
- */
+  * @brief  Enable the Power down in Run Mode
+  * @note   This function should be called and executed from SRAM memory.
+  * @retval None
+  */
 __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_EnableRunPowerDown(void)
 {
-	/* Enable the Power Down in Run mode*/
-	__HAL_FLASH_POWER_DOWN_ENABLE();
-	
-	return HAL_OK;
-	
+  /* Enable the Power Down in Run mode*/
+  __HAL_FLASH_POWER_DOWN_ENABLE();
+
+  return HAL_OK;
+
 }
 
 /**
- * @brief  Disable the Power down in Run Mode
- * @note   This function should be called and executed from SRAM memory.
- * @retval None
- */
+  * @brief  Disable the Power down in Run Mode
+  * @note   This function should be called and executed from SRAM memory.
+  * @retval None
+  */
 __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_DisableRunPowerDown(void)
 {
-	/* Disable the Power Down in Run mode*/
-	__HAL_FLASH_POWER_DOWN_DISABLE();
-	
-	return HAL_OK;
+  /* Disable the Power Down in Run mode*/
+  __HAL_FLASH_POWER_DOWN_DISABLE();
+
+  return HAL_OK;
 }
 
 #if defined (FLASH_OPTR_DBANK)
@@ -230,19 +230,24 @@ __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_OB_DBankConfig(uint32_t DBankConfig)
 #endif
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 #endif /* HAL_FLASH_MODULE_ENABLED */
 
-/**
- * @}
- */
+
 
 /**
- * @}
- */
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+
+
 
