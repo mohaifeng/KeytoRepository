@@ -39,7 +39,7 @@ extern UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN Private defines */
 #define BUFFER_SIZE		255  // 缓冲区大小
-
+#define SYS_USART_INIT_CONFIG 0//是否使用系统串口配置
 /* USER CODE END Private defines */
 
 void MX_USART1_UART_Init(void);
@@ -69,7 +69,8 @@ void MX_USART1_UART_Init(void);
 void MX_USART2_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+void User_USART1_UART_Init(void);
+void User_USART2_UART_Init(void);
 void Usart_SendData(UART_HandleTypeDef *huart,const void *pro_struct);
 void Usart_ProcessReceivedData(UART_HandleTypeDef *huart);
 /* USER CODE END Prototypes */

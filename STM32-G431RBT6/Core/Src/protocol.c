@@ -13,7 +13,7 @@ void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 {
 	const uint8_t *tmp_dt_pdata = rx_buff;
 	const uint8_t *tmp_oem_pdata = rx_buff;
-	uint8_t tmp_flag = 0;
+	uint8_t tmp_flag = 0; //找到地址标志
 	uint8_t start_data_idex = 0;
 	DT_TYPEDEF tmp_dt_stu = { 0 };
 	OEM_TYPEDEF tmp_oem_stu = { 0 };
@@ -22,16 +22,39 @@ void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 	{
 		if ((*tmp_dt_pdata == 0x3E) && (~tmp_flag))
 		{
-			if (SysConfig.addr > 9)
+			if (SysConfig.addr > 99)
+			{
+				if (i > 2)
+				{
+					tmp_dt_stu.addr = (*(tmp_dt_pdata - 1) - 0x30) + (*(tmp_dt_pdata - 2) - 0x30) * 10
+							+ (*(tmp_dt_pdata - 3) - 0x30) * 100;
+				}
+				else
+				{
+					tmp_dt_stu.addr = 0;
+				}
+			}
+			else if (SysConfig.addr > 9)
 			{
 				if (i > 1)
 				{
 					tmp_dt_stu.addr = (*(tmp_dt_pdata - 1) - 0x30) + (*(tmp_dt_pdata - 2) - 0x30) * 10;
 				}
+				else
+				{
+					tmp_dt_stu.addr = 0;
+				}
 			}
 			else
 			{
-				tmp_dt_stu.addr = (*(tmp_dt_pdata - 1) - 0x30);
+				if (i > 0)
+				{
+					tmp_dt_stu.addr = (*(tmp_dt_pdata - 1) - 0x30);
+				}
+				else
+				{
+					tmp_dt_stu.addr = 0;
+				}
 			}
 			if (tmp_dt_stu.addr == SysConfig.addr)
 			{

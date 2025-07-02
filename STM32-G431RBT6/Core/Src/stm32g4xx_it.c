@@ -22,6 +22,8 @@
 #include "stm32g4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "led.h"
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -281,12 +283,10 @@ void EXTI9_5_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
-	uint8_t c;
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */
-	c = huart1.Instance->RDR;
-	huart1.Instance->RDR = c;
+	USER_UART_IRQHandler(&huart1);
   /* USER CODE END USART1_IRQn 1 */
 }
 
@@ -300,7 +300,7 @@ void USART2_IRQHandler(void)
   /* USER CODE END USART2_IRQn 0 */
   HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */
-
+	USER_UART_IRQHandler(&huart2);
   /* USER CODE END USART2_IRQn 1 */
 }
 
@@ -338,17 +338,86 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if(GPIO_Pin == OW1_Pin)
 	{
-		HAL_Delay(50);
-		GPIO_PinState pinState = HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_5);
-
+		HAL_Delay(10);
+		GPIO_PinState pinState = HAL_GPIO_ReadPin(OW1_GPIO_Port,OW1_Pin);
 		// 根据引脚状态执行操作
 		if(pinState == GPIO_PIN_SET)
 		{
-			SysConfig.ow1_status = 1;
+			SysConfig.ow1_status = 0;
 		}
 		else
 		{
-			SysConfig.ow1_status = 0;
+			SysConfig.ow1_status = 1;
+		}
+	}
+	if(GPIO_Pin == OW2_Pin)
+	{
+		HAL_Delay(10);
+		GPIO_PinState pinState = HAL_GPIO_ReadPin(OW2_GPIO_Port,OW2_Pin);
+		// 根据引脚状态执行操作
+		if(pinState == GPIO_PIN_SET)
+		{
+			SysConfig.ow2_status = 0;
+			Led_SetCorlor(COLOR_OFF);
+		}
+		else
+		{
+			SysConfig.ow2_status = 1;
+			Led_SetCorlor(COLOR_GREEN);
+		}
+	}
+}
+
+void USER_UART_IRQHandler(UART_HandleTypeDef *huart)
+{
+	if (huart->Instance == USART1) //判断是否是串口1
+	{
+		if (RESET != __HAL_UART_GET_FLAG(&huart1, UART_FLAG_IDLE))  //判断是否是空闲中断
+		{
+			__HAL_UART_CLEAR_IDLEFLAG(&huart1);  //清楚空闲中断标志（否则会一直不断进入中断）
+			USER_UART_IDLECallback(&huart1);  //调用中断处理函数
+		}
+	}
+	if (huart->Instance == USART2) //判断是否是串口1
+	{
+		if (RESET != __HAL_UART_GET_FLAG(&huart2, UART_FLAG_IDLE))  //判断是否是空闲中断
+		{
+			__HAL_UART_CLEAR_IDLEFLAG(&huart2);  //清楚空闲中断标志（否则会一直不断进入中断）
+			USER_UART_IDLECallback(&huart2);  //调用中断处理函数
+		}
+	}
+}
+
+void USER_UART_IDLECallback(UART_HandleTypeDef *huart)
+{
+	if (huart->Instance == USART1)
+	{
+		HAL_UART_DMAStop(&huart1);  //停止本次DMA传输
+		usart1_rx_struct.rx_len = BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);  //计算接收到的数据长度
+		if (usart1_rx_struct.rx_len != 0)
+		{
+			usart1_rx_struct.usart_rx_flag = 1;    // 接受完成标志位置1
+		}
+		else
+		{
+			usart1_rx_struct.usart_rx_flag = 0;
+			Start_DMA_Receive(&huart1); //开启DMA接收
+			__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);	//使能空闲中断
+		}
+	}
+	if (huart->Instance == USART2)
+	{
+		HAL_UART_DMAStop(&huart2);  //停止本次DMA传输
+		usart2_rx_struct.rx_len = BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart2_rx);  //计算接收到的数据长度
+		if (usart2_rx_struct.rx_len != 0)
+		{
+			usart2_rx_struct.usart_rx_flag = 1;    // 接受完成标志位置1
+		}
+		else
+		{
+			usart2_rx_struct.usart_rx_flag = 0;
+			Start_DMA_Receive(&huart2); //开启DMA接收
+			__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);	//使能空闲中断
 		}
 	}
 }

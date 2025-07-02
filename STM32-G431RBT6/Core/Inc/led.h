@@ -23,5 +23,5 @@ typedef enum
 } ColorTypedef;
 
 void Led_SetCorlor(ColorTypedef corlor);
-
+void Led_Init(void);
 #endif /* INC_LED_H_ */

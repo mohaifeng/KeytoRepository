@@ -100,6 +100,7 @@ void Cmd_Data_Config(UART_HandleTypeDef *huart, const uint8_t *cmd_buff, uint8_t
 		if (ControlCmd_LegalCheck_Callback(huart, 0x4000, cmd_buff, buff_size) == HAL_OK)
 		{
 			Fun_Init();
+			return;
 		}
 	}
 	if (*cmd_buff == 'W' && *(cmd_buff + 1) == 'r')

@@ -100,5 +100,14 @@ void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 2 */
-
+void Get_SysAddr(void)
+{
+	uint8_t addr = 0;
+	addr |= ((!HAL_GPIO_ReadPin(MCU_ID1_GPIO_Port, MCU_ID1_Pin) ? 1 : 0) << 0);
+	addr |= ((!HAL_GPIO_ReadPin(MCU_ID2_GPIO_Port, MCU_ID2_Pin) ? 1 : 0) << 1);
+	addr |= ((!HAL_GPIO_ReadPin(MCU_ID3_GPIO_Port, MCU_ID3_Pin) ? 1 : 0) << 2);
+	addr |= ((!HAL_GPIO_ReadPin(MCU_ID4_GPIO_Port, MCU_ID4_Pin) ? 1 : 0) << 3);
+	addr |= ((!HAL_GPIO_ReadPin(MCU_ID5_GPIO_Port, MCU_ID5_Pin) ? 1 : 0) << 4);
+	SysConfig.addr = addr + 1;
+}
 /* USER CODE END 2 */

@@ -52,3 +52,9 @@ void Led_SetCorlor(ColorTypedef corlor)
 			break;
 	}
 }
+void Led_Init(void)
+{
+	Led_SetCorlor(COLOR_WHITE);
+	HAL_Delay(1000);
+	Led_SetCorlor(COLOR_OFF);
+}

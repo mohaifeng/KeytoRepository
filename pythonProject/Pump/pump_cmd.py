@@ -116,6 +116,43 @@ class drl_pump_cmd:
         return ser_cmd
 
 
+class drl_meteringpump_cmd:
+    def __init__(self):
+        self.gap_flag = '2C'
+        self.contr_cmd = {
+            '置零': 'Ct',
+            '持续运行': 'Cr',
+            '指定运行': 'Cp',
+            '阀控制': 'Vc',
+        }
+
+    def Cmd_Conf(self, cmd: str, *args: int):
+        cmd_hex = cmd.encode('utf-8').hex()
+        par = ''
+        for i in range(0, len(args)):
+            if i < len(args) - 1:
+                par += str(args[i]).encode().hex() + self.gap_flag
+            else:
+                par += str(args[i]).encode().hex()
+        return (cmd_hex + par).upper()
+
+    def Ct(self, speed=5, mode=0):
+        ser_cmd = self.Cmd_Conf(self.contr_cmd['置零'], speed, mode)
+        return ser_cmd
+
+    def Cr(self, speed=5, mode=0):
+        ser_cmd = self.Cmd_Conf(self.contr_cmd['吸液'], speed, mode)
+        return ser_cmd
+
+    def Cp(self, dist, speed=5, mode=0):
+        ser_cmd = self.Cmd_Conf(self.contr_cmd['排液'], dist, speed, mode)
+        return ser_cmd
+
+    def Vc(self, pc_mode=0):
+        ser_cmd = self.Cmd_Conf(self.contr_cmd['阀控制'], pc_mode)
+        return ser_cmd
+
+
 class pusi_cmd:
     """
     普斯指令，需指定地址以及模式（232 and 485）

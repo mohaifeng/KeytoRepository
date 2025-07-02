@@ -66,7 +66,7 @@ typedef struct
 	DEV_STATUSTYPEDEF status; //状态
 	uint32_t permission; //权限
 	uint8_t ow1_status;
-	uint8_t is_tip; //tip在位标志
+	uint8_t ow2_status; //tip在位标志
 	int32_t pressure; //压力值
 	uint8_t gpo1_out_mode; //gpo1输出模式
 	uint16_t max_volume; //最大体积
