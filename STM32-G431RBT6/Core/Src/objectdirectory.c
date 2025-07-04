@@ -14,7 +14,6 @@
 int32_t oddata_arr[OD_SIZE] = { 0 }; //对象字典数据数组
 OD_ENTRYTYPEDEF object_dictionary[OD_SIZE] = { 0 };
 uint8_t od_count = 0; //对象字典数组序号
-extern SysConfig_t SysConfig;
 
 static void OD_Config_Callback(uint16_t index, uint8_t sub, OD_ACCESSTYPEDEF access, int32_t Deftval, int32_t Minval,
 		int32_t Maxval)
@@ -103,17 +102,17 @@ HAL_StatusTypeDef OD_Read(uint16_t index, uint8_t sub_index, int32_t *pdata)
 	{
 		if (!(entry->access & OD_READ))
 		{
-			cmd_finish_flag = READ_WRITE_ONLY;
+			cmd_execute_status = READ_WRITE_ONLY;
 			return HAL_ERROR;
 		}
 		else
 		{
 			*pdata = *entry->data_ptr;
-			cmd_finish_flag = EXECUTE_SUCCESS;
+			cmd_execute_status = EXECUTE_SUCCESS;
 			return HAL_OK;
 		}
 	}
-	cmd_finish_flag = PARAMETER_ERROR;
+	cmd_execute_status = PARAMETER_ERROR;
 	return HAL_ERROR;
 }
 
@@ -131,25 +130,25 @@ HAL_StatusTypeDef OD_Write(uint16_t index, uint8_t sub_index, int32_t value)
 	{
 		if (!(entry->access & OD_WRITE))
 		{
-			cmd_finish_flag = READ_WRITE_ONLY;
+			cmd_execute_status = READ_WRITE_ONLY;
 			return HAL_ERROR;
 		}
 		else
 		{
 			if (value < entry->Minval && value > entry->Maxval)
 			{
-				cmd_finish_flag = OVER_LIMIT;
+				cmd_execute_status = OVER_LIMIT;
 				return HAL_ERROR;
 			}
 			else
 			{
 				*entry->data_ptr = value;
-				cmd_finish_flag = EXECUTE_SUCCESS;
+				cmd_execute_status = EXECUTE_SUCCESS;
 				return HAL_OK;
 			}
 		}
 	}
-	cmd_finish_flag = PARAMETER_ERROR;
+	cmd_execute_status = PARAMETER_ERROR;
 	return HAL_ERROR;
 }
 

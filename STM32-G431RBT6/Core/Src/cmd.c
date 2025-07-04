@@ -13,7 +13,7 @@
 #include "objectdirectory.h"
 #include "register.h"
 
-DEV_STATUSTYPEDEF cmd_finish_flag;
+DEV_STATUSTYPEDEF cmd_execute_status;
 void Fun_Init()
 {
 
@@ -28,7 +28,7 @@ void Cmd_Response(UART_HandleTypeDef *huart, ProtocolType protocol_type, uint8_t
 			case PROTOCOL_DT:
 				dt_struct.addr = SysConfig.addr;
 				dt_struct.dt_flag = 0x3C;
-				dt_struct.state = cmd_finish_flag;
+				dt_struct.state = cmd_execute_status;
 				dt_struct.cmd_len = datalen;
 				if (datalen)
 				{
@@ -39,7 +39,7 @@ void Cmd_Response(UART_HandleTypeDef *huart, ProtocolType protocol_type, uint8_t
 			case PROTOCOL_OEM:
 				oem_struct.head = 0x55;
 				oem_struct.addr = SysConfig.addr;
-				oem_struct.state = cmd_finish_flag;
+				oem_struct.state = cmd_execute_status;
 				oem_struct.cmd_len = datalen;
 				if (datalen)
 				{
@@ -53,8 +53,30 @@ void Cmd_Response(UART_HandleTypeDef *huart, ProtocolType protocol_type, uint8_t
 	}
 }
 
-HAL_StatusTypeDef ControlCmd_LegalCheck_Callback(UART_HandleTypeDef *huart, uint16_t idex, const uint8_t *cmd_buff,
-		uint8_t buff_size)
+HAL_StatusTypeDef Cmd_LegalCheck_Callback(const uint8_t *cmd_buff, uint8_t buff_size)
+{
+	uint8_t cmd_num = 0;
+	while (buff_size--)
+	{
+		if (*cmd_buff < 0x30 || *cmd_buff > 0x39)
+		{
+			cmd_num++;
+		}
+		else if (cmd_num == CMD_LEN)
+		{
+			return HAL_OK;
+		}
+		else
+		{
+			break;
+		}
+	}
+	cmd_execute_status = INVALID_CMD;
+
+	return HAL_ERROR;
+}
+
+HAL_StatusTypeDef CmdPar_LegalCheck_Callback(uint16_t idex, const uint8_t *cmd_buff, uint8_t buff_size)
 {
 	uint8_t separator = ',';
 	uint32_t num = 0;
@@ -68,7 +90,6 @@ HAL_StatusTypeDef ControlCmd_LegalCheck_Callback(UART_HandleTypeDef *huart, uint
 			{
 				if (OD_Write(idex, subidex, num) != HAL_OK)
 				{
-					Cmd_Response(huart, protocol_type, NULL, 0);
 					return HAL_ERROR;
 				}
 			}
@@ -80,12 +101,11 @@ HAL_StatusTypeDef ControlCmd_LegalCheck_Callback(UART_HandleTypeDef *huart, uint
 			num = num * 10 + (*(cmd_buff + i) - 0x30);
 		}
 	}
-	Cmd_Response(huart, protocol_type, NULL, 0);
 	return HAL_OK;
 }
 
 //指令数据处理函数
-void Cmd_Data_Config(UART_HandleTypeDef *huart, const uint8_t *cmd_buff, uint8_t buff_size)
+void Cmd_Task(UART_HandleTypeDef *huart, const uint8_t *cmd_buff, uint8_t buff_size)
 {
 	uint8_t separator = ',';
 	uint32_t num = 0;
@@ -94,11 +114,16 @@ void Cmd_Data_Config(UART_HandleTypeDef *huart, const uint8_t *cmd_buff, uint8_t
 	{
 		return;
 	}
-
+	if (Cmd_LegalCheck_Callback(cmd_buff, buff_size) != HAL_OK)
+	{
+		Cmd_Response(huart, protocol_type, NULL, 0);
+		return;
+	}
 	if (*cmd_buff == 'I' && *(cmd_buff + 1) == 't')
 	{
-		if (ControlCmd_LegalCheck_Callback(huart, 0x4000, cmd_buff, buff_size) == HAL_OK)
+		if (CmdPar_LegalCheck_Callback(0x4000, cmd_buff, buff_size) == HAL_OK)
 		{
+			Cmd_Response(huart, protocol_type, NULL, 0);
 			Fun_Init();
 			return;
 		}
@@ -120,7 +145,6 @@ void Cmd_Data_Config(UART_HandleTypeDef *huart, const uint8_t *cmd_buff, uint8_t
 		OD_Write(0x2000, subidex, num);
 		Cmd_Response(huart, protocol_type, NULL, 0);
 		return;
-
 	}
 	if (*cmd_buff == 'R' && *(cmd_buff + 1) == 'r')
 	{
@@ -139,6 +163,7 @@ void Cmd_Data_Config(UART_HandleTypeDef *huart, const uint8_t *cmd_buff, uint8_t
 		if (subidex == 0)
 		{
 			subidex = num;
+			num = 0;
 		}
 		int32_t data = 0;
 		if (OD_Read(0x2000, subidex, &data) == HAL_OK)
@@ -148,11 +173,8 @@ void Cmd_Data_Config(UART_HandleTypeDef *huart, const uint8_t *cmd_buff, uint8_t
 			Cmd_Response(huart, protocol_type, ascii_buf, datalen);
 			return;
 		}
-		else
-		{
-			Cmd_Response(huart, protocol_type, NULL, 0);
-			return;
-		}
+		Cmd_Response(huart, protocol_type, NULL, 0);
+		return;
 	}
 	if (*cmd_buff == 'S')
 	{
@@ -162,7 +184,7 @@ void Cmd_Data_Config(UART_HandleTypeDef *huart, const uint8_t *cmd_buff, uint8_t
 			return;
 		}
 	}
-	cmd_finish_flag = INVALID_CMD;
+	cmd_execute_status = INVALID_CMD;
 	Cmd_Response(huart, protocol_type, NULL, 0);
 }
 

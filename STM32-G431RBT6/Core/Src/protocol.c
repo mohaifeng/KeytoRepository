@@ -9,103 +9,64 @@ DT_TYPEDEF dt_struct; //dt结构体变量
 ProtocolType protocol_type = PROTOCOL_NULL;
 
 //功能：检查接收数据是否符合oem/DT协议规范，，符合写入相应结构体变量，将协议类型置相应位
-void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
+void Protocol_Analyze(const uint8_t *rx_buff, uint16_t len)
 {
 	const uint8_t *tmp_dt_pdata = rx_buff;
 	const uint8_t *tmp_oem_pdata = rx_buff;
 	uint8_t tmp_flag = 0; //找到地址标志
-	uint8_t start_data_idex = 0;
+	uint8_t cmd_start_idex = 0;
 	DT_TYPEDEF tmp_dt_stu = { 0 };
 	OEM_TYPEDEF tmp_oem_stu = { 0 };
 	//DT协议解析
 	for (uint16_t i = 0; i < len; i++) //找到0x3E
 	{
-		if ((*tmp_dt_pdata == 0x3E) && (~tmp_flag))
+		if ((~tmp_flag) && (*tmp_dt_pdata == 0x3E))
 		{
-			if (SysConfig.addr > 99)
+			tmp_dt_stu.addr = 0;
+			for (uint16_t j = 0; j < i; j++)
 			{
-				if (i > 2)
+				if (rx_buff[j] > 0x29 || rx_buff[j] < 0x40)
 				{
-					tmp_dt_stu.addr = (*(tmp_dt_pdata - 1) - 0x30) + (*(tmp_dt_pdata - 2) - 0x30) * 10
-							+ (*(tmp_dt_pdata - 3) - 0x30) * 100;
-				}
-				else
-				{
-					tmp_dt_stu.addr = 0;
-				}
-			}
-			else if (SysConfig.addr > 9)
-			{
-				if (i > 1)
-				{
-					tmp_dt_stu.addr = (*(tmp_dt_pdata - 1) - 0x30) + (*(tmp_dt_pdata - 2) - 0x30) * 10;
-				}
-				else
-				{
-					tmp_dt_stu.addr = 0;
-				}
-			}
-			else
-			{
-				if (i > 0)
-				{
-					tmp_dt_stu.addr = (*(tmp_dt_pdata - 1) - 0x30);
-				}
-				else
-				{
-					tmp_dt_stu.addr = 0;
+					tmp_dt_stu.addr = tmp_dt_stu.addr * 10 + (rx_buff[j] - 0x30);
 				}
 			}
 			if (tmp_dt_stu.addr == SysConfig.addr)
 			{
 				tmp_flag = 1;
-				start_data_idex = i;
+				cmd_start_idex = i + 1;
 			}
 		}
-		if ((*tmp_dt_pdata == 0x0D) && (tmp_flag))
+		if ((tmp_flag) && (*tmp_dt_pdata == 0x0D))
 		{
-			tmp_dt_stu.cmd_len = i - start_data_idex - 1;
+			tmp_dt_stu.cmd_len = i - cmd_start_idex;
 			memcpy(tmp_dt_stu.data_buff, tmp_dt_pdata - tmp_dt_stu.cmd_len, tmp_dt_stu.cmd_len);
 			memcpy(&dt_struct, &tmp_dt_stu, sizeof(DT_TYPEDEF));
 			protocol_type = PROTOCOL_DT;
-			tmp_flag = 0;
 			return;
 		}
-		else
-		{
-			tmp_dt_pdata++;
-		}
+		tmp_dt_pdata++;
 	}
 	//OEM协议解析
 	for (uint16_t i = 0; i < len; i++) //找到0xAA帧头
 	{
-		if ((*tmp_oem_pdata) == 0xAA)
+		if ((*tmp_oem_pdata) == 0xAA && *(tmp_oem_pdata + 2) == SysConfig.addr && (len - i > 4 + *(tmp_oem_pdata + 3))
+				&& (*(tmp_oem_pdata + 4 + tmp_oem_stu.cmd_len) == Checksum_8(tmp_oem_pdata, 4 + tmp_oem_stu.cmd_len)))
 		{
 			tmp_oem_stu.idex = *(tmp_oem_pdata + 1);
 			tmp_oem_stu.addr = *(tmp_oem_pdata + 2);
 			tmp_oem_stu.cmd_len = *(tmp_oem_pdata + 3);
-			if (len - i > 4 + tmp_oem_stu.cmd_len)
+			if (tmp_oem_stu.idex == oem_struct.idex)
 			{
-				if (*(tmp_oem_pdata + 4 + tmp_oem_stu.cmd_len) == Checksum_8(tmp_oem_pdata, 4 + tmp_oem_stu.cmd_len))
-				{
-					if (tmp_oem_stu.addr == SysConfig.addr)
-					{
-						if (tmp_oem_stu.idex == oem_struct.idex)
-						{
-							protocol_type = PROTOCOL_IdexSame;
-							return;
-						}
-						if (tmp_oem_stu.idex > 0x80)
-						{
-							tmp_oem_stu.checksum = *(tmp_oem_pdata + 4 + tmp_oem_stu.cmd_len);
-							memcpy(tmp_oem_stu.data_buff, tmp_oem_pdata + 4, tmp_oem_stu.cmd_len);
-							memcpy(&oem_struct, &tmp_oem_stu, sizeof(OEM_TYPEDEF));
-							protocol_type = PROTOCOL_OEM;
-							return;
-						}
-					}
-					return;
-				}
+				protocol_type = PROTOCOL_IdexSame;
+				return;
+			}
+			if (tmp_oem_stu.idex > 0x80)
+			{
+				tmp_oem_stu.checksum = *(tmp_oem_pdata + 4 + tmp_oem_stu.cmd_len);
+				memcpy(tmp_oem_stu.data_buff, tmp_oem_pdata + 4, tmp_oem_stu.cmd_len);
+				memcpy(&oem_struct, &tmp_oem_stu, sizeof(OEM_TYPEDEF));
+				protocol_type = PROTOCOL_OEM;
+				return;
 			}
 		}
 		tmp_oem_pdata++;
@@ -113,7 +74,7 @@ void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len)
 	protocol_type = PROTOCOL_NULL;
 }
 
-static void Reverse_String(uint8_t *str, uint8_t length)
+static void Reverse_String(uint8_t *str, uint8_t length) //将字符数组顺序反转
 {
 	uint8_t start = 0;
 	uint8_t end = length - 1;

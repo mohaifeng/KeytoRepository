@@ -430,14 +430,14 @@ void Usart_ProcessReceivedData(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART1)
 	{
-		Rxdata_Analyze(usart1_rx_struct.rx_buffer, usart1_rx_struct.rx_len);
+		Protocol_Analyze(usart1_rx_struct.rx_buffer, usart1_rx_struct.rx_len);
 		switch (protocol_type)
 		{
 			case PROTOCOL_DT:
-				Cmd_Data_Config(&huart1, dt_struct.data_buff, dt_struct.cmd_len);
+				Cmd_Task(&huart1, dt_struct.data_buff, dt_struct.cmd_len);
 				break;
 			case PROTOCOL_OEM:
-				Cmd_Data_Config(&huart1, oem_struct.data_buff, oem_struct.cmd_len);
+				Cmd_Task(&huart1, oem_struct.data_buff, oem_struct.cmd_len);
 				break;
 			case PROTOCOL_IdexSame:
 				Usart_SendData(&huart1, &oem_struct);
@@ -450,6 +450,27 @@ void Usart_ProcessReceivedData(UART_HandleTypeDef *huart)
 			Start_DMA_Receive(&huart1);
 		}
 	}
-
+	if (huart->Instance == USART2)
+	{
+		Protocol_Analyze(usart2_rx_struct.rx_buffer, usart2_rx_struct.rx_len);
+		switch (protocol_type)
+		{
+			case PROTOCOL_DT:
+				Cmd_Task(&huart2, dt_struct.data_buff, dt_struct.cmd_len);
+				break;
+			case PROTOCOL_OEM:
+				Cmd_Task(&huart2, oem_struct.data_buff, oem_struct.cmd_len);
+				break;
+			case PROTOCOL_IdexSame:
+				Usart_SendData(&huart2, &oem_struct);
+				break;
+			default:
+				break;
+		}
+		if (usart2_rx_struct.usart_rx_flag == 1)
+		{
+			Start_DMA_Receive(&huart2);
+		}
+	}
 }
 /* USER CODE END 1 */

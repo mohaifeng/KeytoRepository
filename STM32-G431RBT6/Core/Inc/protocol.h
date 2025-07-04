@@ -46,7 +46,7 @@ extern OEM_TYPEDEF oem_struct; //oem结构体变量
 extern DT_TYPEDEF dt_struct; //dt结构体变量
 extern ProtocolType protocol_type;
 
-void Rxdata_Analyze(const uint8_t *rx_buff, uint16_t len);
+void Protocol_Analyze(const uint8_t *rx_buff, uint16_t len);
 uint32_t Int_to_Ascii(int32_t num, uint8_t *buffer);
 void Send_Data_Conf(UART_HandleTypeDef *uartHandle, const void *data_struct);
 

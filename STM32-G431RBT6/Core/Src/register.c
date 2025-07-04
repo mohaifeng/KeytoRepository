@@ -121,13 +121,13 @@ HAL_StatusTypeDef Read_Register(uint16_t addr,RegValue *out_value)
 	RegConfigTypedef *node = Find_Reg_Node(addr);
 	if(!node)
 	{
-		cmd_finish_flag = REG_ERROR;
+		cmd_execute_status = REG_ERROR;
 		return HAL_ERROR; // 寄存器地址错误
 	}
 
 	if(!(node->permission & READ_ONLY))
 	{
-		cmd_finish_flag = READ_WRITE_ONLY;
+		cmd_execute_status = READ_WRITE_ONLY;
 		return HAL_ERROR; // 寄存器地址错误
 	}
 	switch(node->data_type)
@@ -154,10 +154,10 @@ HAL_StatusTypeDef Read_Register(uint16_t addr,RegValue *out_value)
 			out_value->fv = *(float*)node->data_ptr;
 			break;
 		default:
-			cmd_finish_flag = PARAMETER_ERROR;
+			cmd_execute_status = PARAMETER_ERROR;
 			return HAL_ERROR; // 不支持的数据类型
 		}
-	cmd_finish_flag = EXECUTE_SUCCESS;
+	cmd_execute_status = EXECUTE_SUCCESS;
 	return HAL_OK;
 }
 
@@ -167,12 +167,12 @@ HAL_StatusTypeDef Write_Register(uint16_t addr,RegValue *new_value)
 	RegConfigTypedef *node = Find_Reg_Node(addr);
 	if(!node)
 	{
-		cmd_finish_flag = REG_ERROR;
+		cmd_execute_status = REG_ERROR;
 		return HAL_ERROR;
 	}
 	if(!(node->permission & WRITE_ONLY))
 	{
-		cmd_finish_flag = READ_WRITE_ONLY;
+		cmd_execute_status = READ_WRITE_ONLY;
 		return HAL_ERROR;
 	}
 	// 检查值范围
@@ -181,7 +181,7 @@ HAL_StatusTypeDef Write_Register(uint16_t addr,RegValue *new_value)
 		case REG_U8:
 			if(new_value->u8v < node->min_value.u8v || new_value->u8v > node->max_value.u8v)
 			{
-				cmd_finish_flag = OVER_LIMIT;
+				cmd_execute_status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
 			*(uint8_t*)node->data_ptr = new_value->u8v;
@@ -189,7 +189,7 @@ HAL_StatusTypeDef Write_Register(uint16_t addr,RegValue *new_value)
 		case REG_U16:
 			if(new_value->u16v < node->min_value.u16v || new_value->u16v > node->max_value.u16v)
 			{
-				cmd_finish_flag = OVER_LIMIT;
+				cmd_execute_status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
 			*(uint16_t*)node->data_ptr = new_value->u16v;
@@ -197,7 +197,7 @@ HAL_StatusTypeDef Write_Register(uint16_t addr,RegValue *new_value)
 		case REG_U32:
 			if(new_value->u32v < node->min_value.u32v || new_value->u32v > node->max_value.u32v)
 			{
-				cmd_finish_flag = OVER_LIMIT;
+				cmd_execute_status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
 			*(uint32_t*)node->data_ptr = new_value->u32v;
@@ -205,7 +205,7 @@ HAL_StatusTypeDef Write_Register(uint16_t addr,RegValue *new_value)
 		case REG_I8:
 			if(new_value->i8v < node->min_value.i8v || new_value->i8v > node->max_value.i8v)
 			{
-				cmd_finish_flag = OVER_LIMIT;
+				cmd_execute_status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
 			*(int8_t*)node->data_ptr = new_value->i8v;
@@ -213,7 +213,7 @@ HAL_StatusTypeDef Write_Register(uint16_t addr,RegValue *new_value)
 		case REG_I16:
 			if(new_value->i16v < node->min_value.i16v || new_value->i16v > node->max_value.i16v)
 			{
-				cmd_finish_flag = OVER_LIMIT;
+				cmd_execute_status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
 			*(int16_t*)node->data_ptr = new_value->i16v;
@@ -221,7 +221,7 @@ HAL_StatusTypeDef Write_Register(uint16_t addr,RegValue *new_value)
 		case REG_I32:
 			if(new_value->i32v < node->min_value.i32v || new_value->i32v > node->max_value.i32v)
 			{
-				cmd_finish_flag = OVER_LIMIT;
+				cmd_execute_status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
 			*(int32_t*)node->data_ptr = new_value->i32v;
@@ -229,13 +229,13 @@ HAL_StatusTypeDef Write_Register(uint16_t addr,RegValue *new_value)
 		case REG_FLOAT:
 			if(new_value->fv < node->min_value.fv || new_value->fv > node->max_value.fv)
 			{
-				cmd_finish_flag = OVER_LIMIT;
+				cmd_execute_status = OVER_LIMIT;
 				return HAL_ERROR; // 寄存器地址错误
 			}
 			*(float*)node->data_ptr = new_value->fv;
 			break;
 		default:
-			cmd_finish_flag = PARAMETER_ERROR;
+			cmd_execute_status = PARAMETER_ERROR;
 			return HAL_ERROR; // 寄存器地址错误
 		}
 	// 调用回调函数
@@ -243,7 +243,7 @@ HAL_StatusTypeDef Write_Register(uint16_t addr,RegValue *new_value)
 	{
 		node->callback(node->data_ptr,new_value);
 	}
-	cmd_finish_flag = EXECUTE_SUCCESS;
+	cmd_execute_status = EXECUTE_SUCCESS;
 	return HAL_OK; // 寄存器地址错误
 }
 
@@ -256,7 +256,7 @@ HAL_StatusTypeDef Save_Register(void)
 	flash_data.flash_pressuredect_Config = PressureDectConfig;
 	if(Write_Config_Flash(&flash_data) == HAL_OK)
 	{
-		cmd_finish_flag = EXECUTE_SUCCESS;
+		cmd_execute_status = EXECUTE_SUCCESS;
 		return HAL_OK;
 	}
 	return HAL_ERROR;
