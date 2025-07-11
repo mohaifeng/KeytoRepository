@@ -247,9 +247,10 @@ if __name__ == '__main__':
     canbus.Can_Dev_Scanf()  # 扫描CAN通道
     canbus.Can_Open()  # 打开指定can通道
     canbus.Can_Init()  # can通道初始化
-    canbus.Can_Send(frame_id, can_data)  # 发送数据
-    canbus.Can_Receive()  # 接收数据
-    canbus.Can_Close()
+    # canbus.Can_Send(frame_id, can_data)  # 发送数据
+    while True:
+        canbus.Can_Receive()  # 接收数据
+    # canbus.Can_Close()
 
 # canDLL.CAN_CloseDevice(0)
 # canDLL.CAN_CloseDevice(1)
