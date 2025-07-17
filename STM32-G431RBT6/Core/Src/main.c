@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "dma.h"
+#include "i2c.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -83,7 +84,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  Init_Registers();
+	Init_Registers();
 	OD_Init();
   /* USER CODE END Init */
 
@@ -102,13 +103,30 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM2_Init();
   MX_TIM8_Init();
+  MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
 	Get_SysAddr();
 	Led_Init();
+	EEPROM_Init();
 	Start_DMA_Receive(&huart1); //开启DMA接收
 	Start_DMA_Receive(&huart2); //开启DMA接收
 	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);	//使能空闲中断
 	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);	//使能空闲中断
+
+//	uint8_t data_buf[16] = { 0 };
+//	uint8_t read_buf[16] = { 0 };
+//	for (uint8_t i = 0; i < 16; i++)
+//	{
+//		data_buf[i] = i;
+//	}
+//	EEPROM_WriteBuf_DMA(0x7EF, data_buf, 16);
+//	EEPROM_ReadBuf_DMA(0x7EF, read_buf, 16);
+//	HAL_UART_Transmit_DMA(&huart1, read_buf, 16);  //发送数据;
+//	while (HAL_UART_GetState(&huart1) != HAL_UART_STATE_READY)	 //等待发送完成
+//	{
+//	}
+//	Start_DMA_Receive(&huart1);
+	HAL_TIM_Base_Start_IT(&htim6);   // 启动 TIM6 中断
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -118,11 +136,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if(usart1_rx_struct.usart_rx_flag == 1)  //接收完成标志
+		if (usart1_rx_struct.usart_rx_flag == 1)  //接收完成标志
 		{
 			Usart_ProcessReceivedData(&huart1);
 		}
-		if(usart2_rx_struct.usart_rx_flag == 1)
+		if (usart2_rx_struct.usart_rx_flag == 1)
 		{
 			Usart_ProcessReceivedData(&huart2);
 		}

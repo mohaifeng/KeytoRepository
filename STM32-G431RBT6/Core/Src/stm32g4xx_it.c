@@ -28,7 +28,9 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
-
+volatile uint8_t led_status = 0;
+volatile uint8_t led_count = 0;
+volatile uint8_t led_target_count = 6;
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
@@ -57,6 +59,9 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern DMA_HandleTypeDef hdma_i2c3_rx;
+extern DMA_HandleTypeDef hdma_i2c3_tx;
+extern I2C_HandleTypeDef hi2c3;
 extern TIM_HandleTypeDef htim6;
 extern DMA_HandleTypeDef hdma_usart1_rx;
 extern DMA_HandleTypeDef hdma_usart1_tx;
@@ -80,7 +85,7 @@ void NMI_Handler(void)
 
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
-	while(1)
+	while (1)
 	{
 	}
   /* USER CODE END NonMaskableInt_IRQn 1 */
@@ -263,6 +268,34 @@ void DMA1_Channel4_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles DMA1 channel5 global interrupt.
+  */
+void DMA1_Channel5_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel5_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel5_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_i2c3_rx);
+  /* USER CODE BEGIN DMA1_Channel5_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel5_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA1 channel6 global interrupt.
+  */
+void DMA1_Channel6_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel6_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel6_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_i2c3_tx);
+  /* USER CODE BEGIN DMA1_Channel6_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel6_IRQn 1 */
+}
+
+/**
   * @brief This function handles EXTI line[9:5] interrupts.
   */
 void EXTI9_5_IRQHandler(void)
@@ -333,15 +366,43 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 
+/**
+  * @brief This function handles I2C3 event interrupt / I2C3 wake-up interrupt through EXTI line 27.
+  */
+void I2C3_EV_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C3_EV_IRQn 0 */
+
+  /* USER CODE END I2C3_EV_IRQn 0 */
+  HAL_I2C_EV_IRQHandler(&hi2c3);
+  /* USER CODE BEGIN I2C3_EV_IRQn 1 */
+
+  /* USER CODE END I2C3_EV_IRQn 1 */
+}
+
+/**
+  * @brief This function handles I2C3 error interrupt.
+  */
+void I2C3_ER_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C3_ER_IRQn 0 */
+
+  /* USER CODE END I2C3_ER_IRQn 0 */
+  HAL_I2C_ER_IRQHandler(&hi2c3);
+  /* USER CODE BEGIN I2C3_ER_IRQn 1 */
+
+  /* USER CODE END I2C3_ER_IRQn 1 */
+}
+
 /* USER CODE BEGIN 1 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	if(GPIO_Pin == OW1_Pin)
+	if (GPIO_Pin == OW1_Pin)
 	{
 		HAL_Delay(10);
-		GPIO_PinState pinState = HAL_GPIO_ReadPin(OW1_GPIO_Port,OW1_Pin);
+		GPIO_PinState pinState = HAL_GPIO_ReadPin(OW1_GPIO_Port, OW1_Pin);
 		// 根据引脚状态执行操作
-		if(pinState == GPIO_PIN_SET)
+		if (pinState == GPIO_PIN_SET)
 		{
 			SysConfig.ow1_status = 0;
 		}
@@ -350,12 +411,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			SysConfig.ow1_status = 1;
 		}
 	}
-	if(GPIO_Pin == OW2_Pin)
+	if (GPIO_Pin == OW2_Pin)
 	{
 		HAL_Delay(10);
-		GPIO_PinState pinState = HAL_GPIO_ReadPin(OW2_GPIO_Port,OW2_Pin);
+		GPIO_PinState pinState = HAL_GPIO_ReadPin(OW2_GPIO_Port, OW2_Pin);
 		// 根据引脚状态执行操作
-		if(pinState == GPIO_PIN_SET)
+		if (pinState == GPIO_PIN_SET)
 		{
 			SysConfig.ow2_status = 0;
 			Led_SetCorlor(COLOR_OFF);
@@ -418,6 +479,34 @@ void USER_UART_IDLECallback(UART_HandleTypeDef *huart)
 			usart2_rx_struct.usart_rx_flag = 0;
 			Start_DMA_Receive(&huart2); //开启DMA接收
 			__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);	//使能空闲中断
+		}
+	}
+}
+
+/* TIM6 周期回调 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	if (htim->Instance == TIM6)
+	{
+		/* === 1 秒到，在这里干正事 === */
+		if (led_count < led_target_count)
+		{
+			if (led_status == 0)
+			{
+				Led_SetCorlor(COLOR_RED);
+				led_status = 1;
+			}
+			else
+			{
+				Led_SetCorlor(COLOR_OFF);
+				led_status = 0;
+				led_count++;
+			}
+		}
+		else
+		{
+			led_count=0;
+			HAL_TIM_Base_Stop_IT(&htim6);
 		}
 	}
 }
