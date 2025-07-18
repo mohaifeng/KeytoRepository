@@ -1,13 +1,8 @@
-import time
 import clr
-import threading
-# noinspection PyUnresolvedReferences
 from System import Byte, Int32
-# noinspection PyUnresolvedReferences
 from System.Collections.Generic import List, Dictionary
-
 clr.AddReference('keytoAPI')
-from keytoAPI.MADPV2 import API, Madp_NodeInfo
+from keytoAPI.MADPV2 import API, Madp_NodeInfo, Madp_Send, Madp_Ack
 from keytoAPI.Driver.CAN import CAN_DeviceType
 
 api = API()  # 创建 API 类的实例
@@ -21,19 +16,24 @@ vci_usbcan_2e_u = CAN_DeviceType.VCI_USBCAN_2E_U  # 21
 add = 0  # MADP地址
 
 
-def Sys_Config(isLog: bool, isHex: bool, noSameLog: bool, isDebug: bool):
+def Sys_Config(isLog: bool, isHex: bool, noSameLog: bool, isDebug: bool, isParse: bool, mode: bool):
     """
     系统配置
     :param isHex:是否打印HEX格式收发数据 true：打开 false：关闭
     :param isDebug: 调试模式，打开后不会控制所有轴动作，用户通过该模式可以模拟控制开发，无需连接设备 true:打开 false：关闭
     :param isLog: 是否保存日志文件,打开后日志文件自动保存到文件夹ktlog true:打开false：关闭,将通过终端输出
     :param noSameLog: 当isLog=true时，该属性有效true：不打印重复收发数据false：打印所有收发数据
+    :param isParse: 是否打开协议解析，用于扩展用户协议是通过该功能关闭MADP的协议解析，避免数据处理出现混乱 true:打开 false：关闭
+    :param mode:是否打开动作完成主动上报功能 true:打开 false：关闭
     :return:
     """
     api.isLog = isLog
     api.isHex = isHex
     api.noSameLog = noSameLog
     api.isDebug = isDebug
+    api.logDir = r'D:\GitHubRepository\pythonProject\Test\MADPAPITest\ktlog'
+    api.isParse = isParse
+    api.openActionCompleted = mode
 
 
 def Sys_Open_Port(port: str, baudrate=38400):
@@ -48,9 +48,9 @@ def Sys_Open_Port(port: str, baudrate=38400):
             pass
         else:
             print(f"Port open failed")
-            return False
+            return False, 'OpenSerial'
     print(f"Port opened success")
-    return True
+    return True, 'OpenSerial'
 
 
 def Sys_Close_Port():
@@ -60,10 +60,10 @@ def Sys_Close_Port():
     """
     if api.CloseSerial():
         print(f"Port closed success")
-        return True
+        return True, 'CloseSerial'
     else:
         print(f"Port closed failed")
-        return False
+        return False, 'CloseSerial'
 
 
 def Sys_CAN_Open(devType, devind=0, canind=0, baudrate=500):
@@ -80,9 +80,9 @@ def Sys_CAN_Open(devType, devind=0, canind=0, baudrate=500):
             pass
         else:
             print(f"CAN open failed")
-            return False
+            return False, 'OpenCan'
     print(f"CAN opened success")
-    return True
+    return True, 'OpenCan'
 
 
 def Sys_CAN_Close():
@@ -92,10 +92,10 @@ def Sys_CAN_Close():
     """
     if api.CloseCan():
         print(f"CAN closed success")
-        return True
+        return True, 'CloseCan'
     else:
         print(f"CAN closed failed")
-        return False
+        return False, 'CloseCan'
 
 
 def Sys_TCP_Connect(serverIp, port):
@@ -110,9 +110,9 @@ def Sys_TCP_Connect(serverIp, port):
             pass
         else:
             print(f"TCP open failed")
-            return False
+            return False, 'TcpConnect'
     print(f"TCP opened success")
-    return True
+    return True, 'TcpConnect'
 
 
 def Sys_TCP_Disconnect():
@@ -122,22 +122,35 @@ def Sys_TCP_Disconnect():
     """
     if api.TcpDisconnect():
         print(f"TCP closed success")
-        return True
+        return True, 'TcpDisconnect'
     else:
         print(f"TCP closed failed")
-        return False
+        return False, 'TcpDisconnect'
 
 
-def Handle_result(result):
-    if not result.isOk:
-        print('isOk:', result.isOk)
-        print('isFinish:', result.isFinish)
-        print('errCode:', result.errCode)
-        print('errMsg:', result.errMsg)
-        print('errNodeCode:', result.errNodeCode)
-        print('msg:', result.msg)
-        return False
-    return True
+def KeytoResult_Handle(result, data, func_name: str):
+    result_dic = {
+        'isOk': bool(result.isOk),
+        'isFinish': bool(result.isFinish),
+        'errCode': int(result.errCode),
+        'errNodeCode': dict(result.errNodeCode),
+        'errMsg': str(result.errMsg),
+        'msg': str(result.msg)
+    }
+    return result_dic, data, func_name
+
+
+def Madp_Ack_Handle(result, func_name: str):
+    result_dic = {
+        'isRes': bool(result.isRes),
+        'add': int(result.add),
+        'group': int(result.group),
+        'seq': int(result.seq),
+        'cmd': str(result.cmd),
+        'state': int(result.state),
+        'msg': str(result.msg)
+    }
+    return result_dic, func_name
 
 
 def Cmd_Transmit_wait_ack(group: int, cmd: str, string: str, timeout=500):
@@ -151,15 +164,7 @@ def Cmd_Transmit_wait_ack(group: int, cmd: str, string: str, timeout=500):
     """
     global add
     result = api.StringCommandSendWaitAck(Byte(add), Byte(group), ord(cmd), string, timeout)
-    if not result.isRes:
-        print('add:', result.add)
-        print('group:', result.group)
-        print('seq:', result.seq)
-        print('cmd:', result.cmd)
-        print('state:', result.state)
-        print('msg:', result.msg)
-        return False
-    return True
+    return Madp_Ack_Handle(result, 'StringCommandSendWaitAck')
 
 
 def Cmd_E(group: int, string: str, waitFlag: bool, timeout=30000):
@@ -173,7 +178,7 @@ def Cmd_E(group: int, string: str, waitFlag: bool, timeout=30000):
     """
     global add
     result = api.RunActionScript(Byte(add), Byte(group), string, waitFlag, timeout)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'RunActionScript')
 
 
 def Wait_Cmd_Finish(group: int, timeout=30000):
@@ -185,7 +190,7 @@ def Wait_Cmd_Finish(group: int, timeout=30000):
     """
     global add
     result = api.WaitActionFinish(Byte(add), Byte(group), timeout)
-    return Handle_result(result)
+    return KeytoResult_Handle(result, None, 'WaitActionFinish')
 
 
 def RW_Register(group: int, string: str, timeout=3000):
@@ -201,8 +206,8 @@ def RW_Register(group: int, string: str, timeout=3000):
     da_lst = []
     result, data_lst = api.ReadWriteReg(Byte(add), Byte(group), string, data_lst, timeout)
     for i in data_lst:
-        da_lst.append(i)
-    return Handle_result(result), da_lst
+        da_lst.append(int(i))
+    return KeytoResult_Handle(result, da_lst, 'ReadWriteReg')
 
 
 def Check_SysStatus(group: int, *args):
@@ -219,7 +224,7 @@ def Check_SysStatus(group: int, *args):
         for i in args:
             node_id.Add(i)
     result, data = api.QueryRunStatus(Byte(add), Byte(group), data, node_id)
-    return Handle_result(result)
+    return KeytoResult_Handle(result, dict(data), 'QueryRunStatus')
 
 
 def Get_Error_Msg(group: int):
@@ -230,7 +235,7 @@ def Get_Error_Msg(group: int):
     """
     global add
     result = api.GetErrInfo(Byte(add), Byte(group))
-    return Handle_result(result)
+    return KeytoResult_Handle(result, None, 'GetErrInfo')
 
 
 def Search_Single_Dev(node_id: int):
@@ -241,7 +246,13 @@ def Search_Single_Dev(node_id: int):
     """
     node_info = Madp_NodeInfo()
     result, node_info = api.SearchLinkNode(Byte(node_id), node_info)
-    return Handle_result(result), node_info
+    info_dic = {
+        'add': int(node_info.add),
+        'type': int(node_info.type),
+        'version': str(node_info.version),
+        'typeName': str(node_info.typeName),
+    }
+    return KeytoResult_Handle(result, info_dic, 'SearchLinkNode')
 
 
 def Search_Mult_Dev(node_id: list):
@@ -251,17 +262,26 @@ def Search_Mult_Dev(node_id: list):
     :return:
     """
     id_lst = List[Byte]()
+    info_lst = []
     node_info = List[Madp_NodeInfo]()
     for dev in node_id:
         id_lst.Add(dev)
     result, node_info = api.SearchLinkNode(id_lst, node_info)
-    return Handle_result(result)
+    for i in node_info:
+        info_dic = {
+            'add': int(i.add),
+            'type': int(i.type),
+            'version': str(i.version),
+            'typeName': str(i.typeName),
+        }
+        info_lst.append(info_dic)
+    return KeytoResult_Handle(result, info_lst, 'SearchLinkNode')
 
 
 def Cmd_T():
     global add
     result = api.EmergencyStop(Byte(add))
-    return Handle_result(result)
+    return KeytoResult_Handle(result, None, 'EmergencyStop')
 
 
 def Cmd_t(group: int, *args):
@@ -277,29 +297,7 @@ def Cmd_t(group: int, *args):
         string += str(arg) + ','
     string = string[:-1]
     result = api.Stop(Byte(add), group, string, 2000)
-    return Handle_result(result)
-
-
-def Group_Handle_Result(result, waitFlag: bool):
-    if waitFlag:
-        if result.errCode:
-            print('isOk:', result.isOk)
-            print('isFinish:', result.isFinish)
-            print('errCode:', result.errCode)
-            print('errMsg:', result.errMsg)
-            print('errNodeCode:', result.errNodeCode)
-            print('msg:', result.msg)
-            return False
-    else:
-        if not result.isOk:
-            print('isOk:', result.isOk)
-            print('isFinish:', result.isFinish)
-            print('errCode:', result.errCode)
-            print('errMsg:', result.errMsg)
-            print('errNodeCode:', result.errNodeCode)
-            print('msg:', result.msg)
-            return False
-    return True
+    return KeytoResult_Handle(result, None, 'Stop')
 
 
 def Group_Adp_Init(group: int, ID_lst: list, waitFlag: bool, speed=500, mode=2):
@@ -316,7 +314,7 @@ def Group_Adp_Init(group: int, ID_lst: list, waitFlag: bool, speed=500, mode=2):
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.ADP_Init(Byte(group), id_lst, waitFlag, speed, mode)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ADP_Init')
 
 
 def Group_Adp_Aspirate(group: int, ID_lst: list, waitFlag: bool, vol: float, speed=500, cutoffSpeed=10):
@@ -334,7 +332,7 @@ def Group_Adp_Aspirate(group: int, ID_lst: list, waitFlag: bool, vol: float, spe
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.ADP_Aspirate(Byte(group), id_lst, waitFlag, vol, speed, cutoffSpeed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ADP_Aspirate')
 
 
 def Group_Adp_Dispense(group: int, ID_lst: list, waitFlag: bool, vol: float, backVol=0.0, speed=500, cutoffSpeed=10):
@@ -353,7 +351,7 @@ def Group_Adp_Dispense(group: int, ID_lst: list, waitFlag: bool, vol: float, bac
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.ADP_Dispense(Byte(group), id_lst, waitFlag, vol, backVol, speed, cutoffSpeed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ADP_Dispense')
 
 
 def Group_Adp_Move(group: int, ID_lst: list, waitFlag: bool, pos: float, speed=500, stopSpeed=10):
@@ -371,7 +369,7 @@ def Group_Adp_Move(group: int, ID_lst: list, waitFlag: bool, pos: float, speed=5
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.ADP_Move(Byte(group), id_lst, waitFlag, pos, speed, stopSpeed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ADP_Move')
 
 
 def Group_Adp_PushTip(group: int, ID_lst: list, waitFlag: bool, speed=500):
@@ -387,7 +385,7 @@ def Group_Adp_PushTip(group: int, ID_lst: list, waitFlag: bool, speed=500):
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.ADP_PushTip(Byte(group), id_lst, waitFlag, speed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ADP_PushTip')
 
 
 def Group_Adp_Plld(group: int, ID_lst: list, waitFlag: bool, timeout=10000, mode=0):
@@ -404,7 +402,7 @@ def Group_Adp_Plld(group: int, ID_lst: list, waitFlag: bool, timeout=10000, mode
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.ADP_LiqDet(Byte(group), id_lst, waitFlag, timeout, mode)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ADP_LiqDet')
 
 
 def Group_Z_Init(group: int, ID_lst: list, waitFlag: bool, speed=50.0):
@@ -420,7 +418,7 @@ def Group_Z_Init(group: int, ID_lst: list, waitFlag: bool, speed=50.0):
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.ZAxis_Init(Byte(group), id_lst, waitFlag, speed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ZAxis_Init')
 
 
 def Group_Z_MovePos(group: int, ID_lst: list, waitFlag: bool, pos: float, speed=100.0):
@@ -437,7 +435,7 @@ def Group_Z_MovePos(group: int, ID_lst: list, waitFlag: bool, pos: float, speed=
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.ZAxis_MovePos(Byte(group), id_lst, waitFlag, pos, speed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ZAxis_MovePos')
 
 
 def Group_Z_MoveUp(group: int, ID_lst: list, waitFlag: bool, pos: float, speed=100.0):
@@ -454,7 +452,7 @@ def Group_Z_MoveUp(group: int, ID_lst: list, waitFlag: bool, pos: float, speed=1
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.ZAxis_MoveUp(Byte(group), id_lst, waitFlag, pos, speed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ZAxis_MoveUp')
 
 
 def Group_Z_MoveDown(group: int, ID_lst: list, waitFlag: bool, pos: float, speed=100.0):
@@ -471,7 +469,7 @@ def Group_Z_MoveDown(group: int, ID_lst: list, waitFlag: bool, pos: float, speed
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.ZAxis_MoveDown(Byte(group), id_lst, waitFlag, pos, speed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ZAxis_MoveDown')
 
 
 def Group_Z_PickUpTip(group: int, ID_lst: list, waitFlag: bool, speed=50.0, power=80, endpos=180.0):
@@ -489,7 +487,7 @@ def Group_Z_PickUpTip(group: int, ID_lst: list, waitFlag: bool, speed=50.0, powe
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.ZAxis_PickUp(Byte(group), id_lst, waitFlag, speed, power, endpos)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ZAxis_PickUp')
 
 
 def Group_Space_Init(group: int, id_lst: int, waitFlag: bool, speed: float):
@@ -502,7 +500,7 @@ def Group_Space_Init(group: int, id_lst: int, waitFlag: bool, speed: float):
     :return:
     """
     result = api.Space_Init(Byte(group), Byte(id_lst), waitFlag, speed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'Space_Init')
 
 
 def Group_Space_Move(group: int, id_lst: int, waitFlag: bool, value: float, speed=50):
@@ -516,7 +514,7 @@ def Group_Space_Move(group: int, id_lst: int, waitFlag: bool, value: float, spee
     :return:
     """
     result = api.Space_Move(Byte(group), Byte(id_lst), waitFlag, value, speed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'Space_Move')
 
 
 def Group_ArmAxis_Init(group: int, id_lst: int, waitFlag: bool, speed=50):
@@ -529,7 +527,7 @@ def Group_ArmAxis_Init(group: int, id_lst: int, waitFlag: bool, speed=50):
     :return:
     """
     result = api.ArmAxis_Init(Byte(group), Byte(id_lst), waitFlag, speed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ArmAxis_Init')
 
 
 def Group_ArmAxis_MovePos(group: int, id_lst: int, waitFlag: bool, pos: float, speed=50):
@@ -543,7 +541,7 @@ def Group_ArmAxis_MovePos(group: int, id_lst: int, waitFlag: bool, pos: float, s
     :return:
     """
     result = api.ArmAxis_MovePos(Byte(group), Byte(id_lst), waitFlag, pos, speed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ArmAxis_MovePos')
 
 
 def Group_ArmAxis_MoveDir(group: int, id_lst: int, waitFlag: bool, pos: float, speed=50):
@@ -557,7 +555,7 @@ def Group_ArmAxis_MoveDir(group: int, id_lst: int, waitFlag: bool, pos: float, s
     :return:
     """
     result = api.ArmAxis_MoveDir(Byte(group), Byte(id_lst), waitFlag, pos, speed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'ArmAxis_MoveDir')
 
 
 def Mul_PickUpTip(group: int, ID_lst: list, waitFlag: bool, startPos: float, endPos=180.0, moveSpeed=100.0,
@@ -578,7 +576,7 @@ def Mul_PickUpTip(group: int, ID_lst: list, waitFlag: bool, startPos: float, end
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.MultiAction_PickupTip(Byte(group), id_lst, waitFlag, startPos, endPos, moveSpeed, pickupSpeed, power)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'MultiAction_PickupTip')
 
 
 def Mul_LldAspirateFollow(group: int, ID_lst: list, waitFlag: bool, imbVol: float, imbSpeed: int, zSpeed=100.0,
@@ -606,7 +604,7 @@ def Mul_LldAspirateFollow(group: int, ID_lst: list, waitFlag: bool, imbVol: floa
     result = api.MultiAction_LldAspirateFollow(Byte(group), id_lst, waitFlag, imbVol, imbSpeed, zSpeed, Byte(lldMode),
                                                lldSpeed, Byte(imbDetection), imbBottleTopPos, imbBottleBottomPos,
                                                imbBottleArea)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'MultiAction_LldAspirateFollow')
 
 
 def Mul_DispenseFollow(group: int, ID_lst: list, waitFlag: bool, disVol: float, disSpeed: int, disZAxisPos: float,
@@ -628,7 +626,7 @@ def Mul_DispenseFollow(group: int, ID_lst: list, waitFlag: bool, disVol: float, 
         id_lst.Add(dev)
     result = api.MultiAction_DispenseFollow(Byte(group), id_lst, waitFlag, disVol, disSpeed, disZAxisPos, zSpeed,
                                             disBottleArea)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'MultiAction_DispenseFollow')
 
 
 def Mul_DispenseEmpty(group: int, ID_lst: list, waitFlag: bool, disSpeed: int, disZAxisPos: float, zSpeed=100.0):
@@ -646,7 +644,7 @@ def Mul_DispenseEmpty(group: int, ID_lst: list, waitFlag: bool, disSpeed: int, d
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.MultiAction_DispenseEmpt(Byte(group), id_lst, waitFlag, disSpeed, disZAxisPos, zSpeed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'MultiAction_DispenseEmpt')
 
 
 def Mul_PushTip(group: int, ID_lst: list, waitFlag: bool, zAxisPos: float, zSpeed=100.0):
@@ -663,7 +661,7 @@ def Mul_PushTip(group: int, ID_lst: list, waitFlag: bool, zAxisPos: float, zSpee
     for dev in ID_lst:
         id_lst.Add(dev)
     result = api.MultiAction_PushTip(Byte(group), id_lst, waitFlag, zAxisPos, zSpeed)
-    return Group_Handle_Result(result, waitFlag)
+    return KeytoResult_Handle(result, None, 'MultiAction_PushTip')
 
 
 def Extend_Serial_Transmit(hex_str: str):
@@ -671,3 +669,8 @@ def Extend_Serial_Transmit(hex_str: str):
     for i in range(0, len(hex_str), 2):
         csharp_code.append(Byte(int(hex_str[i:i + 2], 16)))
     return api.SerialWrite(csharp_code)
+
+
+if __name__ == '__main__':
+    Sys_Config(False, False, False, False, True, True)
+    Sys_CAN_Open(dev_usbcan2, 0, 0, 500)
