@@ -6,7 +6,7 @@
  */
 #include "main.h"
 #include "cmd.h"
-#include "usart.h"
+#include "m_usart.h"
 #include "protocol.h"
 #include <string.h>
 #include <ctype.h>

@@ -20,6 +20,11 @@ static void RGBLED_SetColor(uint8_t r, uint8_t g, uint8_t b)
 	__HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3, pulse_b);
 }
 
+void Led_Task()
+{
+
+}
+
 void Led_SetCorlor(ColorTypedef corlor)
 {
 	switch (corlor)
