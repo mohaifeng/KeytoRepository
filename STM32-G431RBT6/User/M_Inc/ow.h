@@ -14,9 +14,9 @@
 
 typedef enum
 {
-	Ow_Idle,
-	Ow_Trigger,
-	Ow_Stable,
+	OW_IDLE,
+	OW_TRIGGER,
+	OW_STABLE,
 } Ow_Statue;
 
 extern Ow_Statue ow1_status_flag;

@@ -21,11 +21,12 @@
 #include "dma.h"
 #include "i2c.h"
 #include "tim.h"
-#include "m_usart.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "m_usart.h"
 #include "ow.h"
 #include "led.h"
 #include "objectdirectory.h"
@@ -107,16 +108,11 @@ int main(void)
   MX_TIM8_Init();
   MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
-  User_USART1_UART_Init();
-  User_USART2_UART_Init();
 	Get_SysAddr();
 	Led_Init();
 	EEPROM_Init();
-	Usart_Start_Receive(&huart1); //开启DMA接收
-	Usart_Start_Receive(&huart2); //开启DMA接收
-	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);	//使能空闲中断
-	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);	//使能空闲中断
-
+  User_USART1_UART_Init();
+  User_USART2_UART_Init();
 //	HAL_TIM_Base_Start_IT(&htim6);   // 启动 TIM6 中断
   /* USER CODE END 2 */
 
@@ -127,16 +123,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		Usart_Task(&huart1);
+		Usart_Task(&huart2);
 		Ow1_Task();
 		Ow2_Task();
-		if (usart1_rx_struct.usart_rx_flag == 1)  //接收完成标志
-		{
-			Usart_ProcessReceivedData(&huart1);
-		}
-		if (usart2_rx_struct.usart_rx_flag == 1)
-		{
-			Usart_ProcessReceivedData(&huart2);
-		}
 	}
   /* USER CODE END 3 */
 }

@@ -8,7 +8,6 @@
 #ifndef INC_REGISTER_H_
 #define INC_REGISTER_H_
 
-#include "stm32g4xx_hal.h"
 #include "main.h"
 
 

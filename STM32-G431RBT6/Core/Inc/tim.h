@@ -49,7 +49,7 @@ void MX_TIM8_Init(void);
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* USER CODE BEGIN Prototypes */
-void RGBLED_SetColor(uint8_t r,uint8_t g,uint8_t b);
+
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

@@ -16,7 +16,7 @@ static RegConfigTypedef reg_user_list[] =
 {
 	REG_CONFIG( 1, READ_WRITE, REG_U8, &SysConfig.status,{.u8v = 0},{.u8v = 0xFF},{.u8v = 0},SAVE_DISABLE ,NULL ), //状态
 	REG_CONFIG( 2, READ_ONLY, REG_U8, &PlldConfig.plld_flag,{.u8v = 0},{.u8v = 1},{.i32v = 0},SAVE_DISABLE, NULL ), //探测到液面标志
-	REG_CONFIG( 3, READ_ONLY, REG_U8,&SysConfig.ow2_status,{.u8v = 0},{.u8v = 1},{.u8v = 0},SAVE_DISABLE, setMotorDirCallback), //有无tip
+	REG_CONFIG( 3, READ_ONLY, REG_U8,&SysConfig.ow2_status,{.u8v = 0},{.u8v = 1},{.u8v = 0},SAVE_DISABLE, NULL), //有无tip
 	REG_CONFIG( 4,READ_ONLY, REG_I32, &SysConfig.pressure,{.i32v = 0x80000000},{.i32v = 0x7FFFFFFF},{.i32v = 0},SAVE_DISABLE,NULL ), //当前气压值
 	REG_CONFIG( 10, READ_WRITE, REG_U8, &SysConfig.gpo1_out_mode,{.u8v = 0},{.u8v = 2},{.u8v = 0}, SAVE_ENABLE,NULL ),//GPO1输出配置
 	REG_CONFIG( 80, READ_WRITE, REG_U32, &SysConfig.ser_baudrate,{.u32v = 9600},{.u32v = 115200},{.u32v = 38400},SAVE_ENABLE, NULL ),//串口波特率

@@ -24,10 +24,26 @@ typedef enum
 
 typedef enum
 {
-	Led_On = 1,
-	Led_Off,
-	Led_flick
-} Led_Statue;
+  LED_OFF,
+  LED_SOLID_RED,
+  LED_SOLID_GREEN,
+  LED_SOLID_BLUE,
+  LED_BLINK_RED,
+	LED_BLINK_MAGENTA,
+  LED_PATTERN_ALTERNATE
+} Led_Statue_t;
+
+typedef enum
+{
+	EVENT_NONE,
+	EVENT_OW_TRIGGER,
+	EVENT_CMD_RUNNING,
+	EVENT_CMD_FINISH,
+	EVENT_SYSERROR,
+	EVENT_WARNING,
+} Led_Event_t;
+
+extern Led_Statue_t led_state;
 
 void Led_SetCorlor(ColorTypedef corlor);
 void Led_Init(void);

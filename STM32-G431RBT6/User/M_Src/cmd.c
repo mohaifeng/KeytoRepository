@@ -34,7 +34,7 @@ void Cmd_Response(UART_HandleTypeDef *huart, ProtocolType protocol_type, uint8_t
 				{
 					memcpy(dt_struct.data_buff, pdata, datalen);
 				}
-				Usart_SendData(huart, &dt_struct);
+//				Usart_SendData(huart, &dt_struct);
 				break;
 			case PROTOCOL_OEM:
 				oem_struct.head = 0x55;
@@ -45,7 +45,7 @@ void Cmd_Response(UART_HandleTypeDef *huart, ProtocolType protocol_type, uint8_t
 				{
 					memcpy(oem_struct.data_buff, pdata, datalen);
 				}
-				Usart_SendData(huart, &oem_struct);
+//				Usart_SendData(huart, &oem_struct);
 				break;
 			default:
 				break;

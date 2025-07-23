@@ -400,12 +400,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (GPIO_Pin == OW1_Pin)
 	{
-		ow1_status_flag = Ow_Trigger;
+		ow1_status_flag = OW_TRIGGER;
 		ow1_trigger_stime = HAL_GetTick();
 	}
 	if (GPIO_Pin == OW2_Pin)
 	{
-		ow2_status_flag = Ow_Trigger;
+		ow2_status_flag = OW_TRIGGER;
 		ow2_trigger_stime = HAL_GetTick();
 	}
 }
@@ -436,27 +436,50 @@ void USER_UART_IDLECallback(UART_HandleTypeDef *huart)
 	{
 		HAL_UART_DMAStop(&huart1);  //停止本次DMA传输
 		usart1_rx_struct.rx_len = BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);  //计算接收到的数据长度
-		if (usart1_rx_struct.rx_len != 0)
+		if (usart1_rx_struct.rx_len > 0)
 		{
-			usart1_rx_struct.usart_rx_flag = 1;    // 接受完成标志位置1
+			// 切换到非活动缓冲区
+			usart1_rx_struct.active_buffer = (!usart1_rx_struct.active_buffer);
+			usart1_rx_struct.dataready = 1;
+			Usart_Start_Receive(&huart1);
+			usart1_state = USART_PROCESSING;
 		}
 		else
 		{
 			Usart_Start_Receive(&huart1); //开启DMA接收
+			usart1_state = USART_RECEIVING;
 		}
 	}
 	if (huart->Instance == USART2)
 	{
 		HAL_UART_DMAStop(&huart2);  //停止本次DMA传输
 		usart2_rx_struct.rx_len = BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart2_rx);  //计算接收到的数据长度
-		if (usart2_rx_struct.rx_len != 0)
+		if (usart2_rx_struct.rx_len > 0)
 		{
-			usart2_rx_struct.usart_rx_flag = 1;    // 接受完成标志位置1
+			// 切换到非活动缓冲区
+			usart2_rx_struct.active_buffer = (!usart2_rx_struct.active_buffer);
+			usart2_rx_struct.dataready = 1;
+			Usart_Start_Receive(&huart2);
+			usart2_state = USART_PROCESSING;
 		}
 		else
 		{
 			Usart_Start_Receive(&huart2); //开启DMA接收
+			usart2_state = USART_RECEIVING;
 		}
+	}
+}
+
+// DMA传输完成回调
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+	if (huart->Instance == USART1)
+	{
+		usart1_state = USART_RECEIVING;
+	}
+	if (huart->Instance == USART2)
+	{
+		usart2_state = USART_RECEIVING;
 	}
 }
 

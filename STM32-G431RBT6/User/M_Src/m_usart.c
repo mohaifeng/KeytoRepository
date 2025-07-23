@@ -10,10 +10,14 @@
 #include "cmd.h"
 #include <string.h>
 
+volatile UsartState_t usart1_state = USART_RECEIVING;
+volatile UsartState_t usart2_state = USART_RECEIVING;
 USART_RX_TYPEDEF usart1_rx_struct; //串口1接收数据结构体
 USART_TX_TYPEDEF usart1_tx_struct; //串口1发送数据结构体
 USART_RX_TYPEDEF usart2_rx_struct; //串口2接收数据结构体
 USART_TX_TYPEDEF usart2_tx_struct; //串口2发送数据结构体
+
+static void Usart_Buffer_Init(UART_HandleTypeDef *huart);
 
 void User_USART1_UART_Init(void)
 {
@@ -45,7 +49,10 @@ void User_USART1_UART_Init(void)
 	{
 		Error_Handler();
 	}
-	usart1_rx_struct.usart_rx_flag = 0;
+	Usart_Buffer_Init(&huart1); //初始化接收二维数组
+	Usart_Start_Receive(&huart1); //开启DMA接收
+	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);	//使能空闲中断
+	usart1_state = USART_RECEIVING;
 }
 
 void User_USART2_UART_Init(void)
@@ -78,18 +85,82 @@ void User_USART2_UART_Init(void)
 	{
 		Error_Handler();
 	}
-	usart2_rx_struct.usart_rx_flag = 0;
+	Usart_Buffer_Init(&huart1);
+	Usart_Start_Receive(&huart2); //开启DMA接收
+	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);	//使能空闲中断
+	usart2_state = USART_RECEIVING;
+}
+
+static void ProcessReceivedData(UART_HandleTypeDef *huart)
+{
+	uint8_t *tx_buff;
+	uint16_t tx_len = 0;
+	if (huart->Instance == USART1)
+	{
+		// 示例：将接收到的数据回传
+		Usart_GetProcessedData(&huart1, &tx_buff, &tx_len);
+		memcpy(usart1_tx_struct.tx_buffer, tx_buff, tx_len);
+		usart1_tx_struct.tx_len = tx_len;
+		// 切换到发送状态
+		usart1_state = USART_SENDING;
+	}
+	if (huart->Instance == USART2)
+	{
+		// 示例：将接收到的数据回传
+		Usart_GetProcessedData(&huart2, &tx_buff, &tx_len);
+		memcpy(usart2_tx_struct.tx_buffer, tx_buff, tx_len);
+		usart2_tx_struct.tx_len = tx_len;
+		// 切换到发送状态
+		usart2_state = USART_SENDING;
+	}
+
+}
+
+void Usart_Task(UART_HandleTypeDef *huart)
+{
+	if (huart->Instance == USART1)
+	{
+		switch (usart1_state)
+		{
+			case USART_RECEIVING:
+				break;
+			case USART_PROCESSING:
+				ProcessReceivedData(huart);
+				break;
+			case USART_SENDING:
+				Usart_SendData(huart);
+			case USART_WAITTXFINISH:
+				break;
+			default:
+				break;
+		}
+	}
+	if (huart->Instance == USART2)
+	{
+		switch (usart2_state)
+		{
+			case USART_RECEIVING:
+				break;
+			case USART_PROCESSING:
+				ProcessReceivedData(huart);
+				//			Cmd_Task();
+				break;
+			case USART_SENDING:
+				Usart_SendData(huart);
+			case USART_WAITTXFINISH:
+				break;
+			default:
+				break;
+		}
+	}
 }
 
 void Usart_Start_Receive(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART1)
 	{
-		// 启动DMA接收
-		usart1_rx_struct.rx_len = 0;  //清除计数
-		usart1_rx_struct.usart_rx_flag = 0;  //清除接收结束标志位
-		memset(usart1_rx_struct.rx_buffer, 0, BUFFER_SIZE);  //清空缓存区
-		while (HAL_UART_Receive_DMA(&huart1, usart1_rx_struct.rx_buffer, BUFFER_SIZE))
+		memset(usart1_rx_struct.rx_buffer[usart1_rx_struct.active_buffer], 0, BUFFER_SIZE);  //清空缓存区
+		while (HAL_UART_Receive_DMA(&huart1, usart1_rx_struct.rx_buffer[usart1_rx_struct.active_buffer], BUFFER_SIZE))
 		{
 			HAL_DMA_Abort(huart1.hdmarx);
 		}
@@ -97,85 +168,67 @@ void Usart_Start_Receive(UART_HandleTypeDef *huart)
 	if (huart->Instance == USART2)
 	{
 		// 启动DMA接收
-		usart2_rx_struct.rx_len = 0;  //清除计数
-		usart2_rx_struct.usart_rx_flag = 0;  //清除接收结束标志位
-		memset(usart2_rx_struct.rx_buffer, 0, BUFFER_SIZE);  //清空缓存区
-		while (HAL_UART_Receive_DMA(&huart2, usart2_rx_struct.rx_buffer, BUFFER_SIZE))
+		memset(usart2_rx_struct.rx_buffer[usart2_rx_struct.active_buffer], 0, BUFFER_SIZE);  //清空缓存区
+		while (HAL_UART_Receive_DMA(&huart2, usart2_rx_struct.rx_buffer[usart2_rx_struct.active_buffer], BUFFER_SIZE))
 		{
 			HAL_DMA_Abort(huart2.hdmarx);
 		}
 	}
-
 }
 
-void Usart_SendData(UART_HandleTypeDef *huart, const void *pro_struct)
+static void Usart_Buffer_Init(UART_HandleTypeDef *huart)
 {
-	Send_Data_Conf(huart, pro_struct);
+	if (huart->Instance == USART1)
+	{
+		usart1_rx_struct.active_buffer = 0;
+		usart1_rx_struct.dataready = 0;
+	}
+	if (huart->Instance == USART2)
+	{
+		usart2_rx_struct.active_buffer = 0;
+		usart2_rx_struct.dataready = 0;
+	}
+}
+// 获取待处理数据的缓冲区
+HAL_StatusTypeDef Usart_GetProcessedData(UART_HandleTypeDef *huart, uint8_t **data, uint16_t *length)
+{
+	if (huart->Instance == USART1)
+	{
+		if (usart1_rx_struct.dataready)
+		{
+			*data = usart1_rx_struct.rx_buffer[!usart1_rx_struct.active_buffer];
+			*length = usart1_rx_struct.rx_len;
+			return HAL_OK;
+		}
+		return HAL_ERROR;
+	}
+	if (huart->Instance == USART2)
+	{
+		if (usart2_rx_struct.dataready)
+		{
+			*data = usart2_rx_struct.rx_buffer[!usart2_rx_struct.active_buffer];
+			*length = usart2_rx_struct.rx_len;
+			return HAL_OK;
+		}
+		return HAL_ERROR;
+	}
+	return HAL_ERROR;
+}
+
+void Usart_SendData(UART_HandleTypeDef *huart)
+{
 	if (huart->Instance == USART1)
 	{
 		HAL_UART_Transmit_DMA(&huart1, usart1_tx_struct.tx_buffer, usart1_tx_struct.tx_len);  //发送数据
-		while (HAL_UART_GetState(&huart1) != HAL_UART_STATE_READY)	 //等待发送完成
-		{
-		}
-		Usart_Start_Receive(&huart1);
+		usart1_state = USART_WAITTXFINISH;
 	}
 	if (huart->Instance == USART2)
 	{
 		HAL_UART_Transmit_DMA(&huart2, usart2_tx_struct.tx_buffer, usart2_tx_struct.tx_len);  //发送数据
-		while (HAL_UART_GetState(&huart2) != HAL_UART_STATE_READY)	 //等待发送完成
-		{
-		}
-		Usart_Start_Receive(&huart2);
+		usart2_state = USART_WAITTXFINISH;
 	}
 
 }
 
 //接收到数据后处理函数
-void Usart_ProcessReceivedData(UART_HandleTypeDef *huart)
-{
-	if (huart->Instance == USART1)
-	{
-		Protocol_Analyze(usart1_rx_struct.rx_buffer, usart1_rx_struct.rx_len);
-		switch (protocol_type)
-		{
-			case PROTOCOL_DT:
-				Cmd_Task(&huart1, dt_struct.data_buff, dt_struct.cmd_len);
-				break;
-			case PROTOCOL_OEM:
-				Cmd_Task(&huart1, oem_struct.data_buff, oem_struct.cmd_len);
-				break;
-			case PROTOCOL_IdexSame:
-				Usart_SendData(&huart1, &oem_struct);
-				break;
-			default:
-				break;
-		}
-		if (usart1_rx_struct.usart_rx_flag == 1)
-		{
-			Usart_Start_Receive(&huart1);
-		}
-	}
-	if (huart->Instance == USART2)
-	{
-		Protocol_Analyze(usart2_rx_struct.rx_buffer, usart2_rx_struct.rx_len);
-		switch (protocol_type)
-		{
-			case PROTOCOL_DT:
-				Cmd_Task(&huart2, dt_struct.data_buff, dt_struct.cmd_len);
-				break;
-			case PROTOCOL_OEM:
-				Cmd_Task(&huart2, oem_struct.data_buff, oem_struct.cmd_len);
-				break;
-			case PROTOCOL_IdexSame:
-				Usart_SendData(&huart2, &oem_struct);
-				break;
-			default:
-				break;
-		}
-		if (usart2_rx_struct.usart_rx_flag == 1)
-		{
-			Usart_Start_Receive(&huart2);
-		}
-	}
-}
 

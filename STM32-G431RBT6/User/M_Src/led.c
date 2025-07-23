@@ -5,8 +5,10 @@
  *      Author: 莫海峰
  */
 #include "led.h"
+#include "tim.h"
 
-extern TIM_HandleTypeDef htim8;
+Led_Statue_t led_state = LED_OFF;
+
 // 设置RGB颜色 (0-255)
 static void RGBLED_SetColor(uint8_t r, uint8_t g, uint8_t b)
 {
@@ -20,9 +22,27 @@ static void RGBLED_SetColor(uint8_t r, uint8_t g, uint8_t b)
 	__HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3, pulse_b);
 }
 
-void Led_Task()
+void Led_HandleEvent(Led_Event_t event)
 {
-
+	switch (event)
+	{
+		case EVENT_OW_TRIGGER:
+			led_state=LED_SOLID_GREEN;
+			break;
+		case EVENT_CMD_RUNNING:
+			led_state=LED_SOLID_BLUE;
+			break;
+		case EVENT_CMD_FINISH:
+			led_state=LED_OFF;
+			break;
+		case EVENT_SYSERROR:
+			led_state=LED_BLINK_MAGENTA;
+			break;
+		case EVENT_WARNING:
+			break;
+		default:
+			break;
+	}
 }
 
 void Led_SetCorlor(ColorTypedef corlor)
