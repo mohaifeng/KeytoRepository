@@ -60,12 +60,10 @@ void Ow2_Task(void)
 			if (HAL_GPIO_ReadPin(OW2_GPIO_Port, OW2_Pin) == GPIO_PIN_RESET)
 			{
 				SysConfig.ow2_status = 1;
-				Led_SetCorlor(COLOR_GREEN);
 			}
 			else
 			{
 				SysConfig.ow2_status = 0;
-				Led_SetCorlor(COLOR_OFF);
 			}
 			ow2_status_flag = OW_IDLE;
 			break;
