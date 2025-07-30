@@ -674,3 +674,4 @@ def Extend_Serial_Transmit(hex_str: str):
 if __name__ == '__main__':
     Sys_Config(False, False, False, False, True, True)
     Sys_CAN_Open(dev_usbcan2, 0, 0, 500)
+    Cmd_t(0)

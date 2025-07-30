@@ -1,4 +1,6 @@
 import sys
+import threading
+
 from madp_dll_repackage import *
 
 test_idex = 0
@@ -149,9 +151,9 @@ def worker1(num):
 
 
 if __name__ == '__main__':
-    Sys_Config(False, False, False, False)
     if not Sys_Open_Port('com36', 38400):
         sys.exit()
+    Sys_Config(True, False, False, False, True, True)
     # 创建线程
     threads = []
     while True:
