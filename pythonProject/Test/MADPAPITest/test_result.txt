@@ -1,5 +1,0 @@
-序号: 0
-测试对象: OpenSerial
-返回数据: False
-期望数据: True
-是否通过: Failed
