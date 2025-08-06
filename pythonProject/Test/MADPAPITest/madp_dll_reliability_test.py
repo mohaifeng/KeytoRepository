@@ -11,8 +11,14 @@ group3 = 3
 
 
 def Config_Result(result):
-    if not result:
-        sys.exit()
+    if result:
+        if len(result) == 2:
+            if result[0]['isRes']:
+                return
+        elif len(result) == 3:
+            if result[0]['isOk']:
+                return
+    sys.exit()
 
 
 # 0,1为ADP1,2/2，3为Z轴41，42

@@ -193,6 +193,7 @@ def Func_ReadWriteReg_Test():
         (0, '1-2Rr54'),
         (0, '1-2Wp2,0'),
         (0, '1-2Rp5'),
+        (0, '1Rr1|2Rr1|41Rr1|42Rr1'),
         (0, 'aabbccdd'),
     ]
     test_target_result = [
@@ -204,6 +205,8 @@ def Func_ReadWriteReg_Test():
         ({'isOk': True, 'isFinish': True, 'errCode': 0, 'errNodeCode': {}, 'errMsg': '', 'msg': '30,30'}, [30, 30]),
         ({'isOk': True, 'isFinish': True, 'errCode': 0, 'errNodeCode': {}, 'errMsg': '', 'msg': ''}, []),
         ({'isOk': True, 'isFinish': True, 'errCode': 0, 'errNodeCode': {}, 'errMsg': '', 'msg': '1,1'}, [1, 1]),
+        ({'isOk': True, 'isFinish': True, 'errCode': 0, 'errNodeCode': {}, 'errMsg': '', 'msg': '0|0|0|0'},
+         [0, 0, 0, 0]),
         ({'isOk': False, 'isFinish': False, 'errCode': 6, 'errNodeCode': {}, 'errMsg': 'no script cmd:aabbccdd',
           'msg': 'None'}, []),
     ]
