@@ -8,12 +8,21 @@
 #include "tmc5160.h"
 
 extern SPI_HandleTypeDef hspi1;
-
-uint32_t TMC5160_ReadRegister(uint8_t address)
+/***********************
+ 函数功能：通过软件延时，单位us
+ 函数说明：
+ ************************/
+void TMC_Delay(uint32_t delay_time)
+{
+	delay_time = delay_time * 5;
+	while (delay_time--)
+		__NOP();
+}
+int32_t TMC5160_ReadRegister(uint8_t address)
 {
 	uint8_t txData[5] = { 0 };
 	uint8_t rxData[5] = { 0 };
-	uint32_t value = 0;
+	int32_t value = 0;
 	txData[0] = address & 0x7F; //读地址最高位为0
 	HAL_SPI_TransmitReceive(&hspi1, txData, rxData, 5, HAL_MAX_DELAY);
 	value = (rxData[1] << 24) | (rxData[2] << 16) | (rxData[3] << 8) | rxData[4];

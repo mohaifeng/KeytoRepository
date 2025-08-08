@@ -114,8 +114,21 @@ void Error_Handler(void);
 #define OW1_Pin GPIO_PIN_0
 #define OW1_GPIO_Port GPIOA
 #define OW1_EXTI_IRQn EXTI0_IRQn
+#define DIAG0_Pin GPIO_PIN_1
+#define DIAG0_GPIO_Port GPIOB
+#define DIAG1_Pin GPIO_PIN_2
+#define DIAG1_GPIO_Port GPIOB
+#define DRV_ENN_Pin GPIO_PIN_10
+#define DRV_ENN_GPIO_Port GPIOB
 #define LED_BLUE_Pin GPIO_PIN_13
 #define LED_BLUE_GPIO_Port GPIOB
+#define OW2_Pin GPIO_PIN_3
+#define OW2_GPIO_Port GPIOB
+#define OW2_EXTI_IRQn EXTI3_IRQn
+#define TMC_STEP_Pin GPIO_PIN_4
+#define TMC_STEP_GPIO_Port GPIOB
+#define TMC_DIR_Pin GPIO_PIN_5
+#define TMC_DIR_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

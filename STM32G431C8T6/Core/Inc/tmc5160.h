@@ -39,7 +39,7 @@
 #define MRRS_128	0x07
 #define MRRS_256  0x08
 
-uint32_t TMC5160_ReadRegister(uint8_t address);
+int32_t TMC5160_ReadRegister(uint8_t address);
 void TMC5160_WriteRegister(uint8_t address, uint32_t value);
 void TMC5160_Init(void);
 void TMC5160_Enable(void);
