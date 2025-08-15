@@ -31,7 +31,7 @@ extern "C" {
 /* DMA memory to memory transfer handles -------------------------------------*/
 
 /* USER CODE BEGIN Includes */
-#include "usart.h"
+
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
@@ -41,7 +41,7 @@ extern "C" {
 void MX_DMA_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-void Start_DMA_Receive(UART_HandleTypeDef *huart);
+
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

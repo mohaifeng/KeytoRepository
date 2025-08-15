@@ -377,7 +377,7 @@ class pipette:
                     self.status = -1
                     return False
         else:
-            self.Transmit(self.sys_cmd.Check_State())
+            # self.Transmit(self.sys_cmd.Check_State())
             if self.Wait_Rx_Finish(0):
                 self.RxData_Formate()
                 if self.status == 3:

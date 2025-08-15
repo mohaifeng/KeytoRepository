@@ -1,0 +1,1303 @@
+=================================================================================
+序号: 1
+测试对象: OpenSerial
+返回数据: True
+期望数据: True
+是否通过: Pass
+=================================================================================
+序号: 2
+测试对象: CloseSerial
+返回数据: True
+期望数据: True
+是否通过: Pass
+=================================================================================
+序号: 3
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 52, "cmd": "k", "state": 0, "msg": "38400,38400,500"}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 50, "cmd": "k", "state": 0, "msg": "38400,38400,500"}
+是否通过: Pass
+=================================================================================
+序号: 4
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 53, "cmd": "E", "state": 1, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 51, "cmd": "E", "state": 1, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 5
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 54, "cmd": "i", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 52, "cmd": "i", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 6
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 55, "cmd": "T", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 53, "cmd": "T", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 7
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 56, "cmd": "t", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 54, "cmd": "t", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 8
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 57, "cmd": "Y", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 55, "cmd": "Y", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 9
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 48, "cmd": "y", "state": 8, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 56, "cmd": "y", "state": 8, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 10
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 49, "cmd": "k", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 57, "cmd": "k", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 11
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 50, "cmd": "M", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 48, "cmd": "M", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 12
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 51, "cmd": "M", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 49, "cmd": "M", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 13
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 52, "cmd": "m", "state": 0, "msg": "Al:0x200001:0:%aLd0,10000,1"}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 50, "cmd": "m", "state": 0, "msg": "Al:0x200001:0:%aLd0,10000,1"}
+是否通过: Pass
+=================================================================================
+序号: 14
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 53, "cmd": "L", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 51, "cmd": "L", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 15
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 54, "cmd": "o", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 52, "cmd": "o", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 16
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 55, "cmd": "o", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 53, "cmd": "o", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 17
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 1, "seq": 56, "cmd": "E", "state": 1, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 1, "seq": 54, "cmd": "E", "state": 1, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 18
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 1, "seq": 48, "cmd": "q", "state": 7, "msg": "41:14"}
+期望数据: {"isRes": true, "add": 0, "group": 1, "seq": 56, "cmd": "q", "state": 7, "msg": "41:14"}
+是否通过: Pass
+=================================================================================
+序号: 19
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 2, "seq": 49, "cmd": "l", "state": 2, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 2, "seq": 57, "cmd": "l", "state": 2, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 20
+测试对象: "RunActionScript"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 21
+测试对象: "RunActionScript"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 22
+测试对象: "RunActionScript"
+返回字典: {"isOk": true, "isFinish": false, "errCode": 0, "errNodeCode": {}, "errMsg": "None", "msg": ""}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": false, "errCode": 0, "errNodeCode": {}, "errMsg": "None", "msg": ""}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 23
+测试对象: "RunActionScript"
+返回字典: {"isOk": false, "isFinish": false, "errCode": 4, "errNodeCode": {}, "errMsg": "", "msg": ""}
+返回数据: null
+期望字典: {"isOk": false, "isFinish": false, "errCode": 4, "errNodeCode": {}, "errMsg": "", "msg": ""}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 24
+测试对象: "WaitActionFinish"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 25
+测试对象: "WaitActionFinish"
+返回字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}
+返回数据: null
+期望字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 26
+测试对象: "WaitActionFinish"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 27
+测试对象: "WaitActionFinish"
+返回字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}
+返回数据: null
+期望字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 28
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+期望数据: []
+是否通过: Pass
+=================================================================================
+序号: 29
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "9600"}
+返回数据: [9600]
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "9600"}
+期望数据: [9600]
+是否通过: Pass
+=================================================================================
+序号: 30
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+期望数据: []
+是否通过: Pass
+=================================================================================
+序号: 31
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "20,20"}
+返回数据: [20, 20]
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "20,20"}
+期望数据: [20, 20]
+是否通过: Pass
+=================================================================================
+序号: 32
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+期望数据: []
+是否通过: Pass
+=================================================================================
+序号: 33
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "30,30"}
+返回数据: [30, 30]
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "30,30"}
+期望数据: [30, 30]
+是否通过: Pass
+=================================================================================
+序号: 34
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+期望数据: []
+是否通过: Pass
+=================================================================================
+序号: 35
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1,1"}
+返回数据: [1, 1]
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1,1"}
+期望数据: [1, 1]
+是否通过: Pass
+=================================================================================
+序号: 36
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "22|22|0|0"}
+返回数据: [22, 22, 0, 0]
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "22|22|0|0"}
+期望数据: [22, 22, 0, 0]
+是否通过: Pass
+=================================================================================
+序号: 37
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": false, "isFinish": false, "errCode": 6, "errNodeCode": {}, "errMsg": "aabbccdd=>no script cmd", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": false, "isFinish": false, "errCode": 6, "errNodeCode": {}, "errMsg": "aabbccdd=>no script cmd", "msg": "None"}
+期望数据: []
+是否通过: Pass
+=================================================================================
+序号: 38
+测试对象: "QueryRunStatus"
+返回字典: {"isOk": true, "isFinish": false, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "None"}
+返回数据: {}
+期望字典: {"isOk": true, "isFinish": false, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "None"}
+期望数据: {}
+是否通过: Pass
+=================================================================================
+序号: 39
+测试对象: "QueryRunStatus"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: {"1": 0, "2": 0}
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: {"1": 0, "2": 0}
+是否通过: Pass
+=================================================================================
+序号: 40
+测试对象: "QueryRunStatus"
+返回字典: {"isOk": false, "isFinish": false, "errCode": 5, "errNodeCode": {}, "errMsg": "stript lenght 259 error", "msg": ""}
+返回数据: {}
+期望字典: {"isOk": false, "isFinish": false, "errCode": 5, "errNodeCode": {}, "errMsg": "stript lenght 259 error", "msg": ""}
+期望数据: {}
+是否通过: Pass
+=================================================================================
+序号: 41
+测试对象: "QueryRunStatus"
+返回字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}
+返回数据: {"1": 22, "2": 1}
+期望字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}
+期望数据: {"1": 22, "2": 1}
+是否通过: Failed
+=================================================================================
+序号: 42
+测试对象: "QueryRunStatus"
+返回字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {}, "errMsg": "1-2B=>no script cmd", "msg": ""}
+返回数据: {}
+期望字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {}, "errMsg": "1-2B=>no script cmd", "msg": ""}
+期望数据: {}
+是否通过: Pass
+=================================================================================
+序号: 43
+测试对象: "GetErrInfo"
+返回字典: {"isOk": true, "isFinish": false, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": false, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 44
+测试对象: "GetErrInfo"
+返回字典: {"isOk": true, "isFinish": false, "errCode": 7, "errNodeCode": {}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1-2Ld1,1000=>runing node error:1:22"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": false, "errCode": 7, "errNodeCode": {}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1-2Ld1,1000=>runing node error:1:22"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 45
+测试对象: "EmergencyStop"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "0,0"}
+返回数据: [0, 0]
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "0,0"}
+期望数据: [0, 0]
+是否通过: Pass
+=================================================================================
+序号: 46
+测试对象: "EmergencyStop"
+返回字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:0"}
+返回数据: {"1": 22, "2": 0}
+期望字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:0"}
+期望数据: {"1": 22, "2": 0}
+是否通过: Failed
+=================================================================================
+序号: 47
+测试对象: "Stop"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "0,0"}
+返回数据: [0, 0]
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "0,0"}
+期望数据: [0, 0]
+是否通过: Pass
+=================================================================================
+序号: 48
+测试对象: "Stop"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1,1"}
+返回数据: [1, 1]
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1,1"}
+期望数据: [1, 1]
+是否通过: Pass
+=================================================================================
+序号: 49
+测试对象: "Stop"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "0,1"}
+返回数据: [0, 1]
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "0,1"}
+期望数据: [0, 1]
+是否通过: Pass
+=================================================================================
+序号: 50
+测试对象: "Stop"
+返回字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}
+返回数据: {"1": 22, "2": 1}
+期望字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}
+期望数据: {"1": 22, "2": 1}
+是否通过: Failed
+=================================================================================
+序号: 51
+测试对象: "ZAxis_Init"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 52
+测试对象: "ADP_Init"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 53
+测试对象: "MultiAction_PickupTip"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 54
+测试对象: "MultiAction_LldAspirateFollow"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 55
+测试对象: "MultiAction_DispenseFollow"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 56
+测试对象: "MultiAction_DispenseEmpt"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 57
+测试对象: "ZAxis_Init"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 58
+测试对象: "ADP_Init"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 59
+测试对象: "MultiAction_PickupTip"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 60
+测试对象: "MultiAction_LldAspirateFollow"
+返回字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1, "41": 1, "42": 1}, "errMsg": "1-2Ld0,10000,1=>runing node error:1:22", "msg": "1:22,2:1,41:1,42:1"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 61
+测试对象: "MultiAction_DispenseFollow"
+返回字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 10, "41": 1, "42": 1}, "errMsg": "1-2Da10000,0,200,10=>id:1 Write dic:4002.0=10000,error code:10", "msg": "1:10,2:0,41:1,42:1"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 62
+测试对象: "MultiAction_DispenseEmpt"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 63
+测试对象: "ADP_Init"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 64
+测试对象: "ADP_Aspirate"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 65
+测试对象: "ADP_LiqDet"
+返回字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1}, "errMsg": "1-2Ld0,10000,1=>runing node error:1:22", "msg": "1:22,2:1"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 66
+测试对象: "ADP_Dispense"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 67
+测试对象: "ADP_Move"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 68
+测试对象: "ADP_PushTip"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 69
+测试对象: "ADP_Init"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 70
+测试对象: "ADP_Aspirate"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 71
+测试对象: "ADP_LiqDet"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 72
+测试对象: "ADP_Dispense"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 73
+测试对象: "ADP_Move"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 74
+测试对象: "ADP_PushTip"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 75
+测试对象: "ZAxis_Init"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 76
+测试对象: "ZAxis_MovePos"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 77
+测试对象: "ZAxis_PickUp"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 78
+测试对象: "ZAxis_MoveUp"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 79
+测试对象: "ZAxis_MoveDown"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 80
+测试对象: "ZAxis_Init"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 81
+测试对象: "ZAxis_Init"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 82
+测试对象: "ZAxis_MovePos"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 83
+测试对象: "ZAxis_PickUp"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 84
+测试对象: "ZAxis_MoveUp"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 85
+测试对象: "ZAxis_MoveDown"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 86
+测试对象: "ZAxis_Init"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 87
+测试对象: OpenCan
+返回数据: True
+期望数据: True
+是否通过: Pass
+=================================================================================
+序号: 88
+测试对象: CloseCan
+返回数据: True
+期望数据: True
+是否通过: Pass
+=================================================================================
+序号: 89
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "k", "state": 0, "msg": "38400,38400,500"}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 50, "cmd": "k", "state": 0, "msg": "38400,38400,500"}
+是否通过: Pass
+=================================================================================
+序号: 90
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "E", "state": 1, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 51, "cmd": "E", "state": 1, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 91
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "i", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 52, "cmd": "i", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 92
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "T", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 53, "cmd": "T", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 93
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "t", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 54, "cmd": "t", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 94
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "Y", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 55, "cmd": "Y", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 95
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "y", "state": 8, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 56, "cmd": "y", "state": 8, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 96
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "k", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 57, "cmd": "k", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 97
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "M", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 48, "cmd": "M", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 98
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "M", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 49, "cmd": "M", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 99
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "m", "state": 0, "msg": "Al:0x200001:0:%aLd0,10000,1"}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 50, "cmd": "m", "state": 0, "msg": "Al:0x200001:0:%aLd0,10000,1"}
+是否通过: Pass
+=================================================================================
+序号: 100
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "L", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 51, "cmd": "L", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 101
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "o", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 52, "cmd": "o", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 102
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 0, "seq": 0, "cmd": "o", "state": 0, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 0, "seq": 53, "cmd": "o", "state": 0, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 103
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 1, "seq": 0, "cmd": "E", "state": 1, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 1, "seq": 54, "cmd": "E", "state": 1, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 104
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 1, "seq": 0, "cmd": "q", "state": 7, "msg": "41:14"}
+期望数据: {"isRes": true, "add": 0, "group": 1, "seq": 56, "cmd": "q", "state": 7, "msg": "41:14"}
+是否通过: Pass
+=================================================================================
+序号: 105
+测试对象: "StringCommandSendWaitAck"
+返回数据: {"isRes": true, "add": 0, "group": 2, "seq": 0, "cmd": "l", "state": 2, "msg": ""}
+期望数据: {"isRes": true, "add": 0, "group": 2, "seq": 57, "cmd": "l", "state": 2, "msg": ""}
+是否通过: Pass
+=================================================================================
+序号: 106
+测试对象: "RunActionScript"
+返回字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Pass
+=================================================================================
+序号: 107
+测试对象: "RunActionScript"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:15 cmd:E str:1-2It500,100,0|41-42Zz50000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 108
+测试对象: "RunActionScript"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2It500,100,0|41-42Zz50000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": false, "errCode": 0, "errNodeCode": {}, "errMsg": "None", "msg": ""}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 109
+测试对象: "RunActionScript"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2It500,100,0|41-42Zz50000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": false, "isFinish": false, "errCode": 4, "errNodeCode": {}, "errMsg": "", "msg": ""}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 110
+测试对象: "WaitActionFinish"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send q cmd error!", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 111
+测试对象: "WaitActionFinish"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send q cmd error!", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 112
+测试对象: "WaitActionFinish"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send q cmd error!", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 113
+测试对象: "WaitActionFinish"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send q cmd error!", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 114
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+期望数据: []
+是否通过: Failed
+=================================================================================
+序号: 115
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "9600"}
+期望数据: [9600]
+是否通过: Failed
+=================================================================================
+序号: 116
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+期望数据: []
+是否通过: Failed
+=================================================================================
+序号: 117
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "20,20"}
+期望数据: [20, 20]
+是否通过: Failed
+=================================================================================
+序号: 118
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+期望数据: []
+是否通过: Failed
+=================================================================================
+序号: 119
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "30,30"}
+期望数据: [30, 30]
+是否通过: Failed
+=================================================================================
+序号: 120
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+期望数据: []
+是否通过: Failed
+=================================================================================
+序号: 121
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1,1"}
+期望数据: [1, 1]
+是否通过: Failed
+=================================================================================
+序号: 122
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "22|22|0|0"}
+期望数据: [22, 22, 0, 0]
+是否通过: Failed
+=================================================================================
+序号: 123
+测试对象: "ReadWriteReg"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": false, "isFinish": false, "errCode": 6, "errNodeCode": {}, "errMsg": "aabbccdd=>no script cmd", "msg": "None"}
+期望数据: []
+是否通过: Failed
+=================================================================================
+序号: 124
+测试对象: "QueryRunStatus"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send q cmd error!", "msg": "None"}
+返回数据: {}
+期望字典: {"isOk": true, "isFinish": false, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "None"}
+期望数据: {}
+是否通过: Failed
+=================================================================================
+序号: 125
+测试对象: "QueryRunStatus"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send q cmd error!", "msg": "None"}
+返回数据: {}
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: {"1": 0, "2": 0}
+是否通过: Failed
+=================================================================================
+序号: 126
+测试对象: "QueryRunStatus"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send q cmd error!", "msg": "None"}
+返回数据: {}
+期望字典: {"isOk": false, "isFinish": false, "errCode": 5, "errNodeCode": {}, "errMsg": "stript lenght 259 error", "msg": ""}
+期望数据: {}
+是否通过: Failed
+=================================================================================
+序号: 127
+测试对象: "QueryRunStatus"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send q cmd error!", "msg": "None"}
+返回数据: {}
+期望字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}
+期望数据: {"1": 22, "2": 1}
+是否通过: Failed
+=================================================================================
+序号: 128
+测试对象: "QueryRunStatus"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send q cmd error!", "msg": "None"}
+返回数据: {}
+期望字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {}, "errMsg": "1-2B=>no script cmd", "msg": ""}
+期望数据: {}
+是否通过: Failed
+=================================================================================
+序号: 129
+测试对象: "GetErrInfo"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 cmd:i,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": false, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": ""}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 130
+测试对象: "GetErrInfo"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 cmd:i,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": false, "errCode": 7, "errNodeCode": {}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1-2Ld1,1000=>runing node error:1:22"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 131
+测试对象: "EmergencyStop"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "0,0"}
+期望数据: [0, 0]
+是否通过: Failed
+=================================================================================
+序号: 132
+测试对象: "EmergencyStop"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send q cmd error!", "msg": "None"}
+返回数据: {}
+期望字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:0"}
+期望数据: {"1": 22, "2": 0}
+是否通过: Failed
+=================================================================================
+序号: 133
+测试对象: "Stop"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "0,0"}
+期望数据: [0, 0]
+是否通过: Failed
+=================================================================================
+序号: 134
+测试对象: "Stop"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1,1"}
+期望数据: [1, 1]
+是否通过: Failed
+=================================================================================
+序号: 135
+测试对象: "Stop"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send k cmd error!", "msg": "None"}
+返回数据: []
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "0,1"}
+期望数据: [0, 1]
+是否通过: Failed
+=================================================================================
+序号: 136
+测试对象: "Stop"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send q cmd error!", "msg": "None"}
+返回数据: {}
+期望字典: {"isOk": false, "isFinish": false, "errCode": 7, "errNodeCode": {"1": 22, "2": 1}, "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}
+期望数据: {"1": 22, "2": 1}
+是否通过: Failed
+=================================================================================
+序号: 137
+测试对象: "ZAxis_Init"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zz50000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 138
+测试对象: "ADP_Init"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2It500,100,2,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 139
+测试对象: "MultiAction_PickupTip"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zp50000,180000|41Zg50000,80,80000|41Zp50000,180000;42Zg50000,80,80000|42Zp50000,180000;,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 140
+测试对象: "MultiAction_LldAspirateFollow"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zp20000,180000|41-42Zp80000,20000;1-2Ld0,10000,1|41-42Zp80000,2564;1-2Wr60,0;1-2Ia20000,200,10;1-2X10000|41-42Zt0|1-2Wr60,0|,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 141
+测试对象: "MultiAction_DispenseFollow"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zp50000,180000|41-42Zu1282,2564;1-2Da10000,0,200,10;1-2WT0|41-42Zt0|,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 142
+测试对象: "MultiAction_DispenseEmpt"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zp0,180000|1-2Mp0,47279,10|,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 143
+测试对象: "ZAxis_Init"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zz50000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 144
+测试对象: "ADP_Init"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2It500,100,2,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 145
+测试对象: "MultiAction_PickupTip"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zp50000,180000|41Zg50000,80,80000|41Zp50000,180000;42Zg50000,80,80000|42Zp50000,180000;,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 146
+测试对象: "MultiAction_LldAspirateFollow"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zp20000,180000|41-42Zp80000,20000;1-2Ld0,10000,1|41-42Zp80000,2564;1-2Wr60,0;1-2Ia20000,200,10;1-2X10000|41-42Zt0|1-2Wr60,0|,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 147
+测试对象: "MultiAction_DispenseFollow"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zp50000,180000|41-42Zu1282,2564;1-2Da10000,0,200,10;1-2WT0|41-42Zt0|,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 148
+测试对象: "MultiAction_DispenseEmpt"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zp0,180000|1-2Mp0,47279,10|,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0,41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 149
+测试对象: "ADP_Init"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2It500,100,2,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 150
+测试对象: "ADP_Aspirate"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2Ia10000,500,10,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 151
+测试对象: "ADP_LiqDet"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2Ld0,10000,1,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 152
+测试对象: "ADP_Dispense"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2Da5000,0,500,10,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 153
+测试对象: "ADP_Move"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2Mp118199,118199,10,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 154
+测试对象: "ADP_PushTip"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2It500,100,0,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 155
+测试对象: "ADP_Init"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2It500,100,2,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 156
+测试对象: "ADP_Aspirate"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2Ia10000,500,10,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 157
+测试对象: "ADP_LiqDet"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2Ld0,10000,1,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 158
+测试对象: "ADP_Dispense"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2Da5000,0,500,10,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 159
+测试对象: "ADP_Move"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2Mp118199,118199,10,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 160
+测试对象: "ADP_PushTip"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:1-2It500,100,0,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "1:0,2:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 161
+测试对象: "ZAxis_Init"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zz50000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 162
+测试对象: "ZAxis_MovePos"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zp50000,100000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 163
+测试对象: "ZAxis_PickUp"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zg50000,80,180000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 164
+测试对象: "ZAxis_MoveUp"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zu100000,100000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 165
+测试对象: "ZAxis_MoveDown"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zd50000,100000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 166
+测试对象: "ZAxis_Init"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zz50000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 167
+测试对象: "ZAxis_Init"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zz50000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 168
+测试对象: "ZAxis_MovePos"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zp50000,100000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 169
+测试对象: "ZAxis_PickUp"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zg50000,80,180000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 170
+测试对象: "ZAxis_MoveUp"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zu100000,100000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 171
+测试对象: "ZAxis_MoveDown"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zd50000,100000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+序号: 172
+测试对象: "ZAxis_Init"
+返回字典: {"isOk": false, "isFinish": false, "errCode": -1, "errNodeCode": {}, "errMsg": "send add:0 group:0 cmd:E str:41-42Zz50000,no ack error! ", "msg": "None"}
+返回数据: null
+期望字典: {"isOk": true, "isFinish": true, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "41:0,42:0"}
+期望数据: null
+是否通过: Failed
+=================================================================================
+通过率: 56.98
+未通过用例索引: [25, 27, 41, 46, 50, 60, 61, 65, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172]

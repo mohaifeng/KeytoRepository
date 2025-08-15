@@ -3,8 +3,19 @@ import time
 from madp_dll_repackage import *
 import json
 
+######################################
+# 接口配置项
+test_com = 'com36'  # 串口号
+test_baudrate = 38400  # 串口波特率
+test_can_type = dev_usbcan2  # CAN设备类型
+test_dev_num = 0  # CAN设备号
+test_can_com = 0  # CAN端口号
+test_can_baudrate = 500  # CAN波特率
+#######################################
 test_idex = 0
 txt_path = r"test_result.txt"
+
+failed_lst = []
 
 
 def Bool_Func_Test(func_result: tuple, _target_result):
@@ -14,7 +25,6 @@ def Bool_Func_Test(func_result: tuple, _target_result):
     with open(txt_path, "a", encoding="utf-8") as file:
         file.write('=================================================================================' + '\n')
         file.write('序号: ' + str(test_idex) + '\n')
-        file.write('序号: ' + str(test_idex) + '\n')
         file.write('测试对象: ' + str(func_result[1]) + '\n')
         file.write('返回数据: ' + str(func_result[0]) + '\n')
         file.write('期望数据: ' + str(_target_result) + '\n')
@@ -22,6 +32,7 @@ def Bool_Func_Test(func_result: tuple, _target_result):
             file.write('是否通过: ' + 'Pass' + '\n')
         else:
             file.write('是否通过: ' + 'Failed' + '\n')
+            failed_lst.append(test_idex)
             bool_flag = False
     return bool_flag
 
@@ -41,6 +52,7 @@ def KeytoResult_Func_Test(func_result: tuple, _target_result, target_data):
             file.write('是否通过: ' + 'Pass' + '\n')
         else:
             file.write('是否通过: ' + 'Failed' + '\n')
+            failed_lst.append(test_idex)
 
 
 def Madp_Ack_Func_Test(func_result: tuple, _target_result):
@@ -58,6 +70,7 @@ def Madp_Ack_Func_Test(func_result: tuple, _target_result):
             file.write('是否通过: ' + 'Pass' + '\n')
         else:
             file.write('是否通过: ' + 'Failed' + '\n')
+            failed_lst.append(test_idex)
 
 
 def Func_Serial_Test(_com: str, _baudrate: int):
@@ -69,10 +82,10 @@ def Func_Serial_Test(_com: str, _baudrate: int):
     Sys_Open_Port(_com, _baudrate)
 
 
-def Func_CAN_Test(_dev_num: int, _can_com: int, _baudrate: int):
+def Func_CAN_Test(can_type, _dev_num: int, _can_com: int, _baudrate: int):
     bool_target_result = True
     # 串口通讯测试
-    if not Bool_Func_Test(Sys_CAN_Open(dev_usbcan2, _dev_num, _can_com, _baudrate), bool_target_result):
+    if not Bool_Func_Test(Sys_CAN_Open(can_type, _dev_num, _can_com, _baudrate), bool_target_result):
         sys.exit()
     Bool_Func_Test(Sys_CAN_Close(), bool_target_result)
     Sys_CAN_Open(dev_usbcan2, _dev_num, _can_com, _baudrate)
@@ -167,8 +180,8 @@ def Func_WaitActionFinish_Test():
     test_target_result = [
         ({'isOk': True, 'isFinish': True, 'errCode': 0, 'errNodeCode': {}, 'errMsg': '', 'msg': '1:0,2:0,41:0,42:0'},
          None),
-        ({'isOk': False, 'isFinish': False, 'errCode': 7, 'errNodeCode': {1: 22, 2: 1},
-          'errMsg': 'runing node error:1:22', 'msg': '1:22,2:1'}, None),
+        ({"isOk": False, "isFinish": False, "errCode": 7, "errNodeCode": {"1": 22, "2": 1},
+          "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}, None),
     ]
     if len(test_lst) != len(test_target_result):
         print('Func_WaitActionFinish_Test：测试用例有误')
@@ -205,10 +218,10 @@ def Func_ReadWriteReg_Test():
         ({'isOk': True, 'isFinish': True, 'errCode': 0, 'errNodeCode': {}, 'errMsg': '', 'msg': '30,30'}, [30, 30]),
         ({'isOk': True, 'isFinish': True, 'errCode': 0, 'errNodeCode': {}, 'errMsg': '', 'msg': ''}, []),
         ({'isOk': True, 'isFinish': True, 'errCode': 0, 'errNodeCode': {}, 'errMsg': '', 'msg': '1,1'}, [1, 1]),
-        ({'isOk': True, 'isFinish': True, 'errCode': 0, 'errNodeCode': {}, 'errMsg': '', 'msg': '0|0|0|0'},
-         [0, 0, 0, 0]),
-        ({'isOk': False, 'isFinish': False, 'errCode': 6, 'errNodeCode': {}, 'errMsg': 'no script cmd:aabbccdd',
-          'msg': 'None'}, []),
+        ({"isOk": True, "isFinish": True, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "22|22|0|0"},
+         [22, 22, 0, 0]),
+        ({"isOk": False, "isFinish": False, "errCode": 6, "errNodeCode": {}, "errMsg": "aabbccdd=>no script cmd",
+          "msg": "None"}, []),
     ]
     if len(test_lst) != len(test_target_result):
         print('Func_ReadWriteReg_Test：测试用例有误')
@@ -235,10 +248,12 @@ def Func_QueryRunStatus_Test():
          {1: 0, 2: 0}),
         ({'isOk': False, 'isFinish': False, 'errCode': 5, 'errNodeCode': {}, 'errMsg': 'stript lenght 259 error',
           'msg': ''}, {}),
-        ({'isOk': False, 'isFinish': False, 'errCode': 7, 'errNodeCode': {1: 22, 2: 1},
-          'errMsg': 'runing node error:1:22', 'msg': '1:22,2:1'}, {1: 22, 2: 1}),
-        ({'isOk': False, 'isFinish': False, 'errCode': 7, 'errNodeCode': {}, 'errMsg': 'no script cmd:1-2B', 'msg': ''},
-         {}),
+        ({"isOk": False, "isFinish": False, "errCode": 7, "errNodeCode": {"1": 22, "2": 1},
+          "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}, {1: 22, 2: 1}),
+        (
+            {'isOk': False, 'isFinish': False, 'errCode': 7, 'errNodeCode': {}, 'errMsg': '1-2B=>no script cmd',
+             'msg': ''},
+            {}),
     ]
     if len(test_lst) != len(test_target_result):
         print('Func_QueryRunStatus_Test：测试用例有误')
@@ -270,8 +285,8 @@ def Func_GetErrInfo_Test():
     ]
     test_target_result = [
         ({'isOk': True, 'isFinish': False, 'errCode': 0, 'errNodeCode': {}, 'errMsg': '', 'msg': ''}, None),
-        ({'isOk': True, 'isFinish': False, 'errCode': 7, 'errNodeCode': {}, 'errMsg': 'runing node error:1:22',
-          'msg': 'runing node error:1:22'}, None),
+        ({"isOk": True, "isFinish": False, "errCode": 7, "errNodeCode": {},
+          "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1-2Ld1,1000=>runing node error:1:22"}, None),
     ]
     if len(test_lst) != len(test_target_result):
         print('Func_GetErrInfo_Test：测试用例有误')
@@ -289,8 +304,8 @@ def Func_EmergencyStop_Test():
     ]
     test_target_result = [
         ({"isOk": True, "isFinish": True, "errCode": 0, "errNodeCode": {}, "errMsg": "", "msg": "0,0"}, [0, 0]),
-        ({'isOk': False, 'isFinish': False, 'errCode': 7, 'errNodeCode': {1: 22}, 'errMsg': 'runing node error:1:22',
-          'msg': '1:22,2:0'}, {1: 22, 2: 0}),
+        ({"isOk": False, "isFinish": False, "errCode": 7, "errNodeCode": {"1": 22},
+          "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:0"}, {1: 22, 2: 0}),
     ]
     if len(test_lst) != len(test_target_result):
         print('Func_EmergencyStop_Test：测试用例有误')
@@ -319,8 +334,8 @@ def Func_Stop_Test():
         ({'isOk': True, 'isFinish': True, 'errCode': 0, 'errNodeCode': {}, 'errMsg': '', 'msg': '0,0'}, [0, 0]),
         ({'isOk': True, 'isFinish': True, 'errCode': 0, 'errNodeCode': {}, 'errMsg': '', 'msg': '1,1'}, [1, 1]),
         ({'isOk': True, 'isFinish': True, 'errCode': 0, 'errNodeCode': {}, 'errMsg': '', 'msg': '0,1'}, [0, 1]),
-        ({'isOk': False, 'isFinish': False, 'errCode': 7, 'errNodeCode': {1: 22}, 'errMsg': 'runing node error:1:22',
-          'msg': '1:22,2:0'}, {1: 22, 2: 0}),
+        ({"isOk": False, "isFinish": False, "errCode": 7, "errNodeCode": {"1": 22, "2": 1},
+          "errMsg": "1-2Ld1,1000=>runing node error:1:22", "msg": "1:22,2:1"}, {1: 22, 2: 1}),
     ]
     if len(test_lst) != len(test_target_result):
         print('Func_Stop_Test：测试用例有误')
@@ -347,7 +362,7 @@ def Func_Stop_Test():
             case 3:
                 Wait_Cmd_Finish(test_lst[i][0])
                 Cmd_t(test_lst[i][0])
-                KeytoResult_Func_Test(Check_SysStatus(test_lst[i][0]), test_target_result[i][0],
+                KeytoResult_Func_Test(Check_SysStatus(test_lst[i][0])[:-1] + ('Stop',), test_target_result[i][0],
                                       test_target_result[i][1])
 
 
@@ -453,7 +468,7 @@ if __name__ == '__main__':
         Func_GroupZ_Test
     ]
     print('串口测试开始')
-    Func_Serial_Test('com36', 38400)
+    Func_Serial_Test(test_com, test_baudrate)
     Sys_Config(True, False, False, False, True, True)
     Cmd_Transmit_wait_ack(0, 'E', 'RES123456')
     Wait_Cmd_Finish(0)
@@ -466,7 +481,11 @@ if __name__ == '__main__':
     Wait_Cmd_Finish(0)
     time.sleep(8)
     print('CAN测试开始')
-    Func_CAN_Test(0, 0, 500)
+    Func_CAN_Test(test_can_type, test_dev_num, test_can_com, test_can_baudrate)
     api.openActionCompleted = True
     for fun in test_fun_lst:
         fun()
+    with open(txt_path, "a", encoding="utf-8") as file:
+        file.write('=================================================================================' + '\n')
+        file.write('通过率: ' + str(round((test_idex - len(failed_lst)) / test_idex * 100, 2)) + '%' + '\n')
+        file.write('未通过用例索引: ' + str(failed_lst))

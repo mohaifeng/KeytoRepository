@@ -388,7 +388,7 @@ class step_drl:
                     self.status = -1
                     return False
         else:
-            self.Transmit(self.sys_cmd.Check_State())
+            # self.Transmit(self.sys_cmd.Check_State())
             if self.Wait_Rx_Finish(0):
                 self.RxData_Formate()
                 if self.status == 3:
@@ -787,16 +787,21 @@ class vlg_pusi:
 
 
 if __name__ == '__main__':
-    sp.Reset_Ser_Baud(0, 'com36', 9600)
-    pusi = vlg_pusi()
-    pusi.Get_Pusi_Address()
-    pusi.Pusi_Send(pusi.pusi_cmd.Init(0))
-    if not pusi.Pusi_Receive():
-        sys.exit()
-    pusi.Check_Pusi_State()
-    # drs = step_drs()
-    # drs.Transmit(drs.gen_cmd.Valve_Control(2))
-    # drs.Wait_Rx_Finish()
-    # time.sleep(2)
-    # drs.Transmit(drs.gen_cmd.Valve_Control(0))
-    # drs.Wait_Rx_Finish()
+    sp.Reset_Ser_Baud(0, 'com56', 9600)
+    drl = step_drl()
+    test_list = [
+        drl.drl_cmd.It(3000),
+        drl.drl_cmd.Vc(1),
+        drl.drl_cmd.Ia(0, 1000, 100),
+        drl.drl_cmd.Ia(5000, 1000, 100),
+        drl.drl_cmd.Vc(0),
+        drl.drl_cmd.Da(0, 1000, 100, 0),
+        drl.drl_cmd.Da(5000, 1000, 100, 0),
+    ]
+    drl.ReportingConfig(1)
+    while True:
+        for test in test_list:
+            drl.Transmit(test)
+            drl.Wait_Rx_Finish()
+            drl.Wait_StatusIdle()
+            time.sleep(0.01)

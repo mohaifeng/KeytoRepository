@@ -142,8 +142,8 @@ def List_Serial_Ports():
 
 
 ser = serialport(List_Serial_Ports()[0], 9600)  # 控制器总线串口输入
-bal = serialport('com1', 38400)  # 天平控制串口
-pwr = serialport('com2', 9600)  # 电源控制串口
+bal = serialport(List_Serial_Ports()[0], 38400)  # 天平控制串口
+pwr = serialport(List_Serial_Ports()[0], 9600)  # 电源控制串口
 
 
 def Reset_Ser_Baud(ser_type, com, baud):
@@ -168,9 +168,20 @@ def Reset_Ser_Baud(ser_type, com, baud):
         pwr.OpenPort()
 
 
+test_lst = [
+    '30 3E 49 74 31 30 30 30 20 31 30 30 0D 0A',
+    '30 3E 56 63 31 0D 0A',
+    '30 3E 49 61 30 20 31 30 30 30 20 31 30 30 0D 0A',
+    '30 3E 49 61 35 30 30 30 20 31 30 30 30 20 31 30 30 0D',
+    '30 3E 56 63 30 0D 04',
+    '30 3E 4461 30 20 31 30 30 30 20 31 30 30 2C 30 OD',
+    '30 3E 44 61 35 30 30 30 20 31 30 30 30 20 31 30 30 2C 30 0D'
+]
 if __name__ == '__main__':
-    Reset_Ser_Baud(0, 'com2', 9600)
+    Reset_Ser_Baud(0, 'com56', 9600)
     ser.OpenPort()
     while True:
-        if ser.Wait_Rx_Finish(0):
-            ser.PortSend('0'.encode())
+        for i in test_lst:
+            ser.PortSend(bytes.fromhex(i))  # 置零
+            ser.Wait_Rx_Finish()
+            ser.Wait_Rx_Finish()

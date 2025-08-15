@@ -243,7 +243,7 @@ class POWER:
 
 
 if __name__ == '__main__':
-    sp.Reset_Ser_Baud(2, 'com36', 9600)
+    sp.Reset_Ser_Baud(2, 'com56', 9600)
     power = POWER()
     power.Check_Power_State()
     power.Mode_Select(1)
@@ -251,8 +251,8 @@ if __name__ == '__main__':
     power.Set_Voltage(24)
     power.Set_Current(3)
     power.Power_Output_Control(1)
-    while True:
-        power.Check_Power_State()
-        data = power.Read_Vol_And_Cur()
-        print('电压：', data[0], '电流：', data[1])
-        time.sleep(2)
+    # while True:
+    #     power.Check_Power_State()
+    #     data = power.Read_Vol_And_Cur()
+    #     print('电压：', data[0], '电流：', data[1])
+    #     time.sleep(2)

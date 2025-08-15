@@ -9,6 +9,7 @@
 #define INC_FLASH_H_
 
 #include "main.h"
+#include "dev.h"
 #include "verification.h"
 
 #define FLASH_BASE_ADDR   	0x08000000 //flash起始地址
@@ -26,8 +27,6 @@
 typedef struct
 {
 	SysConfig_t flash_sysconfig;
-	PlldConfig_t flash_plld_Config;
-	PressureDectConfig_t flash_pressuredect_Config;
 	uint32_t crc; // 添加CRC校验字段
 } FlashData_t;
 

@@ -1407,7 +1407,7 @@ void CAN_ReturnGeneralData(uint16_t add,int data)
 HAL_StatusTypeDef CanSendStdData(uint32_t id, uint8_t *data,uint8_t len)
 {
 	HAL_StatusTypeDef status;
-	uint8_t i;
+	//uint8_t i;
 	uint8_t retry=5;
   CanTxHeader.IdType = FDCAN_STANDARD_ID;
 	CanTxHeader.Identifier = pSysConfig->CommunicationConfig.Add;
@@ -1539,7 +1539,7 @@ void cmd_list_clear(void)
 	cmd_list.head = 0;
 	cmd_list.tail = 0;
 	cmd_list.num = 0;
-	for(int i=0;i<CMD_LIST_MAX;i++)
+	for(uint8_t i=0;i<CMD_LIST_MAX;i++)
 	{
 		cmd_list.cmd[i].cmd = 0;
 		cmd_list.cmd[i].value = 0;

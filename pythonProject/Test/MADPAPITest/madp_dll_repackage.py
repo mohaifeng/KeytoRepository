@@ -1,6 +1,7 @@
 import clr
 from System import Byte, Int32
 from System.Collections.Generic import List, Dictionary
+
 clr.AddReference('keytoAPI')
 from keytoAPI.MADPV2 import API, Madp_NodeInfo, Madp_Send, Madp_Ack
 from keytoAPI.Driver.CAN import CAN_DeviceType

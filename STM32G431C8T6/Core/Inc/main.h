@@ -42,65 +42,12 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-typedef enum
-{
-	DEV_IDLE = 0,//空闲
-	DEV_BUSY,//忙
-	EXECUTE_SUCCESS,//执行成功
-	COMPLETE,//上报完成
-	OVER_LIMIT = 10,//超限
-	PARAMETER_ERROR,//参数错误
-	SYNTAX_ERROR,//语法错误
-	INVALID_CMD,//非法指令
-	REG_ERROR,//寄存器地址错误
-	READ_WRITE_ONLY,//只读/写
-	CMD_OVERFLOW,//指令溢出
-	NO_INIT//未初始化
-} DEV_STATUSTYPEDEF;
-
-// 系统配置结构体
-typedef struct
-{
-	uint8_t protocolswitch; //协议类型
-	uint8_t addr; //地址
-	DEV_STATUSTYPEDEF status; //状态
-	uint32_t permission; //权限
-	uint8_t is_tip; //tip在位标志
-	int32_t pressure; //压力值
-	uint8_t gpo1_out_mode; //gpo1输出模式
-	uint16_t max_volume; //最大体积
-	uint8_t check_tip; //是否检测tip
-	uint32_t ser_baudrate; //串口波特率
-	uint16_t can_baudrate; //can波特率
-	uint8_t report_flag; //主动上报标志
-	uint32_t can_heart; //can心跳
-	uint32_t version; //版本
-	uint32_t model; //型号
-
-} SysConfig_t;
-
-typedef struct
-{
-	uint8_t plld_flag;
-} PlldConfig_t;
-
-typedef struct
-{
-	uint8_t detect_enable;
-	uint8_t clot_par;//吸堵参数
-	uint8_t empty_par;//吸空参数
-	uint8_t foam_par;//吸气泡参数
-
-} PressureDectConfig_t;
 
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-extern SysConfig_t SysConfig;
-extern PlldConfig_t PlldConfig;
-extern PressureDectConfig_t PressureDectConfig;
-extern volatile uint8_t ow1_status;
+
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

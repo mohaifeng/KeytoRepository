@@ -3,7 +3,7 @@
 
 Modbus_List_t Modbus_List = 
 {
-	.num = 0
+	.num = 0,
 };
 
 ModbusStruct_t ModBusDat;

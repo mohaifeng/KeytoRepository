@@ -28,8 +28,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 //#include "usart.h"
-#include "register.h"
 #include "led.h"
+#include "user_usart.h"
 #include "flash.h"
 #include "objectdirectory.h"
 //#include "verification.h"
@@ -66,10 +66,7 @@ static void MX_NVIC_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-SysConfig_t SysConfig;
-PlldConfig_t PlldConfig;
-PressureDectConfig_t PressureDectConfig;
-volatile uint8_t ow1_status = 0;
+
 /* USER CODE END 0 */
 
 /**
@@ -80,10 +77,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	SysConfig.addr = 1;
-	SysConfig.status = DEV_IDLE;
-	SysConfig.model = DEV_TYPE;
-	SysConfig.version = SOFTWARE_VERSION;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -93,7 +87,6 @@ int main(void)
 
   /* USER CODE BEGIN Init */
 
-	Init_Registers();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -119,8 +112,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	OD_Init();
 	Led_Init();
-	Start_DMA_Receive(&huart1); //开启DMA接收
-	Start_DMA_Receive(&huart2); //开启DMA接收
+	Usart_Start_Receive(&huart1); //开启DMA接收
+	Usart_Start_Receive(&huart2); //开启DMA接收
 	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);	//使能空闲中断
 	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);	//使能空闲中断
 
@@ -133,14 +126,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if (usart1_rx_struct.usart_rx_flag == 1)  //接收完成标志
-		{
-			Usart_ProcessReceivedData(&huart1);
-		}
-		if(usart2_rx_struct.usart_rx_flag == 1)
-		{
-			Usart_ProcessReceivedData(&huart2);
-		}
+		Led_Task(led_state);
 	}
   /* USER CODE END 3 */
 }
