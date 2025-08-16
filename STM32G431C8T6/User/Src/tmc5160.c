@@ -7,7 +7,7 @@
 
 #include "tmc5160.h"
 #include "spi.h"
-
+#include "dev.h"
 /***********************
  函数功能：通过软件延时，单位us
  函数说明：
@@ -52,7 +52,7 @@ void TMC5160_Init(void)
 	TMC5160_SPIWriteInt(0x10, 0x00020F00); //Power_Set.Power_Config); 	// IHOLD_IRUN: IHOLD=9, IRUN=15 , IHOLDDELAY=2
 	TMC5160_SPIWriteInt(0x11, 0x00000007);	// TPOWERDOWN=10:
 	TMC5160_SPIWriteInt(0x12, 0x0000000A);	// TPOWERDOWN=10:
-	TMC5160_SPIWriteInt(0x13, Convert_usteps_To_ustept(1500*SysConfig.MotorValveConfig.MicroStep));
+	TMC5160_SPIWriteInt(0x13, Convert_usteps_To_ustept(1500*sysconfig.MotorValveConfig.MicroStep));
 	//TMC5160_SPIWriteInt(0x13, 	0);
 	//TMC5160_SPIWriteInt(0x14, 	0x00004189); 		// writing value 0x00004189 = 16777 = 0.0 to address 11 = 0x14(TCOOLTHRS)
 	TMC5160_SPIWriteInt(0x15, 0x00000000); 		// writing value 0x00000000 = 0 = 0.0 to address 12 = 0x15(THIGH)
@@ -62,13 +62,13 @@ void TMC5160_Init(void)
 	TMC5160_SPIWriteInt(0x20, 0);
 	TMC5160_SPIWriteInt(0x21, 0); 		// writing value 0xFFCC12F0 = 0 = 0.0 to address 14 = 0x21(XACTUAL)
 	TMC5160_SPIWriteInt(0x23, 500);					//VSTART
-	TMC5160_SPIWriteInt(0x24, ConvertACC_ustepss_To_usteptt(SysConfig.MotorValveConfig.Acceleration));//A1 VSTART-V1 速度模式不用配置
-	TMC5160_SPIWriteInt(0x25, (SysConfig.MotorValveConfig.MicroStep * 100));				//第一阶段加减速阀值
-	TMC5160_SPIWriteInt(0x26, ConvertACC_ustepss_To_usteptt(SysConfig.MotorValveConfig.Acceleration));//AMAX V1-VMAX  500
-	TMC5160_SPIWriteInt(0x27, Convert_usteps_To_ustept(SysConfig.MotorValveConfig.MaxSpeed));		//VMAX   200*ustep*RPM/60
-	TMC5160_SPIWriteInt(0x28, ConvertACC_ustepss_To_usteptt(SysConfig.MotorValveConfig.Deceleration));	//DMAX VMAX-V1 700
-	TMC5160_SPIWriteInt(0x2A, ConvertACC_ustepss_To_usteptt(SysConfig.MotorValveConfig.Deceleration));//D1 V1-VSTOP速度模式不用配置
-	TMC5160_SPIWriteInt(0x2B, Convert_usteps_To_ustept(SysConfig.MotorValveConfig.MinSpeed));					//VSTOP
+	TMC5160_SPIWriteInt(0x24, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Acceleration));//A1 VSTART-V1 速度模式不用配置
+	TMC5160_SPIWriteInt(0x25, (sysconfig.MotorValveConfig.MicroStep * 100));				//第一阶段加减速阀值
+	TMC5160_SPIWriteInt(0x26, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Acceleration));//AMAX V1-VMAX  500
+	TMC5160_SPIWriteInt(0x27, Convert_usteps_To_ustept(sysconfig.MotorValveConfig.MaxSpeed));		//VMAX   200*ustep*RPM/60
+	TMC5160_SPIWriteInt(0x28, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Deceleration));	//DMAX VMAX-V1 700
+	TMC5160_SPIWriteInt(0x2A, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Deceleration));//D1 V1-VSTOP速度模式不用配置
+	TMC5160_SPIWriteInt(0x2B, Convert_usteps_To_ustept(sysconfig.MotorValveConfig.MinSpeed));					//VSTOP
 	//TMC5160_SPIWriteInt(0x2B, 	Convert_usteps_To_ustept(SysConfig.MotorValveConfig.MaxSpeed));
 
 	TMC5160_SPIWriteInt(0x33, 0x00000000); 		// writing value 0x00000000 = 0 = 0.0 to address 25 = 0x33(VDCMIN)
@@ -91,66 +91,336 @@ void TMC5160_Init(void)
 	//TMC5160_SPIWriteInt(0x70, 	0xC40C001E); 		// writing value 0xC40C001E = 0 = 0.0 to address 44 = 0x70(PWMCONF)
 	TMC5160_SPIWriteInt(0x70, 0xC40C2f1f);
 
-	Motor_SetMicrostep(SysConfig.MotorValveConfig.MicroStep);
-	Motor_SetPhaseCurrent(SysConfig.MotorValveConfig.PhaseCurrent);
-	Motor_SetDirection(SysConfig.MotorValveConfig.PositionDir);
+	Motor_SetMicrostep(sysconfig.MotorValveConfig.MicroStep);
+	Motor_SetPhaseCurrent(sysconfig.MotorValveConfig.PhaseCurrent);
+	Motor_SetDirection(sysconfig.MotorValveConfig.PositionDir);
 #if TMC5160_STOP_MODE
 	TMC5160_SPIWriteInt(0x34, 0x00000082);			//REFR高电平停止电机, 朝着有效电平跳变时位置锁存
 	TMC_EXT_STOP();
 #endif
 }
+/*************************************************************************************************/
+/*
+ ↑以上区域是对TMC5160寄存器进行读写的基本操作函数↑
+ ↓以下区域是直接对步进电机进行控制的接口函数↓
+ */
+/*************************************************************************************************/
 
-void TMC5160_Init(void)
+/*
+ 函数功能：硬停电机
+ 输入：无
+ 输出：硬停电机
+ 返回值：无
+ */
+void Motor_HardStop(void)
 {
-	// 复位驱动器
-	TMC5160_WriteRegister(TMC5160_REG_GCONF, 0x00000000);
-	HAL_Delay(10);
+	TMC_DRV_OFF();
 
-	// 配置驱动器模式
-//	TMC5160_WriteRegister(TMC5160_REG_GCONF, 0x00000008); // 使用SPI控制
+#if TMC5160_STOP_MODE
+	TMC_EXT_STOP();
+#else
+	TMC5160_SPIWriteInt(0x34,0x00000400);
+#endif
+	TMC5160_SPIWriteInt(0x27, 0);
+}
+/*
+ 函数功能：软停电机
+ 输入：无
+ 输出：软停电机
+ 返回值：无
+ */
+void Motor_SoftStop(void)
+{
+	TMC5160_SPIWriteInt(0x27, 0);
+#if TMC5160_STOP_MODE
+	TMC_EXT_STOP();
+#else
+	TMC5160_SPIWriteInt(0x34,0x00000400);
+#endif
+}
+/*
+ 速度模式运行电机
+ 输入：speed(microstep/s)
+ 输出：无
+ */
 
-	// 配置电机参数
-	TMC5160_WriteRegister(TMC5160_REG_CHOPCONF, (MRRS_32 << 24) | // MRES=0x4 (1/16微步)
-			(0x3 << 15) | // TBL=0x3 (空白时间)
-			(0x3 << 0)); // TOFF=0x1 (斩波使能)
+void Motor_SpeedMove(uint8_t Dir, uint32_t uSpeed)
+{
+	TMC_DRV_ON();
+#if TMC5160_STOP_MODE
+	TMC_EXT_RELEASE();
+#endif
+	if (Dir == 0)
+		TMC5160_SPIWriteInt(0x20, 1);
+	else
+		TMC5160_SPIWriteInt(0x20, 2);
+	Motor_SetVMAX(uSpeed);
+}
+/*
+ 位置模式运行电机
+ 输入：pos(microstep/s)
+ 输出：无
+ */
 
-	// 配置电流
-	TMC5160_WriteRegister(TMC5160_REG_IHOLD_IRUN, (12 << 8) | (5 << 0));  // // IRUN=12, IHOLD=5
+void Motor_MovePosition(int32_t pos)
+{
+	TMC_DRV_ON();
+#if TMC5160_STOP_MODE
+	TMC_EXT_RELEASE();
+#endif
+	TMC5160_SPIWriteInt(0x20, 0);		//位置模式
+	TMC5160_SPIWriteInt(0x2D, pos);	//往指定方向运动到指定位置
+}
+/*
+ 函数功能：设置电机方向
+ 输入：	0：正向
+ 1：反向
+ 输出:无
+ 返回值：无
+ */
+void Motor_SetDirection(uint8_t dir)
+{
+	uint32_t val;
 
-	// 配置速度和加速度
-	TMC5160_WriteRegister(TMC5160_REG_TPOWERDOWN, 10); // 待机电流延时
-	TMC5160_WriteRegister(TMC5160_REG_TPWMTHRS, 500);  // 速度阈值
-	TMC5160_WriteRegister(TMC5160_REG_VSTART, 10);     // 起始速度
-	TMC5160_WriteRegister(TMC5160_REG_A1, 1000);       // 加速度
-	TMC5160_WriteRegister(TMC5160_REG_V1, 50000);       // 加速度阈值速度
-	TMC5160_WriteRegister(TMC5160_REG_AMAX, 500);     // 最大加速度
-	TMC5160_WriteRegister(TMC5160_REG_VSTOP, 10);     // 最大加速度
-	TMC5160_WriteRegister(TMC5160_REG_VMAX, 200000);    // 最大速度
-	TMC5160_WriteRegister(TMC5160_REG_D1, 1400);        // 减速度
+	val = TMC5160_SPIReadData(0);
+	val &= ~(0x01 << 4);
+	if (dir)
+		val |= (1 << 4);
+	TMC5160_SPIWriteInt(0, val);
 }
 
-void TMC5160_Enable(void)
+/********************************************************************************************/
+/*
+ ↑以上区域是对电机的运动控制函数↑
+ ↓以下区域是参数设置函数↓
+ */
+/********************************************************************************************/
+/*
+ 函数功能：设置细分
+ 输入：细分参数
+ 输出:无
+ 返回值：无
+ */
+void Motor_SetMicrostep(uint16_t step)
 {
-	TMC5160_WriteRegister(TMC5160_REG_GCONF, 0x00000008); // 启用驱动器
+	uint8_t val;
+	uint32_t micro;
+	switch (step)
+	{
+		case 1:
+			val = 8;
+			break;
+		case 2:
+			val = 7;
+			break;
+		case 4:
+			val = 6;
+			break;
+		case 8:
+			val = 5;
+			break;
+		case 16:
+			val = 4;
+			break;
+		case 32:
+			val = 3;
+			break;
+		case 64:
+			val = 2;
+			break;
+		case 128:
+			val = 1;
+			break;
+		case 256:
+			val = 0;
+			break;
+		default:
+			val = 0;
+			break;
+	}
+	micro = TMC5160_SPIReadData(0x6C);
+	micro &= ~(0x0f << 24);
+	micro |= (val << 24);
+	TMC5160_SPIWriteInt(0x6C, micro);
 }
 
-void TMC5160_Disable(void)
+/*
+ 函数功能：设置运行阶段电流
+ 函数说明：最大电流=((0.325/0.05)/根号2)*((CS+1)/32)=1.1A/2=550mA
+ 默认CS=15
+
+ 输入：电流参数(mA)
+ 输出:无
+ 返回值：无
+ */
+void Motor_SetPhaseCurrent(uint16_t current)
 {
-	TMC5160_WriteRegister(TMC5160_REG_GCONF, 0x00000000); // 禁用驱动器
-}
-void TMC5160_MoveTo(int32_t position)
-{
-	TMC5160_WriteRegister(TMC5160_REG_RAMPMODE, 0); // 定位模式
-	TMC5160_WriteRegister(TMC5160_REG_XTARGET, position);
+	//设置GLOBALSCALER微调电流
+	TMC5160_SPIWriteInt(0x0B, (current * 255) / 2350);
 }
 
-void TMC5160_Move(int32_t relative)
+/*
+ 函数功能：电机起动速
+ 输入：速度(ustep/s)
+ 输出:无
+ 返回值：无
+ */
+void Motor_SetVSTART(uint32_t uspeed)
 {
-	int32_t current = TMC5160_ReadRegister(TMC5160_REG_XACTUAL);
-	TMC5160_MoveTo(current + relative);
+	TMC5160_SPIWriteInt(0x23, uspeed);
+}
+/*
+ 函数功能：设置加速度1阶段
+ 输入：速度(ustep/s)
+ 输出:无
+ 返回值：无
+ */
+void Motor_SetA1(uint32_t uspeed)
+{
+	TMC5160_SPIWriteInt(0x24, ConvertACC_ustepss_To_usteptt(uspeed));
+}
+/*
+ 函数功能：设置加减速阶段1速度阀值
+ 输入：速度(ustep/s)
+ 输出:无
+ 返回值：无
+ */
+void Motor_SetV1(uint32_t uspeed)
+{
+	TMC5160_SPIWriteInt(0x25, uspeed);
+}
+/*
+ 函数功能：设置加速度2阶段
+ 输入：速度(ustep/s)
+ 输出:无
+ 返回值：无
+ */
+void Motor_SetAMAX(uint32_t uspeed)
+{
+	TMC5160_SPIWriteInt(0x26, ConvertACC_ustepss_To_usteptt(uspeed));
+}
+/*
+ 函数功能：设置目标速度
+ 输入：速度(ustep/s)
+ 输出:无
+ 返回值：无
+ */
+void Motor_SetVMAX(uint32_t uspeed)
+{
+	TMC5160_SPIWriteInt(0x27, Convert_usteps_To_ustept(uspeed));
+}
+/*
+ 函数功能：VMAX和V1之间的减速度
+ 输入：速度(ustep/s)
+ 输出:无
+ 返回值：无
+ */
+void Motor_SetDMAX(uint32_t uspeed)
+{
+	TMC5160_SPIWriteInt(0x28, ConvertACC_ustepss_To_usteptt(uspeed));
+}
+/*
+ 函数功能：V1和VSTOP之间的减速
+ 输入：速度(ustep/s)
+ 输出:无
+ 返回值：无
+ */
+void Motor_SetD1(uint32_t uspeed)
+{
+	TMC5160_SPIWriteInt(0x2A, ConvertACC_ustepss_To_usteptt(uspeed));
+}
+/*
+ 函数功能：电机停止速
+ 输入：速度(ustep/s)
+ 输出:无
+ 返回值：无
+ */
+void Motor_SetVSTOP(uint32_t uspeed)
+{
+	TMC5160_SPIWriteInt(0x2B, uspeed);
 }
 
-void TMC5160_SetSpeed(uint32_t speed)
+/*
+ 函数功能：获取当前位置
+ 输入：无
+ 输出:无
+ 返回值：当前位置
+ */
+int32_t Get_MotorPosition(void)
 {
-	TMC5160_WriteRegister(TMC5160_REG_VMAX, speed);
+	int32_t Position;
+	Position = TMC5160_SPIReadData(0x21);
+	//因有时读出位置为0，需避免读出错误
+	if (Position == 0)
+		Position = TMC5160_SPIReadData(0x21);
+	return Position;
 }
+/*
+ 函数功能：设置当前位置
+ 输入：当前的位置
+ 输出:无
+ 返回值：
+ */
+void Set_MotorPosition(int32_t position)
+{
+	Motor_SetVMAX(0);
+	TMC5160_SPIWriteInt(0x20, 1);		//速度模式
+	TMC5160_SPIWriteInt(0x21, position);
+}
+/*
+ 函数功能：获取当前速度
+ 输入：无
+ 输出:无
+ 返回值：当前位置
+ */
+int32_t Get_MotorSpeed(void)
+{
+	int32_t speed;
+
+	speed = TMC5160_SPIReadData(0x22);
+	speed = speed << 8;
+	speed /= 256;
+	return speed;
+}
+
+/*
+ 函数功能：查询斜率和开关状态
+ 输入：无
+ 输出:无
+ 返回值：运行状态
+ */
+uint32_t Get_RAMP_Status(void)
+{
+	return TMC5160_SPIReadData(0x35);
+}
+/*
+ 函数功能：查询电机状态
+ 输入：无
+ 输出:无
+ 返回值：	bit31:0运行，1停止
+ bit30:A相开路
+ bit29:B相开路
+ bit28:B相短路
+ bit27:A相短路
+ bit26:过温预警
+ bit25:过温指示
+ bit24:电机堵转
+ bit13:B相相对电源短路
+ bit12:A相相对电源短路
+ */
+uint32_t Get_Motor_Status(void)
+{
+	return TMC5160_SPIReadData(0x6F);
+}
+
+/*
+ 函数功能：清除到达目标位置中断
+ 输入：细分参数
+ 输出:无
+ 返回值：无
+ */
+void Motor_ClearReachPosition_Status(void)
+{
+	TMC5160_SPIWriteInt(0x35, 0x00000080);
+}
+
