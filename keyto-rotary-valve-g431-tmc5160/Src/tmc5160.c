@@ -127,7 +127,7 @@ void Valve_TMC5160_SPIWriteInt(uint8_t reg, int32_t byte)
 void TMC5160_Init(void)
 {	
 	/**********************,MOTOR_VALVE*********************/
-	TMC5160_SPIWriteInt(0x10, 	0x00020F00);//Power_Set.Power_Config); 	// IHOLD_IRUN: IHOLD=9, IRUN=15 , IHOLDDELAY=2
+	TMC5160_SPIWriteInt(0x10, 	0x00020F00);//Power_Set.Power_Config); 	// IHOLD_IRUN: IHOLD=0, IRUN=15 , IHOLDDELAY=2
 	TMC5160_SPIWriteInt(0x11, 	0x00000007);	// TPOWERDOWN=10:
 	TMC5160_SPIWriteInt(0x12, 	0x0000000A);	// TPOWERDOWN=10: 	
 	TMC5160_SPIWriteInt(0x13, 	Convert_usteps_To_ustept(1500*SysConfig.MotorValveConfig.MicroStep));

@@ -34,26 +34,72 @@
 #define ConvertACC_ustepss_To_usteptt(ustepss) ((((uint64_t)ustepss*(uint64_t)0x20000000000))/(TMC5160_CLK*TMC5160_CLK))
 //#define ConvertACC_ustepss_To_usteptt(ustepss) (ustepss*0.01527099483)
 
+typedef enum
+{
+	POSITIONINGMODE, //位置模式
+	VELOCITYMODETOPOSITIVEVMAX, //速度模式到正 VMAX
+	VELOCITYMODETONEGATIVEVMAX, //速度模式至负 VMAX
+	HOLDMODE, //保持模式
+} RAMPMODE;
+
+typedef struct
+{
+	uint16_t StopMode;								//0:HardStop,1:SoftStop
+	uint16_t MicroStep;								//细分
+	uint16_t StartPhaseCurrent;       //起始相电流
+	uint16_t PhaseCurrent;						//额定电流
+	uint16_t PhaseVoltage;						//额定电压
+	uint32_t Acceleration;						//加速度
+	uint32_t Deceleration;						//减速度
+	uint32_t RunSpeed;								//运行速度(用来保存速度模式的运行速度)
+	uint32_t MaxSpeed;								//最大速度(用来保存位置模式下的最大速度)
+	uint32_t MinSpeed;								//最小速度
+	uint8_t PositionDir;							//方向
+	uint8_t ParaUseMicroStep;					//参数计算采用细分
+	uint8_t StepClockModeEn;					//位置模式是否采用stepclock模式
+} StepMotorPara_t;
 
 // TMC5160 寄存器地址定义
 #define TMC5160_REG_GCONF        0x00  // 通用配置
 #define TMC5160_REG_GSTAT        0x01  // 全局状态标志
+#define TMC5160_REG_IFCNT        0x02  // 接口传输计数器
+#define TMC5160_REG_SLAVECONF    0x03  // SLAVEADDR
 #define TMC5160_REG_IOIN         0x04  // 读取所有可用输入引脚状态
-#define TMC5160_REG_IHOLD_IRUN   0x10  // 电流控制
-#define TMC5160_REG_VACTUAL      0x22  // 实际速度
-#define TMC5160_REG_XACTUAL      0x21  // 实际位置
-#define TMC5160_REG_XTARGET      0x2D  // 目标位置
-#define TMC5160_REG_VSTART       0x23  // 起始速度
-#define TMC5160_REG_V1        	 0x25  // 加速度阈值速度
-#define TMC5160_REG_VMAX         0x27  // 最大速度
-#define TMC5160_REG_A1           0x2A  // 加速度
-#define TMC5160_REG_VSTOP        0x2B  // 停止速度
-#define TMC5160_REG_AMAX         0x29  // 最大加速度
-#define TMC5160_REG_D1           0x2B  // 减速度
-#define TMC5160_REG_CHOPCONF     0x6C  // 斩波器配置
-#define TMC5160_REG_TPOWERDOWN   0x11  // 待机电流延时
-#define TMC5160_REG_TPWMTHRS     0x13  // 速度阈值
+#define TMC5160_REG_OUTPUT       0x04  // 在 UART 模式下设置输出引脚极性
+#define TMC5160_REG_X_COMPARE    0x05  // 位置比较寄存器用于运动控制器位置探测，位置脉冲输出在引脚SWP_DIAG1.
+#define TMC5160_REG_OTP_PROG     0x06  // OTP_PROGRAM – OTP 编程
+#define TMC5160_REG_OTP_READ     0x07  // OTP_READ (访问 OTP 内存结果和更新)
+#define TMC5160_REG_FACTORY_CONF 0x08  // FCLKTRIM
+#define TMC5160_REG_SHORT_CONF   0x09  // SHORT_CONF
+#define TMC5160_REG_DRV_CONF     0x0A  // DRV_CONF
+#define TMC5160_REG_GLOBALSCALER 0x0B  // 电机电流的全局缩放
+#define TMC5160_REG_OFFSET_READ  0x0C  // 偏移校准结果
+#define TMC5160_REG_IHOLD_IRUN   0x10  // 驱动电流控制
+#define TMC5160_REG_TPOWERDOWN   0x11  // 设置电机静止后到电机开始降电流的之间的延时时间
+#define TMC5160_REG_TSTEP        0x12  // 以 1 / fCLK 为单位的步进输入信号上的两个 1 / 256 微步之间的实际测量时间
+#define TMC5160_REG_TPWMTHRS     0x13  // stealthChop 电压 PWM 模式的上限速度
+#define TMC5160_REG_TCOOLTHRS    0x14  // 使能 coolStep 和 stallGuard 功能的下限速度(无符号)。
+#define TMC5160_REG_THIGH        0x15  // stealthChop 电压 PWM 模式的上限速度
 #define TMC5160_REG_RAMPMODE     0x20  // 斜坡模式
+#define TMC5160_REG_XACTUAL      0x21  // 实际位置
+#define TMC5160_REG_VACTUAL      0x22  // 实际速度
+#define TMC5160_REG_VSTART       0x23  // 起始速度
+#define TMC5160_REG_A1       		 0x24  // VSTART 和 V1 之间的加速度(无符号)
+#define TMC5160_REG_V1        	 0x25  // 第一加速/减速阶段阈值速度(无符号)
+#define TMC5160_REG_AMAX         0x26  // V1 和 VMAX 之间的加速度(无符号)
+#define TMC5160_REG_VMAX         0x27  // 运动斜坡目标速度
+#define TMC5160_REG_DMAX         0x28  // VMAX 和 V1 之间的减速度(无符号)
+#define TMC5160_REG_D1           0x2A  // V1 和 VSTOP 之间的减速度(无符号)
+#define TMC5160_REG_VSTOP        0x2B  // 电机停止速度
+#define TMC5160_REG_TZEROWAIT    0x2C  // 定义下一次移动或方向反转开始前，下降到零速度后的等待时间
+#define TMC5160_REG_XTARGET      0x2D  // 目标位置
+
+#define TMC5160_REG_VDCMIN       0x33  // 在 VDCMIN (无符号)以上使能自动换向 dcStep
+#define TMC5160_REG_SW_MODE      0x34  // 开关模式配置
+#define TMC5160_REG_RAMP_STAT    0x35  // 斜坡状态和开关事件状态
+#define TMC5160_REG_XLATCH       0x36  // 斜坡发生器锁存位置，在可编程开关事件时锁存 XACTUAL
+
+#define TMC5160_REG_CHOPCONF     0x6C  // 斩波器配置
 
 // TMC5160 细分定义
 #define MRRS_1		0x00
@@ -91,23 +137,5 @@ int32_t Get_MotorSpeed(void);
 uint32_t Get_RAMP_Status(void);
 uint32_t Get_Motor_Status(void);
 void Motor_ClearReachPosition_Status(void);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif /* INC_TMC5160_H_ */

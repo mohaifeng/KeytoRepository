@@ -1,4 +1,5 @@
 import datetime
+import random
 import time
 from binascii import a2b_hex
 import Com.Protocol.protocol as pr
@@ -87,9 +88,9 @@ class rotaryvalve:
         self.TxData_Conf(data)
         print(datetime.datetime.now(), end=':')
         if self.protocol == 'IDEX':
-            print('Send:', data, '->', bytes.fromhex(data).decode())
+            print('Send:', self.tx_data, '->', bytes.fromhex(self.tx_data).decode())
         else:
-            print('Send:', data)
+            print('Send:', self.tx_data)
         return self.rv_ser.PortSend(bytes.fromhex(self.tx_data))
 
     def RxData_Analysis(self):
@@ -365,3 +366,18 @@ class stepia02:
             print(self.status_dic[self.status])
         else:
             print('无错误状态信息!')
+
+
+if __name__ == '__main__':
+    sp.Reset_Ser_Baud(0, 'com56', 9600)
+    rv = rotaryvalve()
+    rv.Get_Version()
+    while True:
+        rv.Transmit(rv.gen_cmd.Sequential_Rotation(random.randint(1, 6)))
+        rv.Wait_Rx_Finish()
+        rv.Wait_StatusIdle()
+        time.sleep(2)
+        rv.Transmit(rv.gen_cmd.Reverse_Rotation(random.randint(1, 6)))
+        rv.Wait_Rx_Finish()
+        rv.Wait_StatusIdle()
+        time.sleep(2)

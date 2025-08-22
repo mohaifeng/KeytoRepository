@@ -49,26 +49,21 @@ void TMC5160_SPIWriteInt(uint8_t address, int32_t value)
 void TMC5160_Init(void)
 {
 	/**********************,MOTOR_VALVE*********************/
-	TMC5160_SPIWriteInt(0x10, 0x00020F00); //Power_Set.Power_Config); 	// IHOLD_IRUN: IHOLD=9, IRUN=15 , IHOLDDELAY=2
-	TMC5160_SPIWriteInt(0x11, 0x00000007);	// TPOWERDOWN=10:
-	TMC5160_SPIWriteInt(0x12, 0x0000000A);	// TPOWERDOWN=10:
-	TMC5160_SPIWriteInt(0x13, Convert_usteps_To_ustept(1500*sysconfig.MotorValveConfig.MicroStep));
-	//TMC5160_SPIWriteInt(0x13, 	0);
-	//TMC5160_SPIWriteInt(0x14, 	0x00004189); 		// writing value 0x00004189 = 16777 = 0.0 to address 11 = 0x14(TCOOLTHRS)
-	TMC5160_SPIWriteInt(0x15, 0x00000000); 		// writing value 0x00000000 = 0 = 0.0 to address 12 = 0x15(THIGH)
-
-	TMC5160_SPIWriteInt(0x00, 0x00000002);	//faststandstill，0x00000002
-
-	TMC5160_SPIWriteInt(0x20, 0);
-	TMC5160_SPIWriteInt(0x21, 0); 		// writing value 0xFFCC12F0 = 0 = 0.0 to address 14 = 0x21(XACTUAL)
-	TMC5160_SPIWriteInt(0x23, 500);					//VSTART
-	TMC5160_SPIWriteInt(0x24, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Acceleration));//A1 VSTART-V1 速度模式不用配置
-	TMC5160_SPIWriteInt(0x25, (sysconfig.MotorValveConfig.MicroStep * 100));				//第一阶段加减速阀值
-	TMC5160_SPIWriteInt(0x26, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Acceleration));//AMAX V1-VMAX  500
-	TMC5160_SPIWriteInt(0x27, Convert_usteps_To_ustept(sysconfig.MotorValveConfig.MaxSpeed));		//VMAX   200*ustep*RPM/60
-	TMC5160_SPIWriteInt(0x28, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Deceleration));	//DMAX VMAX-V1 700
-	TMC5160_SPIWriteInt(0x2A, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Deceleration));//D1 V1-VSTOP速度模式不用配置
-	TMC5160_SPIWriteInt(0x2B, Convert_usteps_To_ustept(sysconfig.MotorValveConfig.MinSpeed));					//VSTOP
+	TMC5160_SPIWriteInt(TMC5160_REG_IHOLD_IRUN, 0x00020F00); //Power_Set.Power_Config); 	// IHOLD_IRUN: IHOLD=0, IRUN=15 , IHOLDDELAY=2
+	TMC5160_SPIWriteInt(TMC5160_REG_TPOWERDOWN, 0x00000007);	// TPOWERDOWN=10:
+	TMC5160_SPIWriteInt(TMC5160_REG_TPWMTHRS, Convert_usteps_To_ustept(1500*sysconfig.MotorValveConfig.MicroStep));
+	TMC5160_SPIWriteInt(TMC5160_REG_THIGH, 0x00000000); 		// writing value 0x00000000 = 0 = 0.0 to address 12 = 0x15(THIGH)
+	TMC5160_SPIWriteInt(TMC5160_REG_GCONF, 0x00000002);	//faststandstill，0x00000002
+	TMC5160_SPIWriteInt(TMC5160_REG_RAMPMODE, POSITIONINGMODE);
+	TMC5160_SPIWriteInt(TMC5160_REG_XACTUAL, 0); 		// writing value 0xFFCC12F0 = 0 = 0.0 to address 14 = 0x21(XACTUAL)
+	TMC5160_SPIWriteInt(TMC5160_REG_VSTART, 500);					//VSTART
+	TMC5160_SPIWriteInt(TMC5160_REG_A1, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Acceleration));//A1 VSTART-V1 速度模式不用配置
+	TMC5160_SPIWriteInt(TMC5160_REG_V1, (sysconfig.MotorValveConfig.MicroStep * 100));				//第一阶段加减速阀值
+	TMC5160_SPIWriteInt(TMC5160_REG_AMAX, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Acceleration));//AMAX V1-VMAX  500
+	TMC5160_SPIWriteInt(TMC5160_REG_VMAX, Convert_usteps_To_ustept(sysconfig.MotorValveConfig.MaxSpeed));		//VMAX   200*ustep*RPM/60
+	TMC5160_SPIWriteInt(TMC5160_REG_DMAX, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Deceleration));	//DMAX VMAX-V1 700
+	TMC5160_SPIWriteInt(TMC5160_REG_D1, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Deceleration));//D1 V1-VSTOP速度模式不用配置
+	TMC5160_SPIWriteInt(TMC5160_REG_VSTOP, Convert_usteps_To_ustept(sysconfig.MotorValveConfig.MinSpeed));					//VSTOP
 	//TMC5160_SPIWriteInt(0x2B, 	Convert_usteps_To_ustept(SysConfig.MotorValveConfig.MaxSpeed));
 
 	TMC5160_SPIWriteInt(0x33, 0x00000000); 		// writing value 0x00000000 = 0 = 0.0 to address 25 = 0x33(VDCMIN)
