@@ -14,7 +14,7 @@
  ************************/
 void TMC_Delay(uint32_t delay_time)
 {
-	delay_time = delay_time * 5;
+	delay_time = delay_time * 100;
 	while (delay_time--)
 		__NOP();
 }
@@ -40,20 +40,19 @@ void TMC5160_SPIWriteInt(uint8_t address, int32_t value)
 	txData[2] = (value >> 16) & 0xFF;
 	txData[3] = (value >> 8) & 0xFF;
 	txData[4] = value & 0xFF;
-	if (HAL_SPI_Transmit(&hspi1, txData, 5, TMC_SPI_MAX_DELAY) != HAL_OK)
-	{
-		Error_Handler();
-	}
+	HAL_SPI_Transmit(&hspi1, txData, 5, TMC_SPI_MAX_DELAY);
+
 }
 
 void TMC5160_Init(void)
 {
 	/**********************,MOTOR_VALVE*********************/
+	TMC5160_SPIWriteInt(TMC5160_REG_GCONF, 0x00000002);	//faststandstill，0x00000002
 	TMC5160_SPIWriteInt(TMC5160_REG_IHOLD_IRUN, 0x00020F00); //Power_Set.Power_Config); 	// IHOLD_IRUN: IHOLD=0, IRUN=15 , IHOLDDELAY=2
-	TMC5160_SPIWriteInt(TMC5160_REG_TPOWERDOWN, 0x00000007);	// TPOWERDOWN=10:
+	TMC5160_SPIWriteInt(TMC5160_REG_TPOWERDOWN, 0x0000000A);	// TPOWERDOWN=10:
 	TMC5160_SPIWriteInt(TMC5160_REG_TPWMTHRS, Convert_usteps_To_ustept(1500*sysconfig.MotorValveConfig.MicroStep));
 	TMC5160_SPIWriteInt(TMC5160_REG_THIGH, 0x00000000); 		// writing value 0x00000000 = 0 = 0.0 to address 12 = 0x15(THIGH)
-	TMC5160_SPIWriteInt(TMC5160_REG_GCONF, 0x00000002);	//faststandstill，0x00000002
+
 	TMC5160_SPIWriteInt(TMC5160_REG_RAMPMODE, POSITIONINGMODE);
 	TMC5160_SPIWriteInt(TMC5160_REG_XACTUAL, 0); 		// writing value 0xFFCC12F0 = 0 = 0.0 to address 14 = 0x21(XACTUAL)
 	TMC5160_SPIWriteInt(TMC5160_REG_VSTART, 500);					//VSTART
@@ -198,45 +197,45 @@ void Motor_SetDirection(uint8_t dir)
  */
 void Motor_SetMicrostep(uint16_t step)
 {
-	uint8_t val;
+	MRES_t val;
 	uint32_t micro;
 	switch (step)
 	{
 		case 1:
-			val = 8;
+			val = MRES_1;
 			break;
 		case 2:
-			val = 7;
+			val = MRES_2;
 			break;
 		case 4:
-			val = 6;
+			val = MRES_4;
 			break;
 		case 8:
-			val = 5;
+			val = MRES_8;
 			break;
 		case 16:
-			val = 4;
+			val = MRES_16;
 			break;
 		case 32:
-			val = 3;
+			val = MRES_32;
 			break;
 		case 64:
-			val = 2;
+			val = MRES_64;
 			break;
 		case 128:
-			val = 1;
+			val = MRES_128;
 			break;
 		case 256:
-			val = 0;
+			val = MRES_256;
 			break;
 		default:
-			val = 0;
+			val = MRES_256;
 			break;
 	}
-	micro = TMC5160_SPIReadData(0x6C);
-	micro &= ~(0x0f << 24);
+	micro = TMC5160_SPIReadData(TMC5160_REG_CHOPCONF);
+	micro &= ~(0x0f << 24);//bit24-27清零
 	micro |= (val << 24);
-	TMC5160_SPIWriteInt(0x6C, micro);
+	TMC5160_SPIWriteInt(TMC5160_REG_CHOPCONF, micro);
 }
 
 /*

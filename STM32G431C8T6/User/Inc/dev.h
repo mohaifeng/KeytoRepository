@@ -21,7 +21,6 @@ typedef struct
 	int32_t MotorPosition;       		 //电机位置
 } Valve_Port_t;
 
-
 typedef struct
 {
 	uint8_t ResetPort;
@@ -73,7 +72,7 @@ typedef struct
 
 typedef struct
 {
-	uint8_t IntoBootMode;
+	uint8_t IntoBootMode;        //进入下载模式
 	uint32_t InitFlag;
 	uint8_t WorkMode;      //电机工作模式，0:步进电机微步模式，1：流体控制模式
 	uint8_t AutoResetZeroEn;
