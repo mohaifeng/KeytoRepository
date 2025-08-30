@@ -35,7 +35,6 @@
 "./User/Src/cmd.o"
 "./User/Src/dev.o"
 "./User/Src/led.o"
-"./User/Src/objectdirectory.o"
 "./User/Src/protocol.o"
 "./User/Src/tmc5160.o"
 "./User/Src/user_usart.o"

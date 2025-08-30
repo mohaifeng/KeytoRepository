@@ -10,7 +10,6 @@
 #include "protocol.h"
 #include <string.h>
 #include <ctype.h>
-#include "objectdirectory.h"
 
 Cmd_list_t cmd_list;
 

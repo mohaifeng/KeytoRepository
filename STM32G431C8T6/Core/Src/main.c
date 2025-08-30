@@ -31,7 +31,6 @@
 #include "led.h"
 #include "user_usart.h"
 #include "flash.h"
-#include "objectdirectory.h"
 //#include "verification.h"
 //#include "motor_control.h"
 /* USER CODE END Includes */
@@ -110,7 +109,6 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-	OD_Init();
 	Led_Init();
 	Usart_Start_Receive(&huart1); //开启DMA接收
 	Usart_Start_Receive(&huart2); //开启DMA接收

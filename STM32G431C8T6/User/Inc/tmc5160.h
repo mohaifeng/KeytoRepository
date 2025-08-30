@@ -138,11 +138,12 @@ typedef struct
 	uint16_t StartPhaseCurrent;       //起始相电流
 	uint16_t PhaseCurrent;						//额定电流
 	uint16_t PhaseVoltage;						//额定电压
+	uint32_t StartSpeed;						  //启动速度
 	uint32_t Acceleration;						//加速度
 	uint32_t Deceleration;						//减速度
 	uint32_t RunSpeed;								//运行速度(用来保存速度模式的运行速度)
 	uint32_t MaxSpeed;								//最大速度(用来保存位置模式下的最大速度)
-	uint32_t MinSpeed;								//最小速度
+	uint32_t StopSpeed;								//停止速度
 	uint8_t PositionDir;							//方向
 	uint8_t ParaUseMicroStep;					//参数计算采用细分
 	uint8_t StepClockModeEn;					//位置模式是否采用stepclock模式

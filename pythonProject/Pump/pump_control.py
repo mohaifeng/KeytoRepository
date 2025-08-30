@@ -749,23 +749,32 @@ class vlg_pusi:
         :return: 0：返回数据有误 else：返回数据：str
         """
         self.rx_data = ''
-        if self.pusi_ser.PortReceive_Data(1, timeout):
+        if self.pusi_ser.PortReceive_Data(8, timeout):
             self.rx_data += self.pusi_ser.rx_buf
-            while True:
-                if self.pusi_ser.PortReceive_Data(1, 5):
-                    self.rx_data += self.pusi_ser.rx_buf
-                    continue
-                else:
-                    if self.Protocol_Check():
-                        print(datetime.datetime.now(), end=':')
-                        print('Rece:', self.rx_data)
-                        return len(self.rx_data) // 2
-                    else:
-                        print('数据格式有误！')
-                        print('Rece:', self.rx_data)
-                        return 0
+            if self.Protocol_Check():
+                print(datetime.datetime.now(), end=':')
+                print('Rece:', self.rx_data)
+                return len(self.rx_data) // 2
+            else:
+                print('数据格式有误！')
+                print('Rece:', self.rx_data)
+                return 0
+            # while True:
+            #     if self.pusi_ser.PortReceive_Data(1, 5):
+            #         self.rx_data += self.pusi_ser.rx_buf
+            #         continue
+            #     else:
+            #         if self.Protocol_Check():
+            #             print(datetime.datetime.now(), end=':')
+            #             print('Rece:', self.rx_data)
+            #             return len(self.rx_data) // 2
+            #         else:
+            #             print('数据格式有误！')
+            #             print('Rece:', self.rx_data)
+            #             return 0
         else:
             print(datetime.datetime.now(), end=':')
+            print('Rece:', self.rx_data)
             print('数据无返回！')
             return 0
 
@@ -786,22 +795,75 @@ class vlg_pusi:
                 return False
 
 
+def Check_Pusi_Rec(rec):
+    if rec == 0:
+        print('故障:')
+        sys.exit()
+
+
 if __name__ == '__main__':
     sp.Reset_Ser_Baud(0, 'com56', 9600)
-    drl = step_drl()
-    test_list = [
-        drl.drl_cmd.It(3000),
-        drl.drl_cmd.Vc(1),
-        drl.drl_cmd.Ia(0, 1000, 100),
-        drl.drl_cmd.Ia(5000, 1000, 100),
-        drl.drl_cmd.Vc(0),
-        drl.drl_cmd.Da(0, 1000, 100, 0),
-        drl.drl_cmd.Da(5000, 1000, 100, 0),
-    ]
-    drl.ReportingConfig(1)
+    ps1 = vlg_pusi()
+    ps2 = vlg_pusi()
+    ps3 = vlg_pusi()
+    ps4 = vlg_pusi()
+    ps5 = vlg_pusi()
+
+    ps1.address = 1
+    ps2.address = 2
+    ps3.address = 3
+    ps4.address = 4
+    ps5.address = 5
+
+    ps1.mode = '485'
+    ps2.mode = '485'
+    ps3.mode = '485'
+    ps4.mode = '485'
+    ps5.mode = '485'
+
+    ps1_cmd = [ps1.pusi_cmd.Set_MaxSpeed(2568), ps1.pusi_cmd.Read_MaxSpeed(), ps1.pusi_cmd.Set_Mres(32),
+               ps1.pusi_cmd.Read_Mres()]
+    ps2_cmd = [ps1.pusi_cmd.Set_MaxSpeed(3421), ps1.pusi_cmd.Read_MaxSpeed(), ps1.pusi_cmd.Set_Mres(64),
+               ps1.pusi_cmd.Read_Mres()]
+    ps3_cmd = [ps1.pusi_cmd.Set_MaxSpeed(5678), ps1.pusi_cmd.Read_MaxSpeed(), ps1.pusi_cmd.Set_Mres(128),
+               ps1.pusi_cmd.Read_Mres()]
+    ps4_cmd = [ps1.pusi_cmd.Set_MaxSpeed(7340), ps1.pusi_cmd.Read_MaxSpeed(), ps1.pusi_cmd.Set_Mres(16),
+               ps1.pusi_cmd.Read_Mres()]
+    ps5_cmd = [ps1.pusi_cmd.Set_MaxSpeed(21450), ps1.pusi_cmd.Read_MaxSpeed(), ps1.pusi_cmd.Set_Mres(16),
+               ps1.pusi_cmd.Read_Mres()]
+    rv1_cmd = 'CC 01 22 00 00 DD CC 01'
+    rv2_cmd = 'CC 02 22 00 00 DD CD 01'
+    rv3_cmd = 'CC 03 22 00 00 DD CE 01'
+    rv4_cmd = 'CC 04 22 00 00 DD CF 01'
+    rv5_cmd = 'CC 05 22 00 00 DD D0 01'
     while True:
-        for test in test_list:
-            drl.Transmit(test)
-            drl.Wait_Rx_Finish()
-            drl.Wait_StatusIdle()
-            time.sleep(0.01)
+        for p1 in ps1_cmd:
+            ps1.Pusi_Send(p1)
+            Check_Pusi_Rec(ps1.Pusi_Receive())
+        sp.ser.PortSend(bytes.fromhex(rv1_cmd))
+        sp.ser.PortReceive_Data(8, 500)
+        time.sleep(0.1)
+        for p2 in ps2_cmd:
+            ps2.Pusi_Send(p2)
+            Check_Pusi_Rec(ps2.Pusi_Receive())
+        sp.ser.PortSend(bytes.fromhex(rv2_cmd))
+        sp.ser.PortReceive_Data(8, 500)
+        time.sleep(0.1)
+        for p3 in ps3_cmd:
+            ps3.Pusi_Send(p3)
+            Check_Pusi_Rec(ps3.Pusi_Receive())
+        sp.ser.PortSend(bytes.fromhex(rv3_cmd))
+        sp.ser.PortReceive_Data(8, 500)
+        time.sleep(0.1)
+        for p4 in ps4_cmd:
+            ps4.Pusi_Send(p4)
+            Check_Pusi_Rec(ps4.Pusi_Receive())
+        sp.ser.PortSend(bytes.fromhex(rv4_cmd))
+        sp.ser.PortReceive_Data(8, 500)
+        time.sleep(0.1)
+        for p5 in ps1_cmd:
+            ps5.Pusi_Send(p5)
+            Check_Pusi_Rec(ps5.Pusi_Receive())
+        sp.ser.PortSend(bytes.fromhex(rv5_cmd))
+        sp.ser.PortReceive_Data(8, 500)
+        time.sleep(0.1)

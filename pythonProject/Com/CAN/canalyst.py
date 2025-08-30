@@ -224,6 +224,7 @@ class CANALYST:
         :param can_data: 帧数据:str
         :return: True：发送成功；False：发送失败
         """
+        can_data = can_data.replace(' ', '')
         reser = (c_ubyte * 3)(0, 0, 0)  # reserved[3]
         self.can_send_data = [can_id, can_data]
         data_len = len(can_data) // 2
@@ -378,12 +379,14 @@ class ADP_CAN:
 canalyst = CANALYST()
 
 if __name__ == "__main__":
-    can=CANALYST()
+    can = CANALYST()
+    can.canindex = 1
     can.Dev_Open()
     can.Can_Init()
     can.Can_Open()
-    can.Can_Send('00010000','0050010000000000')
-    can.Can_Receive()
+    for i in range(0,10):
+        can.Can_Send('00020014', '00 20 00 08 00 00 00 00 ')
+        can.Can_Receive()
     # 初始化CAN指令
     # adp1_can = ADP_CAN()
     # # # 配置帧ID

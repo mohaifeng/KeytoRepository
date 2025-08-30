@@ -58,17 +58,5 @@ void Value_ClearFault(void)
 }
 
 /**********获取当前位置*************/
-int32_t Get_CurrentPosition(void)
-{
-	int32_t CurrentPos;
-	if (sysconfig.WorkMode == 1)
-	{
 
-	}
-	else
-	{
-		CurrentPos = Get_MotorPosition();
-	}
-	return CurrentPos;
-}
 
