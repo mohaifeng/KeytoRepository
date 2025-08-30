@@ -128,6 +128,7 @@ void Usart_Task(UART_HandleTypeDef *huart)
 				break;
 			case USART_SENDING:
 				Usart_SendData(huart);
+				break;
 			case USART_WAITTXFINISH:
 				break;
 			default:
@@ -142,10 +143,10 @@ void Usart_Task(UART_HandleTypeDef *huart)
 				break;
 			case USART_PROCESSING:
 				ProcessReceivedData(huart);
-				//			Cmd_Task();
 				break;
 			case USART_SENDING:
 				Usart_SendData(huart);
+				break;
 			case USART_WAITTXFINISH:
 				break;
 			default:

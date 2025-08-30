@@ -11,9 +11,10 @@
 #include "main.h"
 #include "tmc5160.h"
 
-#define SYS_FACILITY_ID			0X00010011
-#define SYS_SOFT_VERSIONS		230927118 //SYSTERM_VERSION
+#define SYS_FACILITY_ID			  0X00010011
+#define SYS_SOFT_VERSIONS		  230927118 //SYSTERM_VERSION
 #define ENC_SPEED_ARRAY_SIZE  16
+#define Max_PortNum						30
 
 typedef struct
 {
@@ -23,22 +24,20 @@ typedef struct
 
 typedef struct
 {
-	uint8_t ResetPort;
-	uint16_t ResetSpeed;                              //复位速度（单位 转/分）  5-350转/分
-	uint32_t FWD_ValveOptocouplerGapStep;             //光耦挡片缺口宽度
-	uint32_t OptPosition[30];              	//位置光耦触发位置
+	uint8_t InitPort;       		 //复位通道
+	uint16_t InitSpeed;                              //复位速度（单位 转/分）  5-350转/分
+	uint32_t OptocouplerGapStep;             //光耦挡片缺口宽度
+	uint32_t OptPosition[Max_PortNum];              	//位置光耦触发位置
 	uint32_t OptInterval;										//位置光耦间隔
 	uint8_t OptGapNum;											//光耦触发缺口个数
-	Valve_Port_t Port[30];                 //端口
-	uint8_t PortNum;                       //端口个数
+	Valve_Port_t Port_Buff[Max_PortNum];             //每个端口数组
+	uint8_t PortNum;                       //通道个数
 	uint8_t ErrorAutoResetAllowCont;
-	int32_t FlowClockwisePhaseCompensation;    	//顺时针补偿值
-	int32_t FlowAnticlockwisePhaseCompensation; //逆时针补偿值
-	uint8_t Using_ReductionBox;
-	float Reduction_Ratio;
-	uint16_t MaxStep;
+	int32_t ClockwiseCompensationStep;    	//顺时针补偿值
+	int32_t AnticlockwiseCompensationStep; //逆时针补偿值
+	uint16_t MaxStep;	//行程
 	uint8_t MaxGapStep;
-} Flow_Config_t;
+} Valve_Config_t;
 
 typedef struct
 {
@@ -77,7 +76,7 @@ typedef struct
 	uint8_t WorkMode;      //电机工作模式，0:步进电机微步模式，1：流体控制模式
 	uint8_t AutoResetZeroEn;
 	uint8_t AutoAgingEnable;
-	Flow_Config_t ValveConfig;
+	Valve_Config_t ValveConfig;
 	StepMotorPara_t MotorValveConfig;
 	Communication_Config_t CommunicationConfig;   //通讯配置
 	EncoderPara_t EncoderConfig;			//编码器配置

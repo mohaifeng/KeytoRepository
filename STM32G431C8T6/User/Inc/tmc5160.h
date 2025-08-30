@@ -145,7 +145,6 @@ typedef struct
 	uint32_t MaxSpeed;								//最大速度(用来保存位置模式下的最大速度)
 	uint32_t StopSpeed;								//停止速度
 	uint8_t PositionDir;							//方向
-	uint8_t ParaUseMicroStep;					//参数计算采用细分
 	uint8_t StepClockModeEn;					//位置模式是否采用stepclock模式
 } StepMotorPara_t;
 

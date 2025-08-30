@@ -38,7 +38,7 @@ typedef struct
 	Led_Status_t currentState;
 	uint8_t blinkCount;       // 当前已闪烁次数
 	uint32_t lastActionTime;  // 上次动作时间戳
-	uint8_t blinkPhase;          // 当前闪烁相位(true=亮, false=灭)
+	uint8_t blinkPhase;          // 当前闪烁相位(1:亮；0：灭)
 } LedControl_t;
 
 extern Led_Status_t led_state;
@@ -47,6 +47,5 @@ extern volatile uint8_t target_blink_count;
 void Led_Init(void);
 void Led_HandleEvent(Led_Event_t event);
 void Led_Task(Led_Status_t state);
-void Led_Blink(void);
 
 #endif /* INC_LED_H_ */

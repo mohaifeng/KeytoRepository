@@ -17,6 +17,48 @@ void Led_Init(void)
 	HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_SET);
 }
 
+static void Led_Blink(void)
+{
+	uint32_t currentTime = HAL_GetTick();
+	if (led_control.currentState != LED_BLINK) //第一次亮
+	{
+		led_control.blinkCount = 0; // 当前已闪烁次数
+		led_control.lastActionTime = currentTime; // 上次动作时间戳
+		led_control.blinkPhase = 1; //1:亮；0：灭
+		led_control.currentState = LED_BLINK;
+		LED_ON();
+		return;
+	}
+	if ((currentTime - led_control.lastActionTime)
+			>= (led_control.blinkPhase ?
+			BLINK_INTERVAL :
+																		(led_control.blinkCount < target_blink_count ? BLINK_INTERVAL : PAUSE_INTERVAL)))
+	{
+		if (led_control.blinkCount < target_blink_count)
+		{
+			// 正常闪烁周期
+			led_control.blinkPhase = !led_control.blinkPhase;
+			LED_Toggle();
+			if (!led_control.blinkPhase)
+			{
+				// 完成一次完整闪烁(亮+灭)
+				led_control.blinkCount++;
+			}
+		}
+		else
+		{
+			// 已完成一组闪烁，检查状态是否仍为LED_BLINK_RED
+			if (led_control.currentState == LED_BLINK)
+			{
+				led_control.blinkCount = 0;
+				led_control.blinkPhase = 1;
+				LED_ON();
+			}
+		}
+		led_control.lastActionTime = currentTime;
+	}
+}
+
 //事件触发改变LED状态函数
 void Led_HandleEvent(Led_Event_t event)
 {
@@ -55,44 +97,3 @@ void Led_Task(Led_Status_t state)
 
 }
 
-void Led_Blink(void)
-{
-	uint32_t currentTime = HAL_GetTick();
-	if (led_control.currentState != LED_BLINK)
-	{
-		led_control.blinkCount = 0; // 当前已闪烁次数
-		led_control.lastActionTime = currentTime; // 上次动作时间戳
-		led_control.blinkPhase = 1; //1:亮；0：灭
-		led_control.currentState = LED_BLINK;
-		LED_ON();
-		return;
-	}
-	if ((currentTime - led_control.lastActionTime)
-			>= (led_control.blinkPhase ?
-			BLINK_INTERVAL :
-																		(led_control.blinkCount < target_blink_count ? BLINK_INTERVAL : PAUSE_INTERVAL)))
-	{
-		if (led_control.blinkCount < target_blink_count)
-		{
-			// 正常闪烁周期
-			led_control.blinkPhase = !led_control.blinkPhase;
-			LED_Toggle();
-			if (!led_control.blinkPhase)
-			{
-				// 完成一次完整闪烁(亮+灭)
-				led_control.blinkCount++;
-			}
-		}
-		else
-		{
-			// 已完成一组闪烁，检查状态是否仍为LED_BLINK_RED
-			if (led_control.currentState == LED_BLINK)
-			{
-				led_control.blinkCount = 0;
-				led_control.blinkPhase = 1;
-				LED_ON();
-			}
-		}
-		led_control.lastActionTime = currentTime;
-	}
-}
