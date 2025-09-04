@@ -33,7 +33,7 @@ typedef struct
 
 typedef struct
 {
-	uint8_t tx_len;  //接收一帧数据的长度
+	uint8_t tx_len;  //发送一帧数据的长度
 	uint8_t tx_buffer[BUFFER_SIZE]; //接收缓存数组
 } Usart_TX_t;
 
@@ -47,8 +47,9 @@ extern volatile UsartState_t usart2_state;
 void User_USART1_Init(void);
 void User_USART2_Init(void);
 void Usart_SendData(UART_HandleTypeDef *huart);
-HAL_StatusTypeDef Usart_GetProcessedData(UART_HandleTypeDef *huart, uint8_t **data, uint16_t *length);
+HAL_StatusTypeDef Usart_GetData(UART_HandleTypeDef *huart, uint8_t **data, uint8_t length);
 void Usart_Start_Receive(UART_HandleTypeDef *huart);
+void USER_UART_IDLECallback(UART_HandleTypeDef *huart);
 void Usart_Task(UART_HandleTypeDef *huart);
 
 #endif /* INC_USER_USART_H_ */

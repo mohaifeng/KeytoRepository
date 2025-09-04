@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "user_usart.h"
+#include "dev.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -193,7 +194,7 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-
+	SysTick_Callback();
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
@@ -382,72 +383,5 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 }
 
-void USER_UART_IRQHandler(UART_HandleTypeDef *huart)
-{
-	if (huart->Instance == USART1) //判断是否是串口1
-	{
-		if (RESET != __HAL_UART_GET_FLAG(&huart1, UART_FLAG_IDLE))  //判断是否是空闲中断
-		{
-			__HAL_UART_CLEAR_IDLEFLAG(&huart1);  //清楚空闲中断标志（否则会一直不断进入中断）
-			USER_UART_IDLECallback(&huart1);  //调用中断处理函数
-		}
-	}
-	if (huart->Instance == USART2) //判断是否是串口1
-	{
-		if (RESET != __HAL_UART_GET_FLAG(&huart2, UART_FLAG_IDLE))  //判断是否是空闲中断
-		{
-			__HAL_UART_CLEAR_IDLEFLAG(&huart2);  //清楚空闲中断标志（否则会一直不断进入中断）
-			USER_UART_IDLECallback(&huart2);  //调用中断处理函数
-		}
-	}
-}
 
-void USER_UART_IDLECallback(UART_HandleTypeDef *huart)
-{
-	if (huart->Instance == USART1)
-	{
-		HAL_UART_DMAStop(&huart1);  //停止本次DMA传输
-		usart1_rx_struct.rx_len = BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);  //计算接收到的数据长度
-		if (usart1_rx_struct.rx_len > 0)
-		{
-			// 切换到非活动缓冲区
-			usart1_rx_struct.active_buffer = (!usart1_rx_struct.active_buffer);
-			usart1_rx_struct.dataready = 1;
-			usart1_state = USART_PROCESSING;    // 接受完成标志位置1
-		}
-		else
-		{
-			Usart_Start_Receive(&huart1); //开启DMA接收
-			__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);	//使能空闲中断
-		}
-	}
-	if (huart->Instance == USART2)
-	{
-		HAL_UART_DMAStop(&huart2);  //停止本次DMA传输
-		usart2_rx_struct.rx_len = BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart2_rx);  //计算接收到的数据长度
-		if (usart2_rx_struct.rx_len != 0)
-		{
-			usart2_rx_struct.active_buffer = (!usart1_rx_struct.active_buffer);
-			usart2_rx_struct.dataready = 1;
-			usart2_state = USART_PROCESSING;    // 接受完成标志位置1
-		}
-		else
-		{
-			Usart_Start_Receive(&huart2); //开启DMA接收
-			__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);	//使能空闲中断
-		}
-	}
-}
-
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-	if (huart->Instance == USART1)
-	{
-		usart1_state = USART_RECEIVING;
-	}
-	if (huart->Instance == USART2)
-	{
-		usart2_state = USART_RECEIVING;
-	}
-}
 /* USER CODE END 1 */

@@ -7,7 +7,7 @@
 #include "valve_control.h"
 #include "led.h"
 #include "dev.h"
-
+#include "cmd.h"
 
 Valve_Handle_t ValveControl =
 		{
@@ -25,6 +25,11 @@ Valve_Handle_t ValveControl =
 				.ErrorAutoResetFlag = 0,
 				.ErrorResetChannel = 0,
 		};
+
+void ValveControlTask(void)
+{
+
+}
 
 /*************************************************
  设置阀下一个运行状态
@@ -57,6 +62,12 @@ void Value_ClearFault(void)
 	Valve_NextState(VALVE_IDLE);
 }
 
-/**********获取当前位置*************/
+Sys_Status_t Valve_ReadRegister(Cmd_Par_t *pcmd)
+{
+	if (pcmd->value_num > 2)
+		return PARAMETER_ERROR;
+	return
+}
 
+/**********获取当前位置*************/
 

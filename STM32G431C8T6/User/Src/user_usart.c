@@ -10,6 +10,8 @@
 #include "dev.h"
 #include <string.h>
 
+extern DMA_HandleTypeDef hdma_usart1_rx;
+extern DMA_HandleTypeDef hdma_usart2_rx;
 
 volatile UsartState_t usart1_state = USART_RECEIVING;
 volatile UsartState_t usart2_state = USART_RECEIVING;
@@ -90,72 +92,8 @@ void User_USART2_Init(void)
 	usart2_state = USART_RECEIVING;
 }
 
-static void ProcessReceivedData(UART_HandleTypeDef *huart)
-{
-	uint8_t *tx_buff;
-	uint16_t tx_len = 0;
-	if (huart->Instance == USART1)
-	{
-		// 示例：将接收到的数据回传
-		Usart_GetProcessedData(&huart1, &tx_buff, &tx_len);
-		memcpy(usart1_tx_struct.tx_buffer, tx_buff, tx_len);
-		usart1_tx_struct.tx_len = tx_len;
-		// 切换到发送状态
-		usart1_state = USART_SENDING;
-	}
-	if (huart->Instance == USART2)
-	{
-		// 示例：将接收到的数据回传
-		Usart_GetProcessedData(&huart2, &tx_buff, &tx_len);
-		memcpy(usart2_tx_struct.tx_buffer, tx_buff, tx_len);
-		usart2_tx_struct.tx_len = tx_len;
-		// 切换到发送状态
-		usart2_state = USART_SENDING;
-	}
 
-}
-
-void Usart_Task(UART_HandleTypeDef *huart)
-{
-	if (huart->Instance == USART1)
-	{
-		switch (usart1_state)
-		{
-			case USART_RECEIVING:
-				break;
-			case USART_PROCESSING:
-				ProcessReceivedData(huart);
-				break;
-			case USART_SENDING:
-				Usart_SendData(huart);
-				break;
-			case USART_WAITTXFINISH:
-				break;
-			default:
-				break;
-		}
-	}
-	if (huart->Instance == USART2)
-	{
-		switch (usart2_state)
-		{
-			case USART_RECEIVING:
-				break;
-			case USART_PROCESSING:
-				ProcessReceivedData(huart);
-				break;
-			case USART_SENDING:
-				Usart_SendData(huart);
-				break;
-			case USART_WAITTXFINISH:
-				break;
-			default:
-				break;
-		}
-	}
-}
-
-void Usart_SendData(UART_HandleTypeDef *huart)
+void Usart_Transmit(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART1)
 	{
@@ -185,14 +123,14 @@ static void Usart_Buffer_Init(UART_HandleTypeDef *huart)
 }
 
 // 获取缓冲区数据
-HAL_StatusTypeDef Usart_GetProcessedData(UART_HandleTypeDef *huart, uint8_t **data, uint16_t *length)
+HAL_StatusTypeDef Usart_GetData(UART_HandleTypeDef *huart, uint8_t **data, uint8_t length)
 {
 	if (huart->Instance == USART1)
 	{
 		if (usart1_rx_struct.dataready)
 		{
 			*data = usart1_rx_struct.rx_buffer[!usart1_rx_struct.active_buffer];
-			*length = usart1_rx_struct.rx_len;
+			length = usart1_rx_struct.rx_len;
 			usart1_rx_struct.dataready = 0;  //清除数据就绪标志
 			return HAL_OK;
 		}
@@ -203,7 +141,7 @@ HAL_StatusTypeDef Usart_GetProcessedData(UART_HandleTypeDef *huart, uint8_t **da
 		if (usart2_rx_struct.dataready)
 		{
 			*data = usart2_rx_struct.rx_buffer[!usart2_rx_struct.active_buffer];
-			*length = usart2_rx_struct.rx_len;
+			length = usart2_rx_struct.rx_len;
 			usart2_rx_struct.dataready = 0;  //清除数据就绪标志
 			return HAL_OK;
 		}
@@ -217,6 +155,7 @@ void Usart_Start_Receive(UART_HandleTypeDef *huart)
 	if (huart->Instance == USART1)
 	{
 		// 启动DMA接收
+		usart1_rx_struct.dataready = 0;
 		memset(usart1_rx_struct.rx_buffer[usart1_rx_struct.active_buffer], 0, BUFFER_SIZE);  //清空缓存区
 		while (HAL_UART_Receive_DMA(&huart1, usart1_rx_struct.rx_buffer[usart1_rx_struct.active_buffer], BUFFER_SIZE))
 		{
@@ -226,6 +165,7 @@ void Usart_Start_Receive(UART_HandleTypeDef *huart)
 	if (huart->Instance == USART2)
 	{
 		// 启动DMA接收
+		usart2_rx_struct.dataready = 0;
 		memset(usart2_rx_struct.rx_buffer[usart2_rx_struct.active_buffer], 0, BUFFER_SIZE);  //清空缓存区
 		while (HAL_UART_Receive_DMA(&huart2, usart2_rx_struct.rx_buffer[usart2_rx_struct.active_buffer], BUFFER_SIZE))
 		{
@@ -233,4 +173,75 @@ void Usart_Start_Receive(UART_HandleTypeDef *huart)
 		}
 	}
 
+}
+
+void USER_UART_IRQHandler(UART_HandleTypeDef *huart)
+{
+	if (huart->Instance == USART1) //判断是否是串口1
+	{
+		if (RESET != __HAL_UART_GET_FLAG(&huart1, UART_FLAG_IDLE))  //判断是否是空闲中断
+		{
+			__HAL_UART_CLEAR_IDLEFLAG(&huart1);  //清楚空闲中断标志（否则会一直不断进入中断）
+			USER_UART_IDLECallback(&huart1);  //调用中断处理函数
+		}
+	}
+	if (huart->Instance == USART2) //判断是否是串口1
+	{
+		if (RESET != __HAL_UART_GET_FLAG(&huart2, UART_FLAG_IDLE))  //判断是否是空闲中断
+		{
+			__HAL_UART_CLEAR_IDLEFLAG(&huart2);  //清楚空闲中断标志（否则会一直不断进入中断）
+			USER_UART_IDLECallback(&huart2);  //调用中断处理函数
+		}
+	}
+}
+
+void USER_UART_IDLECallback(UART_HandleTypeDef *huart)
+{
+	if (huart->Instance == USART1)
+	{
+		HAL_UART_DMAStop(&huart1);  //停止本次DMA传输
+		usart1_rx_struct.rx_len = BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);  //计算接收到的数据长度
+		if (usart1_rx_struct.rx_len > 0)
+		{
+			// 切换到非活动缓冲区
+			usart1_rx_struct.active_buffer = (!usart1_rx_struct.active_buffer);
+			usart1_rx_struct.dataready = 1;
+			USART1_RxTimeCnt = 0;
+			usart1_state = USART_PROCESSING;    // 接受完成标志位置1
+		}
+		else
+		{
+			Usart_Start_Receive(&huart1); //开启DMA接收
+			__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);	//使能空闲中断
+		}
+	}
+	if (huart->Instance == USART2)
+	{
+		HAL_UART_DMAStop(&huart2);  //停止本次DMA传输
+		usart2_rx_struct.rx_len = BUFFER_SIZE - __HAL_DMA_GET_COUNTER(&hdma_usart2_rx);  //计算接收到的数据长度
+		if (usart2_rx_struct.rx_len > 0)
+		{
+			usart2_rx_struct.active_buffer = (!usart1_rx_struct.active_buffer);
+			usart2_rx_struct.dataready = 1;
+			USART2_RxTimeCnt = 0;
+			usart2_state = USART_PROCESSING;    // 接受完成标志位置1
+		}
+		else
+		{
+			Usart_Start_Receive(&huart2); //开启DMA接收
+			__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);	//使能空闲中断
+		}
+	}
+}
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+	if (huart->Instance == USART1)
+	{
+		usart1_state = USART_RECEIVING;
+	}
+	if (huart->Instance == USART2)
+	{
+		usart2_state = USART_RECEIVING;
+	}
 }

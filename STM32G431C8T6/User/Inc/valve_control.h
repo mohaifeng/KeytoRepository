@@ -76,4 +76,6 @@ typedef struct
 	uint32_t ResetTimeCont;
 } Valve_Handle_t;
 
+void ValveControlTask(void);
+
 #endif /* INC_VALVE_CONTROL_H_ */

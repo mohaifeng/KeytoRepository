@@ -36,6 +36,7 @@
 "./User/Src/dev.o"
 "./User/Src/led.o"
 "./User/Src/protocol.o"
+"./User/Src/register.o"
 "./User/Src/tmc5160.o"
 "./User/Src/user_usart.o"
 "./User/Src/valve_control.o"
