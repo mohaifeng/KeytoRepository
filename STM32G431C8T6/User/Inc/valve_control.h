@@ -9,6 +9,7 @@
 #define INC_VALVE_CONTROL_H_
 
 #include "main.h"
+#include "cmd.h"
 
 #define VALVE_CATCH_GAP_NUM     10  //挡片缺口个数
 #define VALVE_MAX_STEP  				200 //VALVE full step 模式最大值
@@ -34,7 +35,7 @@ typedef enum
 
 typedef struct
 {
-	uint16_t RunStatus;
+
 	ValveState_t bState;
 	uint32_t MotorHardStatus;			//电机硬件状态
 	uint32_t MotorRAMPStatus;
@@ -77,5 +78,5 @@ typedef struct
 } Valve_Handle_t;
 
 void ValveControlTask(void);
-
+void Valve_ReadRegister(const Cmd_Par_t *pcmd, ResponseHandle_t *resp);
 #endif /* INC_VALVE_CONTROL_H_ */

@@ -13,8 +13,9 @@ LedControl_t led_control = { .currentState = LED_OFF, .blinkCount = 0, .lastActi
 void Led_Init(void)
 {
 	HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_RESET);
-	HAL_Delay(1000);
+	HAL_Delay(500);
 	HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_SET);
+	Led_HandleEvent(EVENT_NONE);
 }
 
 static void Led_Blink(void)

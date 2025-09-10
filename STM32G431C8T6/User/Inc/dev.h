@@ -17,8 +17,30 @@
 #define ENC_SPEED_ARRAY_SIZE  16
 #define Max_PortNum						30
 
-#define CONSOLE_TASK_TIME						2 //单位ms
-#define VALVE_CONTROL_TASK_TIME			5 //单位ms
+#define USART_TASK_TIME						5 //单位ms
+#define VALVE_CONTROL_TASK_TIME		5 //单位ms
+
+typedef enum
+{
+	DEV_IDLE = 0, //空闲
+	DEV_BUSY, //忙
+	EXECUTE_SUCCESS, //执行成功
+	COMPLETE, //上报完成
+	OVER_LIMIT = 10, //超限
+	PARAMETER_ERROR, //参数错误
+	SYNTAX_ERROR, //语法错误
+	INVALID_CMD, //非法指令
+	REG_ERROR, //寄存器地址错误
+	READ_WRITE_ONLY, //只读/写
+	CMD_OVERFLOW, //指令溢出
+	NO_INIT, //未初始化
+	DRIVER_ERROR = 51,
+	OW1_ERROR,
+	OW2_ERROR,
+	SENSOR_ERROR,
+	FLASH_ERROR,
+	OEM_IDEX_SAME = 255,
+} Sys_Status_t;
 
 typedef struct
 {
@@ -68,8 +90,8 @@ typedef struct
 {
 	uint8_t Add;                  //地址
 	Protocol_t protocol_type;     //协议类型
-	uint8_t RS232_BaudRate;      //RS232波特率
-	uint8_t RS485_BaudRate;      //RS485波特率
+	uint32_t RS232_BaudRate;      //RS232波特率
+	uint32_t RS485_BaudRate;      //RS485波特率
 	uint16_t CAN_BaudRate;        //CAN波特率
 	uint8_t CAN_TargetAdd;        //CAN目标地址
 } Communication_Config_t;
@@ -77,7 +99,8 @@ typedef struct
 typedef struct
 {
 	uint8_t IntoBootMode;        //进入下载模式
-	uint32_t InitFlag;
+	Sys_Status_t RunStatus;
+	uint32_t InitFlag;			//第一次上电
 	uint8_t WorkMode;      //电机工作模式，0:步进电机微步模式，1：流体控制模式
 	uint8_t AutoResetZeroEn;
 	uint8_t AutoAgingEnable;
@@ -86,41 +109,19 @@ typedef struct
 	Communication_Config_t CommunicationConfig;   //通讯配置
 	EncoderPara_t EncoderConfig;			//编码器配置
 	uint32_t Password;
-	uint8_t Not_Change;														//不适用装换10通模式
 	uint8_t IIC_Addr;
 	uint8_t i2c_valve_profile;
 	uint8_t i2c_valvecmd;
 	uint8_t UserData[50];
+	uint32_t model;
+	uint32_t version;
 } SysConfig_t;
 
-typedef enum
-{
-	DEV_IDLE = 0, //空闲
-	DEV_BUSY, //忙
-	EXECUTE_SUCCESS, //执行成功
-	COMPLETE, //上报完成
-	OVER_LIMIT = 10, //超限
-	PARAMETER_ERROR, //参数错误
-	SYNTAX_ERROR, //语法错误
-	INVALID_CMD, //非法指令
-	REG_ERROR, //寄存器地址错误
-	READ_WRITE_ONLY, //只读/写
-	CMD_OVERFLOW, //指令溢出
-	NO_INIT, //未初始化
-	DRIVER_ERROR = 51,
-	OW1_ERROR,
-	OW2_ERROR,
-	SENSOR_ERROR,
-	EEPROM_ERROR,
-	OEM_IDEX_SAME = 255,
-} Sys_Status_t;
-
 extern SysConfig_t sysconfig;
-extern uint32_t ConsoleControlTaskCnt;														//协议解析，串口收发任务的时间计数
 extern uint32_t USART1_RxTimeCnt;														//串口1接收数据的时间计数
 extern uint32_t USART2_RxTimeCnt;														//串口2接收数据的时间计数
 extern uint32_t ValveControlTaskCnt;														//旋转阀控制任务时间计数
 
 void SysTick_Callback(void);
-void ConsoleControlTask(void);
+void ConsoleControlTask(UART_HandleTypeDef *huart);
 #endif /* INC_DEV_H_ */

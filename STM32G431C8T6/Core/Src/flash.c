@@ -16,7 +16,7 @@ void Erase_Config_Sector(void)
 	HAL_FLASH_Unlock();
 	FLASH_EraseInitTypeDef erase;
 	erase.TypeErase = FLASH_TYPEERASE_PAGES;
-	erase.Page = CONFIG_FLASH_PAGE;  // STM32G431C8T6最后一页(页63)
+	erase.Page = FLASH_USER_PAGE;  // STM32G431C8T6最后一页(页31)
 	erase.NbPages = 1;
 	uint32_t pageError;
 	if (HAL_FLASHEx_Erase(&erase, &pageError) != HAL_OK)
@@ -39,7 +39,7 @@ HAL_StatusTypeDef Write_Config_Flash(FlashData_t *config)
 	__HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_ALL_ERRORS);
 
 	uint64_t *src = (uint64_t*) config;
-	uint64_t *dst = (uint64_t*) CONFIG_FLASH_ADDR;
+	uint64_t *dst = (uint64_t*) FLASH_USER_START_ADDR;
 	uint32_t doublewords = (sizeof(FlashData_t) + 7) / 8;  // 计算双字数
 
 	for (uint32_t i = 0; i < doublewords; i++)
@@ -58,7 +58,7 @@ HAL_StatusTypeDef Write_Config_Flash(FlashData_t *config)
 //从flash读取数据
 HAL_StatusTypeDef Read_Config_Flash(FlashData_t *config)
 {
-	const FlashData_t *flash_config = (const FlashData_t*) CONFIG_FLASH_ADDR;
+	const FlashData_t *flash_config = (const FlashData_t*) FLASH_USER_START_ADDR;
 	// 验证CRC
 	uint32_t calc_crc = Calculate_Crc32((uint8_t*) flash_config, sizeof(FlashData_t) - sizeof(uint32_t));
 	if (calc_crc != flash_config->crc || flash_config->crc == 0xFF)  //crc不对或没有存储数据

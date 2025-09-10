@@ -16,11 +16,11 @@ extern DMA_HandleTypeDef hdma_usart2_rx;
 volatile UsartState_t usart1_state = USART_RECEIVING;
 volatile UsartState_t usart2_state = USART_RECEIVING;
 Usart_RX_t usart1_rx_struct; //串口1接收数据结构体
-Usart_TX_t usart1_tx_struct; //串口1发送数据结构体
+Usart_TX_list_t urt1_tx_stu; //串口1发送数据结构体
 Usart_RX_t usart2_rx_struct; //串口2接收数据结构体
-Usart_TX_t usart2_tx_struct; //串口2发送数据结构体
+Usart_TX_list_t urt2_tx_stu; //串口2发送数据结构体
 
-static void Usart_Buffer_Init(UART_HandleTypeDef *huart);
+static void Clear_Usart_RxBuffer(UART_HandleTypeDef *huart);
 
 void User_USART1_Init(void)
 {
@@ -51,7 +51,7 @@ void User_USART1_Init(void)
 	{
 		Error_Handler();
 	}
-	Usart_Buffer_Init(&huart1); //初始化接收二维数组
+	Clear_Usart_RxBuffer(&huart1); //初始化接收二维数组
 	Usart_Start_Receive(&huart1); //开启DMA接收
 	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);	//使能空闲中断
 	usart1_state = USART_RECEIVING;
@@ -86,34 +86,55 @@ void User_USART2_Init(void)
 	{
 		Error_Handler();
 	}
-	Usart_Buffer_Init(&huart1);
+	Clear_Usart_RxBuffer(&huart1);
 	Usart_Start_Receive(&huart2); //开启DMA接收
 	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);	//使能空闲中断
 	usart2_state = USART_RECEIVING;
 }
 
-
 void Usart_Transmit(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART1)
 	{
-		HAL_UART_Transmit_DMA(&huart1, usart1_tx_struct.tx_buffer, usart1_tx_struct.tx_len);  //发送数据
-		usart1_state = USART_WAITTXFINISH;
+		if (urt1_tx_stu.num > 0)
+		{
+			HAL_UART_Transmit_DMA(&huart1, urt1_tx_stu.tx_buff_list[urt1_tx_stu.head].tx_buffer,
+					urt1_tx_stu.tx_buff_list[urt1_tx_stu.head].tx_len);  //发送数据
+			urt1_tx_stu.head = (urt1_tx_stu.head + 1) % TX_LIST_MAX;
+			urt1_tx_stu.num--;
+			usart1_state = USART_WAITTXFINISH;
+		}
+		else
+		{
+			usart1_state = USART_RECEIVING;
+		}
 	}
 	if (huart->Instance == USART2)
 	{
-		HAL_UART_Transmit_DMA(&huart2, usart2_tx_struct.tx_buffer, usart2_tx_struct.tx_len);  //发送数据
-		usart2_state = USART_WAITTXFINISH;
+		if (urt2_tx_stu.num > 0)
+		{
+			HAL_UART_Transmit_DMA(&huart2, urt2_tx_stu.tx_buff_list[urt2_tx_stu.head].tx_buffer,
+					urt2_tx_stu.tx_buff_list[urt2_tx_stu.head].tx_len);  //发送数据
+			urt2_tx_stu.head = (urt2_tx_stu.head + 1) % TX_LIST_MAX;
+			urt2_tx_stu.num--;
+			usart2_state = USART_WAITTXFINISH;
+		}
+		else
+		{
+			usart2_state = USART_RECEIVING;
+		}
+
 	}
 
 }
 
-static void Usart_Buffer_Init(UART_HandleTypeDef *huart)
+static void Clear_Usart_RxBuffer(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART1)
 	{
 		usart1_rx_struct.active_buffer = 0;
 		usart1_rx_struct.dataready = 0;
+
 	}
 	if (huart->Instance == USART2)
 	{
@@ -122,15 +143,64 @@ static void Usart_Buffer_Init(UART_HandleTypeDef *huart)
 	}
 }
 
+void Clear_Usart_TxList(UART_HandleTypeDef *huart)
+{
+	if (huart->Instance == USART1)
+	{
+		urt1_tx_stu.head = 0;
+		urt1_tx_stu.tail = 0;
+		urt1_tx_stu.num = 0;
+		for (uint8_t i = 0; i < TX_LIST_MAX; i++)
+		{
+			memset(urt1_tx_stu.tx_buff_list[i].tx_buffer, 0, BUFFER_SIZE);
+			urt1_tx_stu.tx_buff_list[i].tx_len = 0;
+		}
+	}
+	if (huart->Instance == USART2)
+	{
+		urt2_tx_stu.head = 0;
+		urt2_tx_stu.tail = 0;
+		urt2_tx_stu.num = 0;
+		for (uint8_t i = 0; i < TX_LIST_MAX; i++)
+		{
+			memset(urt2_tx_stu.tx_buff_list[i].tx_buffer, 0, BUFFER_SIZE);
+			urt2_tx_stu.tx_buff_list[i].tx_len = 0;
+		}
+	}
+}
+
+HAL_StatusTypeDef Usart_TxBuffer_Append(UART_HandleTypeDef *huart, Usart_TX_t *tx_stu)
+{
+	if (huart->Instance == USART1)
+	{
+		if (urt1_tx_stu.num >= TX_LIST_MAX)
+			return HAL_ERROR;
+		memcpy(&urt1_tx_stu.tx_buff_list[urt1_tx_stu.tail % TX_LIST_MAX], tx_stu, sizeof(Usart_TX_t));
+		urt1_tx_stu.tail = (urt1_tx_stu.tail + 1) % TX_LIST_MAX;
+		urt1_tx_stu.num = (urt1_tx_stu.num + 1) % TX_LIST_MAX;
+		return HAL_OK;
+	}
+	if (huart->Instance == USART2)
+	{
+		if (urt2_tx_stu.num >= TX_LIST_MAX)
+			return HAL_ERROR;
+		memcpy(&urt2_tx_stu.tx_buff_list[urt2_tx_stu.tail % TX_LIST_MAX], tx_stu, sizeof(Usart_TX_t));
+		urt2_tx_stu.tail = (urt2_tx_stu.tail + 1) % TX_LIST_MAX;
+		urt2_tx_stu.num = (urt2_tx_stu.num + 1) % TX_LIST_MAX;
+		return HAL_OK;
+	}
+	return HAL_ERROR;
+}
+
 // 获取缓冲区数据
-HAL_StatusTypeDef Usart_GetData(UART_HandleTypeDef *huart, uint8_t **data, uint8_t length)
+HAL_StatusTypeDef Usart_GetData(UART_HandleTypeDef *huart, uint8_t **data, uint8_t *length)
 {
 	if (huart->Instance == USART1)
 	{
 		if (usart1_rx_struct.dataready)
 		{
 			*data = usart1_rx_struct.rx_buffer[!usart1_rx_struct.active_buffer];
-			length = usart1_rx_struct.rx_len;
+			*length = usart1_rx_struct.rx_len;
 			usart1_rx_struct.dataready = 0;  //清除数据就绪标志
 			return HAL_OK;
 		}
@@ -141,7 +211,7 @@ HAL_StatusTypeDef Usart_GetData(UART_HandleTypeDef *huart, uint8_t **data, uint8
 		if (usart2_rx_struct.dataready)
 		{
 			*data = usart2_rx_struct.rx_buffer[!usart2_rx_struct.active_buffer];
-			length = usart2_rx_struct.rx_len;
+			*length = usart2_rx_struct.rx_len;
 			usart2_rx_struct.dataready = 0;  //清除数据就绪标志
 			return HAL_OK;
 		}
@@ -238,10 +308,16 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART1)
 	{
-		usart1_state = USART_RECEIVING;
+		if (urt1_tx_stu.num == 0)
+		{
+			usart1_state = USART_RECEIVING;
+		}
 	}
 	if (huart->Instance == USART2)
 	{
-		usart2_state = USART_RECEIVING;
+		if (urt2_tx_stu.num == 0)
+		{
+			usart2_state = USART_RECEIVING;
+		}
 	}
 }

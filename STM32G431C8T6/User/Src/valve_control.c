@@ -5,9 +5,9 @@
  *      Author: 莫海峰
  */
 #include "valve_control.h"
+#include "register.h"
 #include "led.h"
 #include "dev.h"
-#include "cmd.h"
 
 Valve_Handle_t ValveControl =
 		{
@@ -62,11 +62,57 @@ void Value_ClearFault(void)
 	Valve_NextState(VALVE_IDLE);
 }
 
-Sys_Status_t Valve_ReadRegister(Cmd_Par_t *pcmd)
+void Valve_ReadRegister(const Cmd_Par_t *pcmd, ResponseHandle_t *resp)
 {
-	if (pcmd->value_num > 2)
-		return PARAMETER_ERROR;
-	return
+	Sys_Status_t status;
+	RegValue_Handle_t resp_data;
+	resp->buff_size = 0;
+	switch (pcmd->value_num)
+	{
+		case 1:
+			if (pcmd->value_buf[0] > 0xFF || pcmd->value_buf[0] < 0)
+			{
+				resp->state = OVER_LIMIT;
+				resp->is_data = 0;
+				return;
+			}
+			status = Read_Register(pcmd->value_buf[0], &resp_data);
+			if (status != EXECUTE_SUCCESS)
+			{
+				resp->state = status;
+				resp->is_data = 0;
+				return;
+			}
+			resp->res_buff[0] = resp_data;
+			resp->buff_size = 1;
+			break;
+		case 2:
+			if (pcmd->value_buf[0] > 0xFF || pcmd->value_buf[1] > 0xFF || pcmd->value_buf[0] < 0 || pcmd->value_buf[1] < 0)
+			{
+				resp->state = OVER_LIMIT;
+				resp->is_data = 0;
+				return;
+			}
+			for (uint8_t i = 0; i < pcmd->value_buf[1]; i++)
+			{
+				status = Read_Register(pcmd->value_buf[0] + i, &resp_data);
+				if (status != EXECUTE_SUCCESS)
+				{
+					resp->state = status;
+					resp->is_data = 0;
+					return;
+				}
+				resp->res_buff[i] = resp_data;
+				resp->buff_size++;
+			}
+			break;
+		default:
+			resp->state = PARAMETER_ERROR;
+			resp->is_data = 0;
+			return;
+	}
+	resp->state = status;
+	resp->is_data = 1;
 }
 
 /**********获取当前位置*************/

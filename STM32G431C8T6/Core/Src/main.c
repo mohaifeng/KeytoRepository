@@ -33,6 +33,8 @@
 #include "flash.h"
 #include "dev.h"
 #include "valve_control.h"
+#include "cmd.h"
+#include "register.h"
 //#include "verification.h"
 //#include "motor_control.h"
 /* USER CODE END Includes */
@@ -94,7 +96,7 @@ int main(void)
 	SystemClock_Config();
 
 	/* USER CODE BEGIN SysInit */
-
+	Init_Registers();
 	/* USER CODE END SysInit */
 
 	/* Initialize all configured peripherals */
@@ -111,12 +113,12 @@ int main(void)
 	/* Initialize interrupts */
 	MX_NVIC_Init();
 	/* USER CODE BEGIN 2 */
+	Cmd_List_Clear();
+	Clear_Usart_TxList(&huart1);
+	Clear_Usart_TxList(&huart2);
+	Clear_RealtimeResolution_Buff(&huart1);
+	Clear_RealtimeResolution_Buff(&huart2);
 	Led_Init();
-	Usart_Start_Receive(&huart1); //开启DMA接收
-	Usart_Start_Receive(&huart2); //开启DMA接收
-	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);	//使能空闲中断
-	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);	//使能空闲中断
-
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -126,11 +128,16 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		if (ConsoleControlTaskCnt >= CONSOLE_TASK_TIME)
+		if(usart1_rx_struct.dataready==1&&USART1_RxTimeCnt>=USART_TASK_TIME)
 		{
-			ConsoleControlTaskCnt = 0;
-			ConsoleControlTask();
+			ConsoleControlTask(&huart1);
 		}
+		if(usart2_rx_struct.dataready==1&&USART2_RxTimeCnt>=USART_TASK_TIME)
+		{
+			ConsoleControlTask(&huart2);
+		}
+		Led_Task(led_state);
+		Cmd_List_Execute();
 		if (ValveControlTaskCnt >= VALVE_CONTROL_TASK_TIME)
 		{
 			ValveControlTaskCnt = 0;

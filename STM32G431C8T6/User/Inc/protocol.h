@@ -22,6 +22,7 @@ typedef enum
 {
 	PROT_KT_DT,
 	PROT_KT_OEM,
+	PROT_KT_OEM_SAMEIDEX,
 	PROT_KT_CAN,
 } Protocol_t;
 
@@ -29,7 +30,8 @@ typedef struct
 {
 	uint8_t rsl_buff[RESOLUTION_BUFF_MAX];         //协议解析缓存数组
 	uint8_t datalen;
-	uint8_t end_idex;          //协议解析指针，指向解析的最后一个字节
+  volatile uint16_t head; // 写指针
+  volatile uint16_t tail; // 读指针
 } RealTimeResolution_t;
 
 typedef struct
