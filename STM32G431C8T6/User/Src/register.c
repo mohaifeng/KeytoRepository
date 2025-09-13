@@ -36,8 +36,9 @@ static RegConfigTypedef reg_user_list[] =
 void Init_Registers(void)
 {
 	FlashData_t flash_data;
-	if (Read_Config_Flash(&flash_data) != HAL_OK)
+	if (Read_Config_Flash(&flash_data) != HAL_OK || flash_data.flash_sysconfig.InitFlag != FLASH_INIT_FLAG)
 	{
+		flash_data.flash_sysconfig.InitFlag = FLASH_INIT_FLAG;
 		for (uint8_t i = 0; i < REG_LIST_SIZE; i++)
 		{
 			RegConfigTypedef *node = &reg_user_list[i];
@@ -69,7 +70,6 @@ void Init_Registers(void)
 					break;
 			};
 		}
-
 	}
 	else
 	{

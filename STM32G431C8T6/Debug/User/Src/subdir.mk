@@ -7,6 +7,7 @@
 C_SRCS += \
 ../User/Src/cmd.c \
 ../User/Src/dev.c \
+../User/Src/flash.c \
 ../User/Src/led.c \
 ../User/Src/protocol.c \
 ../User/Src/register.c \
@@ -18,6 +19,7 @@ C_SRCS += \
 OBJS += \
 ./User/Src/cmd.o \
 ./User/Src/dev.o \
+./User/Src/flash.o \
 ./User/Src/led.o \
 ./User/Src/protocol.o \
 ./User/Src/register.o \
@@ -29,6 +31,7 @@ OBJS += \
 C_DEPS += \
 ./User/Src/cmd.d \
 ./User/Src/dev.d \
+./User/Src/flash.d \
 ./User/Src/led.d \
 ./User/Src/protocol.d \
 ./User/Src/register.d \
@@ -45,7 +48,7 @@ User/Src/%.o User/Src/%.su User/Src/%.cyclo: ../User/Src/%.c User/Src/subdir.mk
 clean: clean-User-2f-Src
 
 clean-User-2f-Src:
-	-$(RM) ./User/Src/cmd.cyclo ./User/Src/cmd.d ./User/Src/cmd.o ./User/Src/cmd.su ./User/Src/dev.cyclo ./User/Src/dev.d ./User/Src/dev.o ./User/Src/dev.su ./User/Src/led.cyclo ./User/Src/led.d ./User/Src/led.o ./User/Src/led.su ./User/Src/protocol.cyclo ./User/Src/protocol.d ./User/Src/protocol.o ./User/Src/protocol.su ./User/Src/register.cyclo ./User/Src/register.d ./User/Src/register.o ./User/Src/register.su ./User/Src/tmc5160.cyclo ./User/Src/tmc5160.d ./User/Src/tmc5160.o ./User/Src/tmc5160.su ./User/Src/user_usart.cyclo ./User/Src/user_usart.d ./User/Src/user_usart.o ./User/Src/user_usart.su ./User/Src/valve_control.cyclo ./User/Src/valve_control.d ./User/Src/valve_control.o ./User/Src/valve_control.su ./User/Src/verification.cyclo ./User/Src/verification.d ./User/Src/verification.o ./User/Src/verification.su
+	-$(RM) ./User/Src/cmd.cyclo ./User/Src/cmd.d ./User/Src/cmd.o ./User/Src/cmd.su ./User/Src/dev.cyclo ./User/Src/dev.d ./User/Src/dev.o ./User/Src/dev.su ./User/Src/flash.cyclo ./User/Src/flash.d ./User/Src/flash.o ./User/Src/flash.su ./User/Src/led.cyclo ./User/Src/led.d ./User/Src/led.o ./User/Src/led.su ./User/Src/protocol.cyclo ./User/Src/protocol.d ./User/Src/protocol.o ./User/Src/protocol.su ./User/Src/register.cyclo ./User/Src/register.d ./User/Src/register.o ./User/Src/register.su ./User/Src/tmc5160.cyclo ./User/Src/tmc5160.d ./User/Src/tmc5160.o ./User/Src/tmc5160.su ./User/Src/user_usart.cyclo ./User/Src/user_usart.d ./User/Src/user_usart.o ./User/Src/user_usart.su ./User/Src/valve_control.cyclo ./User/Src/valve_control.d ./User/Src/valve_control.o ./User/Src/valve_control.su ./User/Src/verification.cyclo ./User/Src/verification.d ./User/Src/verification.o ./User/Src/verification.su
 
 .PHONY: clean-User-2f-Src
 

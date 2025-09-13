@@ -20,144 +20,151 @@ uint8_t resolution_flag = 0;
 //清除实时解析数组
 void Clear_RealtimeResolution_Buff(UART_HandleTypeDef *huart)
 {
+	RealTimeResolution_t *tmp_stu;
 	if (huart->Instance == USART1)
 	{
-		memset(usart1_rtimeresol_stu.rsl_buff, 0, RESOLUTION_BUFF_MAX);
-		usart1_rtimeresol_stu.datalen = 0;
-		usart1_rtimeresol_stu.head = 0;
-		usart1_rtimeresol_stu.tail = 0;
+		tmp_stu = &usart1_rtimeresol_stu;
 	}
-	if (huart->Instance == USART2)
+	else if (huart->Instance == USART2)
 	{
-		memset(usart2_rtimeresol_stu.rsl_buff, 0, RESOLUTION_BUFF_MAX);
-		usart2_rtimeresol_stu.datalen = 0;
-		usart2_rtimeresol_stu.head = 0;
-		usart2_rtimeresol_stu.tail = 0;
+		tmp_stu = &usart2_rtimeresol_stu;
 	}
+	else
+		return;
+	memset(tmp_stu->rsl_buff, 0, RESOLUTION_BUFF_MAX);
+	tmp_stu->datalen = 0;
+	tmp_stu->head = 0;
+	tmp_stu->tail = 0;
 }
+
 //将接收到的数据加到实时解析数组当中
 void RealtimeResolutionBuff_Append(UART_HandleTypeDef *huart, uint8_t *data, uint8_t len)
 {
-	uint8_t buff_siez = len;
-	if (huart->Instance == USART1)
+uint8_t buff_siez = len;
+if (huart->Instance == USART1)
+{
+	while (buff_siez--)
 	{
-		while (buff_siez--)
-		{
-			usart1_rtimeresol_stu.rsl_buff[usart1_rtimeresol_stu.tail % RESOLUTION_BUFF_MAX] = *data;
-			usart1_rtimeresol_stu.tail++;
-			data++;
-		}
-		usart1_rtimeresol_stu.datalen = (usart1_rtimeresol_stu.datalen + len) % RESOLUTION_BUFF_MAX;
+		usart1_rtimeresol_stu.rsl_buff[usart1_rtimeresol_stu.tail % RESOLUTION_BUFF_MAX] = *data;
+		usart1_rtimeresol_stu.tail++;
+		data++;
 	}
-	if (huart->Instance == USART2)
+	usart1_rtimeresol_stu.datalen = (usart1_rtimeresol_stu.datalen + len) % RESOLUTION_BUFF_MAX;
+}
+if (huart->Instance == USART2)
+{
+	while (buff_siez--)
 	{
-		while (buff_siez--)
-		{
-			usart2_rtimeresol_stu.rsl_buff[usart2_rtimeresol_stu.tail % RESOLUTION_BUFF_MAX] = *data;
-			usart2_rtimeresol_stu.tail++;
-			data++;
-		}
-		usart2_rtimeresol_stu.datalen = (usart2_rtimeresol_stu.datalen + len) % RESOLUTION_BUFF_MAX;
+		usart2_rtimeresol_stu.rsl_buff[usart2_rtimeresol_stu.tail % RESOLUTION_BUFF_MAX] = *data;
+		usart2_rtimeresol_stu.tail++;
+		data++;
 	}
+	usart2_rtimeresol_stu.datalen = (usart2_rtimeresol_stu.datalen + len) % RESOLUTION_BUFF_MAX;
+}
 }
 //协议解析
 void ResolutionProtocol(UART_HandleTypeDef *huart)
 {
-	uint8_t i = 0;
-
-	if (huart->Instance == USART1)
+uint8_t i = 0;
+if (huart->Instance == USART1)
+{
+	while (i < usart1_rtimeresol_stu.datalen)
 	{
-		while (i < usart1_rtimeresol_stu.datalen)
+		if (usart1_rtimeresol_stu.rsl_buff[i] == 0xAA) //OEM协议
 		{
-			if (usart1_rtimeresol_stu.rsl_buff[i] == 0xAA) //OEM协议
+			if (UART_ResolutionKT_OEM_Protocol(huart, &usart1_rtimeresol_stu.rsl_buff[i], usart1_rtimeresol_stu.datalen - i)
+					== HAL_OK)
 			{
-				if (UART_ResolutionKT_OEM_Protocol(huart, &usart1_rtimeresol_stu.rsl_buff[i], usart1_rtimeresol_stu.datalen - i)
-						== HAL_OK)
-				{
-					resolution_flag++;
-				}
+				resolution_flag++;
 			}
-			if (usart1_rtimeresol_stu.rsl_buff[i] >= 0x30 && usart1_rtimeresol_stu.rsl_buff[i] <= 0x39) //DT协议
+		}
+		if (usart1_rtimeresol_stu.rsl_buff[i] >= 0x30 && usart1_rtimeresol_stu.rsl_buff[i] <= 0x39) //DT协议
+		{
+			if (UART_ResolutionKT_DT_Protocol(huart, &usart1_rtimeresol_stu.rsl_buff[i], usart1_rtimeresol_stu.datalen - i)
+					== HAL_OK)
 			{
-				if (UART_ResolutionKT_DT_Protocol(huart, &usart1_rtimeresol_stu.rsl_buff[i], usart1_rtimeresol_stu.datalen - i)
-						== HAL_OK)
-				{
-					resolution_flag++;
-				}
+				resolution_flag++;
 			}
-			i++;
 		}
-		if (resolution_flag > 0)
-		{
-			Clear_RealtimeResolution_Buff(&huart1);
-			resolution_flag = 0;
-		}
-		else
-		{
-			usart1_state = USART_RECEIVING;
-		}
-
+		i++;
 	}
-	if (huart->Instance == USART2)
+	if (resolution_flag > 0)
 	{
-		while (i < usart2_rtimeresol_stu.datalen)
+		Clear_RealtimeResolution_Buff(&huart1);
+		resolution_flag = 0;
+	}
+}
+if (huart->Instance == USART2)
+{
+	while (i < usart2_rtimeresol_stu.datalen)
+	{
+		if (usart2_rtimeresol_stu.rsl_buff[i] == 0xAA) //OEM协议
 		{
-			if (usart2_rtimeresol_stu.rsl_buff[i] == 0xAA) //OEM协议
+			if (UART_ResolutionKT_OEM_Protocol(huart, &usart2_rtimeresol_stu.rsl_buff[i], usart2_rtimeresol_stu.datalen - i)
+					== HAL_OK)
 			{
-				UART_ResolutionKT_OEM_Protocol(huart, &usart2_rtimeresol_stu.rsl_buff[i], usart2_rtimeresol_stu.datalen - i);
+				resolution_flag++;
 			}
-			if (usart2_rtimeresol_stu.rsl_buff[i] >= 0x30 && usart2_rtimeresol_stu.rsl_buff[i] <= 0x39) //DT协议
-			{
-				UART_ResolutionKT_DT_Protocol(huart, &usart2_rtimeresol_stu.rsl_buff[i], usart2_rtimeresol_stu.datalen - i);
-			}
-			i++;
 		}
+		if (usart2_rtimeresol_stu.rsl_buff[i] >= 0x30 && usart2_rtimeresol_stu.rsl_buff[i] <= 0x39) //DT协议
+		{
+			if (UART_ResolutionKT_DT_Protocol(huart, &usart2_rtimeresol_stu.rsl_buff[i], usart2_rtimeresol_stu.datalen - i)
+					== HAL_OK)
+			{
+				resolution_flag++;
+			}
+		}
+		i++;
+	}
+	if (resolution_flag > 0)
+	{
 		Clear_RealtimeResolution_Buff(&huart2);
-		usart2_state = USART_RECEIVING;
+		resolution_flag = 0;
 	}
+}
 
 }
 
 HAL_StatusTypeDef UART_ResolutionKT_OEM_Protocol(UART_HandleTypeDef *huart, uint8_t *data, uint8_t len)
 {
-	HAL_StatusTypeDef Resolution_flag = HAL_ERROR;
-	KT_OEM_Handle_t protocol;
-	Cmd_Par_t cmd_par;
-	if (len > 5)
+HAL_StatusTypeDef Resolution_flag = HAL_ERROR;
+KT_OEM_Handle_t protocol;
+Cmd_Par_t cmd_par;
+if (len > 5)
+{
+	protocol.idex = data[1];
+	protocol.add = data[2];
+	protocol.cmd_len = data[3];
+	if (protocol.idex < 0x80 || protocol.add != sysconfig.CommunicationConfig.Add || (protocol.cmd_len + 5) > len)
+		return Resolution_flag;;
+	memcpy(protocol.cmd, &data[4], protocol.cmd_len);
+	protocol.checksum_8 = data[4 + protocol.cmd_len];
+	if (protocol.checksum_8 != Checksum_8(data, protocol.cmd_len + 4))
+		return Resolution_flag;;
+	Cmd_Config(&cmd_par, protocol.cmd, protocol.cmd_len);
+	cmd_par.idex = protocol.idex;
+	if (cmd_par.idex == old_oem_idex)
 	{
-		protocol.idex = data[1];
-		protocol.add = data[2];
-		protocol.cmd_len = data[3];
-		if (protocol.idex < 0x80 || protocol.add != sysconfig.CommunicationConfig.Add || (protocol.cmd_len + 5) > len)
-			return Resolution_flag;;
-		memcpy(protocol.cmd, &data[4], protocol.cmd_len);
-		protocol.checksum_8 = data[4 + protocol.cmd_len];
-		if (protocol.checksum_8 != Checksum_8(data, protocol.cmd_len + 4))
-			return Resolution_flag;;
-		Cmd_Config(&cmd_par, protocol.cmd, protocol.cmd_len);
-		cmd_par.idex = protocol.idex;
-		if (cmd_par.idex == old_oem_idex)
-		{
-			cmd_par.protocol = PROT_KT_OEM_SAMEIDEX;
-		}
-		else
-		{
-			old_oem_idex = cmd_par.idex;
-			cmd_par.protocol = PROT_KT_OEM;
-		}
-		if (huart->Instance == USART1)
-			cmd_par.port_num = 1;
-		if (huart->Instance == USART2)
-			cmd_par.port_num = 2;
-		Cmd_List_Append(&cmd_par);
-		Resolution_flag = HAL_OK;
+		cmd_par.protocol = PROT_KT_OEM_SAMEIDEX;
 	}
-	return Resolution_flag;
+	else
+	{
+		old_oem_idex = cmd_par.idex;
+		cmd_par.protocol = PROT_KT_OEM;
+	}
+	if (huart->Instance == USART1)
+		cmd_par.port_num = 1;
+	if (huart->Instance == USART2)
+		cmd_par.port_num = 2;
+	Cmd_List_Append(&cmd_par);
+	Resolution_flag = HAL_OK;
+}
+return Resolution_flag;
 }
 
 HAL_StatusTypeDef UART_ResolutionKT_DT_Protocol(UART_HandleTypeDef *huart, uint8_t *data, uint8_t len)
 {
-	return HAL_OK;
+return HAL_OK;
 }
 //HAL_StatusTypeDef UART_ResolutionGeneral_Protocol(uint8_t *data, uint8_t len)
 //{

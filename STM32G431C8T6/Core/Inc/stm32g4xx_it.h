@@ -67,6 +67,7 @@ void TIM4_IRQHandler(void);
 void USART1_IRQHandler(void);
 void USART2_IRQHandler(void);
 void TIM6_DAC_IRQHandler(void);
+void TIM7_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 void USER_UART_IRQHandler(UART_HandleTypeDef *huart);
 void USER_UART_IDLECallback(UART_HandleTypeDef *huart);

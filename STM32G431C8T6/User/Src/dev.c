@@ -10,17 +10,16 @@
 
 SysConfig_t sysconfig;
 
-uint32_t USART1_RxTimeCnt = 0; //串口1接收数据的时间计数
-uint32_t USART2_RxTimeCnt = 0; //串口2接收数据的时间计数
 uint32_t ValveControlTaskCnt = 0; //旋转阀控制任务时间计数
 
+void ConfigInit(void)
+{
+
+}
 
 void SysTick_Callback(void)
 {
-	USART1_RxTimeCnt++;
-	USART2_RxTimeCnt++;
 	ValveControlTaskCnt++;
-
 }
 
 void ConsoleControlTask(UART_HandleTypeDef *huart)

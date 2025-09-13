@@ -13,6 +13,7 @@
 
 #define REG_LIST_SIZE	 (sizeof(reg_user_list)/sizeof(RegConfigTypedef))
 #define REG_CONFIG(addr,permission,data_type,data_ptr,min_value,max_value,default_value,save,callback) {addr,permission,data_type,data_ptr,min_value,max_value,default_value,save,callback}
+#define FLASH_INIT_FLAG 0x12340001
 
 //定义寄存器读写权限
 typedef enum

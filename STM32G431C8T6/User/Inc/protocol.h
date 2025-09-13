@@ -30,8 +30,8 @@ typedef struct
 {
 	uint8_t rsl_buff[RESOLUTION_BUFF_MAX];         //协议解析缓存数组
 	uint8_t datalen;
-  volatile uint16_t head; // 写指针
-  volatile uint16_t tail; // 读指针
+	volatile uint16_t head; // 写指针
+	volatile uint16_t tail; // 读指针
 } RealTimeResolution_t;
 
 typedef struct

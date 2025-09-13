@@ -11,8 +11,6 @@
 #include "verification.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 
 Cmd_list_t cmd_list;
 //将命令字符串写入到命令参数结构体中方便后续调用
@@ -150,7 +148,6 @@ static void Response_KTOEMSameIdex_Config(ResponseHandle_t *resp_data)
 }
 void UART_ConfigReturnData(ResponseHandle_t *resp_data)
 {
-
 	switch (resp_data->protocol)
 	{
 		case PROT_KT_OEM_SAMEIDEX:
@@ -165,54 +162,6 @@ void UART_ConfigReturnData(ResponseHandle_t *resp_data)
 		default:
 			break;
 	}
-	if (resp_data->port_num == 1)
-		usart1_state = USART_SENDING;
-	if (resp_data->port_num == 2)
-		usart2_state = USART_SENDING;
-}
-
-static void Reverse_String(uint8_t *str, uint8_t length) //将字符数组顺序反转
-{
-	uint8_t start = 0;
-	uint8_t end = length - 1;
-	while (start < end)
-	{
-		uint8_t temp = str[start];
-		str[start] = str[end];
-		str[end] = temp;
-		start++;
-		end--;
-	}
-}
-
-uint32_t Int_to_Ascii(int32_t num, uint8_t *buffer)
-{
-	uint32_t buf_size = 0;
-	uint8_t is_negative = 0;
-	if (num < 0)
-	{
-		is_negative = 1;
-		num = -num;
-	}
-// 处理 0 的情况
-	if (num == 0)
-	{
-		buffer[buf_size++] = '0';
-	}
-// 逐位提取数字（反向存储）
-	while (num != 0)
-	{
-		buffer[buf_size++] = '0' + (num % 10);
-		num /= 10;
-	}
-// 如果是负数，添加 '-'
-	if (is_negative)
-	{
-		buffer[buf_size] = '-';
-	}
-// 反转字符串（因为数字是反向存储的）
-	Reverse_String(buffer, buf_size);
-	return buf_size;
 }
 
 void Cmd_List_Execute(void)
