@@ -12,17 +12,10 @@
 
 #define RESOLUTION_BUFF_MAX  255
 
-//typedef struct
-//{
-//	uint8_t old_oem_idex;
-//	uint8_t now_oem_idex;
-//} OemIdex_t;
-
 typedef enum
 {
 	PROT_KT_DT,
 	PROT_KT_OEM,
-	PROT_KT_OEM_SAMEIDEX,
 	PROT_KT_CAN,
 } Protocol_t;
 
@@ -74,7 +67,7 @@ typedef struct
 
 extern RealTimeResolution_t usart1_rtimeresol_stu;
 extern RealTimeResolution_t usart2_rtimeresol_stu;
-extern volatile uint8_t old_oem_idex;
+
 
 void Clear_RealtimeResolution_Buff(UART_HandleTypeDef *huart);
 void RealtimeResolutionBuff_Append(UART_HandleTypeDef *huart, uint8_t *data, uint8_t len);

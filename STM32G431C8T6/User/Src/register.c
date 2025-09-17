@@ -21,27 +21,26 @@
 static RegConfigTypedef reg_user_list[] =
 {
 	REG_CONFIG( 1, READ_WRITE, REG_U8, &sysconfig.RunStatus,{.u8v = 0},{.u8v = 0xFF},{.u8v = 0},SAVE_DISABLE ,NULL ), //状态
-	REG_CONFIG( 2, READ_WRITE, REG_U8, &sysconfig.AutoAgingEnable,{.u8v = 0},{.u8v = 1},{.i32v = 0},SAVE_ENABLE, NULL ), //探测到液面标志
-	REG_CONFIG( 3, READ_WRITE, REG_U8,&sysconfig.AutoResetZeroEn,{.u8v = 0},{.u8v = 1},{.u8v = 0},SAVE_ENABLE, NULL), //有无tip
-	REG_CONFIG( 4,READ_WRITE, REG_U8, &sysconfig.CommunicationConfig.Add,{.u8v = 0},{.u8v = 0xFF},{.i32v = 0},SAVE_ENABLE,NULL ), //当前气压值
-	REG_CONFIG( 5, READ_WRITE, REG_U16, &sysconfig.CommunicationConfig.CAN_BaudRate,{.u16v = 0},{.u16v = 1000},{.u16v = 500}, SAVE_ENABLE,NULL ),//GPO1输出配置
-	REG_CONFIG( 6, READ_WRITE, REG_U32, &sysconfig.CommunicationConfig.RS232_BaudRate,{.u32v = 9600},{.u32v = 115200},{.u32v = 38400},SAVE_ENABLE, NULL ),//串口波特率
-	REG_CONFIG( 7, READ_WRITE, REG_U32, &sysconfig.CommunicationConfig.RS485_BaudRate,{.u32v = 9600},{.u32v = 115200},{.u32v = 38400},SAVE_ENABLE, NULL ),//串口波特率
+	REG_CONFIG( 2, READ_WRITE, REG_U8, &sysconfig.AutoAgingEnable,{.u8v = 0},{.u8v = 1},{.i32v = 0},SAVE_ENABLE, NULL ), //自动老化使能
+	REG_CONFIG( 3, READ_WRITE, REG_U8,&sysconfig.AutoResetZeroEn,{.u8v = 0},{.u8v = 1},{.u8v = 0},SAVE_ENABLE, NULL), //自动置零使能
+	REG_CONFIG( 4,READ_WRITE, REG_U8, &sysconfig.CommunicationConfig.Add,{.u8v = 0},{.u8v = 0xFF},{.i32v = 0},SAVE_ENABLE,NULL ), //地址
+	REG_CONFIG( 5, READ_WRITE, REG_U16, &sysconfig.CommunicationConfig.CAN_BaudRate,{.u16v = 0},{.u16v = 1000},{.u16v = 500}, SAVE_ENABLE,WriteCANBaudrateCallback ),//CAN波特率
+	REG_CONFIG( 6, READ_WRITE, REG_U32, &sysconfig.CommunicationConfig.RS232_BaudRate,{.u32v = 9600},{.u32v = 115200},{.u32v = 38400},SAVE_ENABLE, WriteUsartBaudrateCallback ),//串口波特率
+	REG_CONFIG( 7, READ_WRITE, REG_U32, &sysconfig.CommunicationConfig.RS485_BaudRate,{.u32v = 9600},{.u32v = 115200},{.u32v = 38400},SAVE_ENABLE, WriteUsartBaudrateCallback ),//串口波特率
 	REG_CONFIG( 8, READ_WRITE, REG_U8, &sysconfig.CommunicationConfig.protocol_type,{.u8v = 0},{.u8v = 2},{.u8v = 0},SAVE_DISABLE, NULL ),//协议类型
 	REG_CONFIG( 9, READ_ONLY, REG_U32, &sysconfig.model,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = SYS_FACILITY_ID}, SAVE_DISABLE,NULL ),//设备类型
 	REG_CONFIG( 10, READ_ONLY, REG_U32, &sysconfig.version,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = SYS_SOFT_VERSIONS}, SAVE_DISABLE,NULL ),//软件版本
 
 };
 //@formatter:on
+//初始化寄存器表，不能掉点保存的寄存器恢复默认值
 void Init_Registers(void)
 {
-	FlashData_t flash_data;
-	if (Read_Config_Flash(&flash_data) != HAL_OK || flash_data.flash_sysconfig.InitFlag != FLASH_INIT_FLAG)
+	for (uint8_t i = 0; i < REG_LIST_SIZE; i++)
 	{
-		flash_data.flash_sysconfig.InitFlag = FLASH_INIT_FLAG;
-		for (uint8_t i = 0; i < REG_LIST_SIZE; i++)
+		RegConfigTypedef *node = &reg_user_list[i];
+		if (node->save == SAVE_DISABLE)
 		{
-			RegConfigTypedef *node = &reg_user_list[i];
 			// 设置默认值
 			switch (node->data_type)
 			{
@@ -63,53 +62,13 @@ void Init_Registers(void)
 				case REG_I32:
 					*(int32_t*) node->data_ptr = node->default_value.i32v;
 					break;
-				case REG_FLOAT:
-					*(float*) node->data_ptr = node->default_value.fv;
-					break;
 				default:
 					break;
 			};
 		}
 	}
-	else
-	{
-		memcpy(&sysconfig, &flash_data.flash_sysconfig, sizeof(SysConfig_t));
-		for (uint8_t i = 0; i < REG_LIST_SIZE; i++)
-		{
-			RegConfigTypedef *node = &reg_user_list[i];
-			if (node->save == SAVE_DISABLE)
-			{
-				// 设置默认值
-				switch (node->data_type)
-				{
-					case REG_U8:
-						*(uint8_t*) node->data_ptr = node->default_value.u8v;
-						break;
-					case REG_U16:
-						*(uint16_t*) node->data_ptr = node->default_value.u16v;
-						break;
-					case REG_U32:
-						*(uint32_t*) node->data_ptr = node->default_value.u32v;
-						break;
-					case REG_I8:
-						*(int8_t*) node->data_ptr = node->default_value.i8v;
-						break;
-					case REG_I16:
-						*(int16_t*) node->data_ptr = node->default_value.i16v;
-						break;
-					case REG_I32:
-						*(int32_t*) node->data_ptr = node->default_value.i32v;
-						break;
-					case REG_FLOAT:
-						*(float*) node->data_ptr = node->default_value.fv;
-						break;
-					default:
-						break;
-				};
-			}
-		}
-	}
 }
+
 static RegConfigTypedef* Find_Reg_Node(uint16_t addr)
 {
 	for (size_t i = 0; i < REG_LIST_SIZE; i++)
@@ -161,10 +120,6 @@ Sys_Status_t Read_Register(uint16_t addr, RegValue_Handle_t *regval)
 			regval->value.i32v = *(int32_t*) node->data_ptr;
 			regval->val_type = REG_I32;
 			break;
-		case REG_FLOAT:
-			regval->value.fv = *(float*) node->data_ptr;
-			regval->val_type = REG_FLOAT;
-			break;
 		default:
 			return PARAMETER_ERROR; // 不支持的数据类型
 	}
@@ -172,9 +127,10 @@ Sys_Status_t Read_Register(uint16_t addr, RegValue_Handle_t *regval)
 }
 
 // 写入寄存器值
-Sys_Status_t Write_Register(uint16_t addr, RegValue *new_value)
+Sys_Status_t Write_Register(uint16_t addr, int32_t new_value)
 {
 	RegConfigTypedef *node = Find_Reg_Node(addr);
+	Sys_Status_t state = EXECUTE_SUCCESS;
 	if (!node)
 	{
 		return REG_ERROR;
@@ -183,67 +139,55 @@ Sys_Status_t Write_Register(uint16_t addr, RegValue *new_value)
 	{
 		return READ_WRITE_ONLY;
 	}
+	if (node->callback)
+	{
+		return node->callback(addr, new_value);
+	}
 	// 检查值范围
 	switch (node->data_type)
 	{
 		case REG_U8:
-			if (new_value->u8v < node->min_value.u8v || new_value->u8v > node->max_value.u8v)
-			{
-				return OVER_LIMIT; // 寄存器地址错误
-			}
-			*(uint8_t*) node->data_ptr = new_value->u8v;
+			if (new_value < node->min_value.u8v || new_value > node->max_value.u8v)
+				state = OVER_LIMIT; // 超限
+			else
+				*(uint8_t*) node->data_ptr = new_value;
+
 			break;
 		case REG_U16:
-			if (new_value->u16v < node->min_value.u16v || new_value->u16v > node->max_value.u16v)
-			{
-				return OVER_LIMIT; // 寄存器地址错误
-			}
-			*(uint16_t*) node->data_ptr = new_value->u16v;
+			if (new_value < node->min_value.u16v || new_value > node->max_value.u16v)
+				state = OVER_LIMIT; // 超限
+			else
+				*(uint16_t*) node->data_ptr = new_value;
 			break;
 		case REG_U32:
-			if (new_value->u32v < node->min_value.u32v || new_value->u32v > node->max_value.u32v)
-			{
-				return OVER_LIMIT; // 寄存器地址错误
-			}
-			*(uint32_t*) node->data_ptr = new_value->u32v;
+			if (new_value < node->min_value.u32v || new_value > node->max_value.u32v)
+				state = OVER_LIMIT; // 超限
+			else
+				*(uint32_t*) node->data_ptr = new_value;
 			break;
 		case REG_I8:
-			if (new_value->i8v < node->min_value.i8v || new_value->i8v > node->max_value.i8v)
-			{
-				return OVER_LIMIT; // 寄存器地址错误
-			}
-			*(int8_t*) node->data_ptr = new_value->i8v;
+			if (new_value < node->min_value.i8v || new_value > node->max_value.i8v)
+				state = OVER_LIMIT; // 超限
+			else
+				*(int8_t*) node->data_ptr = new_value;
 			break;
 		case REG_I16:
-			if (new_value->i16v < node->min_value.i16v || new_value->i16v > node->max_value.i16v)
-			{
-				return OVER_LIMIT; // 寄存器地址错误
-			}
-			*(int16_t*) node->data_ptr = new_value->i16v;
+			if (new_value < node->min_value.i16v || new_value > node->max_value.i16v)
+				state = OVER_LIMIT; // 超限
+			else
+				*(int16_t*) node->data_ptr = new_value;
 			break;
 		case REG_I32:
-			if (new_value->i32v < node->min_value.i32v || new_value->i32v > node->max_value.i32v)
-			{
-				return OVER_LIMIT; // 寄存器地址错误
-			}
-			*(int32_t*) node->data_ptr = new_value->i32v;
-			break;
-		case REG_FLOAT:
-			if (new_value->fv < node->min_value.fv || new_value->fv > node->max_value.fv)
-			{
-				return OVER_LIMIT; // 寄存器地址错误
-			}
-			*(float*) node->data_ptr = new_value->fv;
+			if (new_value < node->min_value.i32v || new_value > node->max_value.i32v)
+				state = OVER_LIMIT; // 超限
+			else
+				*(int32_t*) node->data_ptr = new_value;
 			break;
 		default:
-			return PARAMETER_ERROR; // 寄存器地址错误
+			state = PARAMETER_ERROR; // 参数错误
+			break;
 	}
-	// 调用回调函数
-	if (node->callback)
-	{
-		node->callback(node->data_ptr, new_value);
-	}
-	return EXECUTE_SUCCESS; // 寄存器地址错误
+	return state;
 }
 
 Sys_Status_t Save_Register(void)
@@ -256,6 +200,106 @@ Sys_Status_t Save_Register(void)
 		return FLASH_ERROR;
 	}
 	return EXECUTE_SUCCESS;
+}
 
+Sys_Status_t Reset_Register(void)
+{
+	for (uint8_t i = 0; i < REG_LIST_SIZE; i++)
+	{
+		RegConfigTypedef *node = &reg_user_list[i];
+		// 设置默认值
+		switch (node->data_type)
+		{
+			case REG_U8:
+				*(uint8_t*) node->data_ptr = node->default_value.u8v;
+				break;
+			case REG_U16:
+				*(uint16_t*) node->data_ptr = node->default_value.u16v;
+				break;
+			case REG_U32:
+				*(uint32_t*) node->data_ptr = node->default_value.u32v;
+				break;
+			case REG_I8:
+				*(int8_t*) node->data_ptr = node->default_value.i8v;
+				break;
+			case REG_I16:
+				*(int16_t*) node->data_ptr = node->default_value.i16v;
+				break;
+			case REG_I32:
+				*(int32_t*) node->data_ptr = node->default_value.i32v;
+				break;
+			default:
+				break;
+		};
+	}
+	return Save_Register();
+}
+
+Sys_Status_t WriteUsartBaudrateCallback(uint16_t addr, int32_t new_value)
+{
+	RegConfigTypedef *node = Find_Reg_Node(addr);
+	Sys_Status_t state = EXECUTE_SUCCESS;
+	if (!IS_USART_BAUD_RATE(new_value))
+	{
+		return OVER_LIMIT; // 超限
+	}
+	switch (node->data_type)
+	{
+		case REG_U8:
+			*(uint8_t*) node->data_ptr = new_value;
+			break;
+		case REG_U16:
+			*(uint16_t*) node->data_ptr = new_value;
+			break;
+		case REG_U32:
+			*(uint32_t*) node->data_ptr = new_value;
+			break;
+		case REG_I8:
+			*(int8_t*) node->data_ptr = new_value;
+			break;
+		case REG_I16:
+			*(int16_t*) node->data_ptr = new_value;
+			break;
+		case REG_I32:
+			*(int32_t*) node->data_ptr = new_value;
+			break;
+		default:
+			state = PARAMETER_ERROR; // 参数错误
+	}
+	return state;
+}
+
+Sys_Status_t WriteCANBaudrateCallback(uint16_t addr, int32_t new_value)
+{
+	RegConfigTypedef *node = Find_Reg_Node(addr);
+	Sys_Status_t state = EXECUTE_SUCCESS;
+	if (!IS_CAN_BAUD_RATE(new_value))
+	{
+		return OVER_LIMIT; // 超限
+	}
+	switch (node->data_type)
+	{
+		case REG_U8:
+			*(uint8_t*) node->data_ptr = new_value;
+			break;
+		case REG_U16:
+			*(uint16_t*) node->data_ptr = new_value;
+			break;
+		case REG_U32:
+			*(uint32_t*) node->data_ptr = new_value;
+			break;
+		case REG_I8:
+			*(int8_t*) node->data_ptr = new_value;
+			break;
+		case REG_I16:
+			*(int16_t*) node->data_ptr = new_value;
+			break;
+		case REG_I32:
+			*(int32_t*) node->data_ptr = new_value;
+			break;
+		default:
+			state = PARAMETER_ERROR; // 参数错误
+	}
+	return state;
 }
 

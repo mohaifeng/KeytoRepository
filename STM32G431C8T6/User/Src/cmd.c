@@ -66,6 +66,7 @@ static void Response_KTOEM_Config(ResponseHandle_t *resp_data)
 	Usart_TX_t tx_stu;
 	char pdata_byte[12];
 	uint8_t data_size_byte = 0;  //将32位数据转为ascii码时字节个数
+	tx_stu.port = resp_data->port_num;
 	tx_stu.tx_buffer[0] = 0x55;
 	tx_stu.tx_buffer[1] = resp_data->idex;
 	tx_stu.tx_buffer[2] = sysconfig.CommunicationConfig.Add;
@@ -95,13 +96,10 @@ static void Response_KTOEM_Config(ResponseHandle_t *resp_data)
 				case REG_I32:
 					sprintf(pdata_byte, "%ld", (int32_t) resp_data->res_buff[i].value.i32v);
 					break;
-				case REG_FLOAT:
-					sprintf(pdata_byte, "%.2f", (float) resp_data->res_buff[i].value.fv);
-					break;
 				default:
 					break;
 			}
-			data_size_byte = strlen(pdata_byte);
+			data_size_byte = strlen(pdata_byte);  //数据ascii码长度
 			memcpy(&tx_stu.tx_buffer[5 + tx_stu.tx_buffer[4]], pdata_byte, data_size_byte);
 			tx_stu.tx_buffer[4] = tx_stu.tx_buffer[4] + data_size_byte;
 			if (i != resp_data->buff_size - 1)
@@ -118,41 +116,28 @@ static void Response_KTOEM_Config(ResponseHandle_t *resp_data)
 	tx_stu.tx_len = 5 + tx_stu.tx_buffer[4];
 	tx_stu.tx_buffer[tx_stu.tx_len] = Checksum_8(tx_stu.tx_buffer, tx_stu.tx_len);
 	tx_stu.tx_len++;
-	if (resp_data->port_num == 1)
+	if (tx_stu.port == 1)
 	{
-		Usart_TxBuffer_Append(&huart1, &tx_stu);
+		usart1_idex_stu.idex = resp_data->idex;
+		memcpy(&usart1_idex_stu.tx_buff, &tx_stu, sizeof(Usart_TX_t));
 	}
-	if (resp_data->port_num == 2)
+	if (tx_stu.port == 2)
 	{
-		Usart_TxBuffer_Append(&huart2, &tx_stu);
+		usart2_idex_stu.idex = resp_data->idex;
+		memcpy(&usart2_idex_stu.tx_buff, &tx_stu, sizeof(Usart_TX_t));
 	}
+	Usart_TxBuffer_Append(&tx_stu);
 
 }
 static void Response_KTDT_Config(ResponseHandle_t *resp_data)
 {
 
 }
-static void Response_KTOEMSameIdex_Config(ResponseHandle_t *resp_data)
-{
-	Usart_TX_t tx_stu;
-	if (resp_data->port_num == 1)
-	{
-		memcpy(&tx_stu, &urt1_tx_stu.tx_buff_list[abs(urt1_tx_stu.head - 1) % TX_LIST_MAX], sizeof(Usart_TX_t));
-		Usart_TxBuffer_Append(&huart1, &tx_stu);
-	}
-	if (resp_data->port_num == 2)
-	{
-		memcpy(&tx_stu, &urt2_tx_stu.tx_buff_list[abs(urt2_tx_stu.head - 1) % TX_LIST_MAX], sizeof(Usart_TX_t));
-		Usart_TxBuffer_Append(&huart2, &tx_stu);
-	}
-}
+
 void UART_ConfigReturnData(ResponseHandle_t *resp_data)
 {
 	switch (resp_data->protocol)
 	{
-		case PROT_KT_OEM_SAMEIDEX:
-			Response_KTOEMSameIdex_Config(resp_data);
-			break;
 		case PROT_KT_OEM:
 			Response_KTOEM_Config(resp_data);
 			break;
@@ -180,13 +165,14 @@ void Resolution_Cmd(const Cmd_Par_t *pcmd, ResponseHandle_t *resp)
 	resp->port_num = pcmd->port_num;
 	resp->protocol = pcmd->protocol;
 	resp->idex = pcmd->idex;
-	if (pcmd->protocol == PROT_KT_OEM_SAMEIDEX)
-	{
-		return;
-	}
 	if (strcmp((char*) pcmd->cmd, "Rr") == 0)
 	{
 		Valve_ReadRegister(pcmd, resp);
+		return;
+	}
+	else if (strcmp((char*) pcmd->cmd, "Wr") == 0)
+	{
+		Valve_WriteRegister(pcmd, resp);
 		return;
 	}
 

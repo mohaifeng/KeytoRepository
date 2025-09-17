@@ -25,6 +25,7 @@ typedef struct
 
 typedef struct
 {
+	uint8_t port;  //发送端口号
 	uint8_t tx_len;  //发送一帧数据的长度
 	uint8_t tx_buffer[BUFFER_SIZE]; //接收缓存数组
 } Usart_TX_t;
@@ -37,16 +38,24 @@ typedef struct
 	uint8_t tail;
 } Usart_TX_list_t;
 
-extern Usart_RX_t usart1_rx_struct; //串口1接收数据结构体
-extern Usart_TX_list_t urt1_tx_stu; //串口1发送数据结构体
-extern Usart_RX_t usart2_rx_struct; //串口2接收数据结构体
-extern Usart_TX_list_t urt2_tx_stu; //串口2发送数据结构体
+typedef struct
+{
+	Usart_TX_t tx_buff;
+	uint8_t idex;
+} Oem_Idex_t;
+
+extern Usart_RX_t usart1_rx_stu; //串口1接收数据结构体
+extern Usart_RX_t usart2_rx_stu; //串口2接收数据结构体
+extern Usart_TX_list_t usart_tx_stu; //串口1发送数据结构体
+extern Oem_Idex_t usart1_idex_stu;
+extern Oem_Idex_t usart2_idex_stu;
+
 
 void User_USART1_Init(void);
 void User_USART2_Init(void);
-void Usart_Transmit(UART_HandleTypeDef *huart);
-void Clear_Usart_TxList(UART_HandleTypeDef *huart);
-HAL_StatusTypeDef Usart_TxBuffer_Append(UART_HandleTypeDef *huart, Usart_TX_t *tx_stu);
+void Usart_Transmit_Task(void);
+void Clear_Usart_TxList(void);
+HAL_StatusTypeDef Usart_TxBuffer_Append(Usart_TX_t *tx_stu);
 HAL_StatusTypeDef Usart_GetData(UART_HandleTypeDef *huart, uint8_t **data, uint8_t *length);
 void Usart_Start_Receive(UART_HandleTypeDef *huart);
 void USER_UART_IDLECallback(UART_HandleTypeDef *huart);

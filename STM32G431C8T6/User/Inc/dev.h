@@ -19,6 +19,14 @@
 
 #define USART_TASK_TIME						5 //单位ms
 #define VALVE_CONTROL_TASK_TIME		5 //单位ms
+#define CONSOLE_CONTROL_TASK_TIME	2
+
+typedef enum
+{
+	CONSOLE_IDLE,
+	CONSOLE_READY,
+	CONSOLE_WAIT,
+} Console_Status_t;
 
 typedef enum
 {
@@ -121,7 +129,11 @@ extern SysConfig_t sysconfig;
 extern uint32_t USART1_RxTimeCnt;														//串口1接收数据的时间计数
 extern uint32_t USART2_RxTimeCnt;														//串口2接收数据的时间计数
 extern uint32_t ValveControlTaskCnt;														//旋转阀控制任务时间计数
+extern Console_Status_t console1_status;
+extern Console_Status_t console2_status;
 
+void ConfigInit(void);
 void SysTick_Callback(void);
 void ConsoleControlTask(UART_HandleTypeDef *huart);
+
 #endif /* INC_DEV_H_ */

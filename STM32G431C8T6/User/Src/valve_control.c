@@ -115,5 +115,16 @@ void Valve_ReadRegister(const Cmd_Par_t *pcmd, ResponseHandle_t *resp)
 	resp->is_data = 1;
 }
 
+void Valve_WriteRegister(const Cmd_Par_t *pcmd, ResponseHandle_t *resp)
+{
+	if (pcmd->value_num != 2)
+	{
+		resp->state = PARAMETER_ERROR;
+		resp->is_data = 0;
+		return;
+	}
+	resp->state = Write_Register((uint16_t) pcmd->value_buf[0], pcmd->value_buf[1]);
+	resp->is_data = 0;
+}
 /**********获取当前位置*************/
 

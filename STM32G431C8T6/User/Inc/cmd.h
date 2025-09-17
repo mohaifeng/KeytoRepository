@@ -31,7 +31,6 @@ typedef struct
 
 typedef struct
 {
-	/*通用部分*/
 	uint8_t port_num;
 	uint8_t idex;
 	Protocol_t protocol;

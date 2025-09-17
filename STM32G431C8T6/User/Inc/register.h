@@ -13,8 +13,8 @@
 
 #define REG_LIST_SIZE	 (sizeof(reg_user_list)/sizeof(RegConfigTypedef))
 #define REG_CONFIG(addr,permission,data_type,data_ptr,min_value,max_value,default_value,save,callback) {addr,permission,data_type,data_ptr,min_value,max_value,default_value,save,callback}
-#define FLASH_INIT_FLAG 0x12340001
-
+#define IS_USART_BAUD_RATE(__N__)	(((__N__)==9600)||((__N__)==19200)||((__N__)==38400)||((__N__)==115200))
+#define IS_CAN_BAUD_RATE(__N__)   (((__N__)==100)||((__N__)==250)||((__N__)==500)||((__N__)==1000))
 //定义寄存器读写权限
 typedef enum
 {
@@ -37,7 +37,6 @@ typedef enum
 	REG_I8,
 	REG_I16,
 	REG_I32,
-	REG_FLOAT
 } RegDataTypedef;
 
 //定义寄存器值的数据类型
@@ -58,7 +57,7 @@ typedef struct
 	RegDataTypedef val_type;
 } RegValue_Handle_t;
 
-typedef void (*RegWriteCallback)(void *reg_ptr, RegValue *new_value); //定义写寄存器值函数指针
+typedef Sys_Status_t (*RegWriteCallback)(uint16_t addr, int32_t new_value); //定义写寄存器值函数指针
 
 typedef struct
 {
@@ -75,7 +74,10 @@ typedef struct
 
 void Init_Registers(void);
 Sys_Status_t Read_Register(uint16_t addr, RegValue_Handle_t *regval);
-Sys_Status_t Write_Register(uint16_t addr, RegValue *new_value);
+Sys_Status_t Write_Register(uint16_t addr, int32_t new_value);
 Sys_Status_t Save_Register(void);
+Sys_Status_t Reset_Register(void);
+Sys_Status_t WriteUsartBaudrateCallback(uint16_t addr, int32_t new_value);
+Sys_Status_t WriteCANBaudrateCallback(uint16_t addr, int32_t new_value);
 
 #endif /* INC_REGISTER_H_ */

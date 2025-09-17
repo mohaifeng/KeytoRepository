@@ -11,11 +11,12 @@
 #include "main.h"
 #include "cmd.h"
 
-#define VALVE_CATCH_GAP_NUM     10  //挡片缺口个数
-#define VALVE_MAX_STEP  				200 //VALVE full step 模式最大值
+#define VALVE_CATCH_GAP_NUM     	10  //挡片缺口个数
+#define VALVE_MAX_STEP  					200 //VALVE full step 模式最大值
 
-#define MIN_VALUE(x,y) x<y?x:y
-#define MAX_VALUE(x,y) x>y?x:y
+#define MIN_VALUE(x,y) 						x<y?x:y
+#define MAX_VALUE(x,y) 						x>y?x:y
+
 
 typedef enum
 {
@@ -79,4 +80,5 @@ typedef struct
 
 void ValveControlTask(void);
 void Valve_ReadRegister(const Cmd_Par_t *pcmd, ResponseHandle_t *resp);
+void Valve_WriteRegister(const Cmd_Par_t *pcmd, ResponseHandle_t *resp);
 #endif /* INC_VALVE_CONTROL_H_ */
