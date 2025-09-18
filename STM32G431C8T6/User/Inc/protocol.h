@@ -42,6 +42,7 @@ typedef struct
 	uint8_t add;          //地址
 	uint8_t tx_flag;          //发送标志
 	uint8_t cmd[RESOLUTION_BUFF_MAX];			//命令
+	uint8_t cmd_len;      //结尾
 	uint8_t end;      //结尾
 } KT_DT_Handle_t;
 
@@ -67,7 +68,6 @@ typedef struct
 
 extern RealTimeResolution_t usart1_rtimeresol_stu;
 extern RealTimeResolution_t usart2_rtimeresol_stu;
-
 
 void Clear_RealtimeResolution_Buff(UART_HandleTypeDef *huart);
 void RealtimeResolutionBuff_Append(UART_HandleTypeDef *huart, uint8_t *data, uint8_t len);

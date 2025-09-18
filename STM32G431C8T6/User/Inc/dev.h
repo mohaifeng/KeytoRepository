@@ -17,7 +17,7 @@
 #define ENC_SPEED_ARRAY_SIZE  16
 #define Max_PortNum						30
 
-#define USART_TASK_TIME						5 //单位ms
+#define USART_TASK_TIME						5 //单位ms,等待xms无新数据则开始解析
 #define VALVE_CONTROL_TASK_TIME		5 //单位ms
 #define CONSOLE_CONTROL_TASK_TIME	2
 

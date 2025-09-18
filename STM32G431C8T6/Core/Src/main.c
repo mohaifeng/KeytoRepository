@@ -138,7 +138,6 @@ int main(void)
 		{
 			ConsoleControlTask(&huart2);
 		}
-
 		Led_Task(led_state);
 		Cmd_List_Execute();
 		Usart_Transmit_Task();

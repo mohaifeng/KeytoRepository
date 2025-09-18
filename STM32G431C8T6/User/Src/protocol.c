@@ -12,10 +12,9 @@
 #include "dev.h"
 #include "verification.h"
 
-RealTimeResolution_t usart1_rtimeresol_stu;
-RealTimeResolution_t usart2_rtimeresol_stu;
-
-uint8_t resolution_flag = 0;
+RealTimeResolution_t usart1_rtimeresol_stu; //串口1实时解析缓存数组
+RealTimeResolution_t usart2_rtimeresol_stu; //串口2实时解析缓存数组
+uint8_t resolution_flag = 0; //解析成功标志位
 //清除实时解析数组
 void Clear_RealtimeResolution_Buff(UART_HandleTypeDef *huart)
 {
@@ -84,7 +83,7 @@ void ResolutionProtocol(UART_HandleTypeDef *huart)
 				resolution_flag++;
 			}
 		}
-		if (tmp->rsl_buff[i] >= 0x30 && tmp->rsl_buff[i] <= 0x39) //DT协议
+		else if (tmp->rsl_buff[i] >= 0x30 && tmp->rsl_buff[i] <= 0x39) //DT协议
 		{
 			if (UART_ResolutionKT_DT_Protocol(huart, &tmp->rsl_buff[i], tmp->datalen - i) == HAL_OK)
 			{
@@ -111,11 +110,11 @@ HAL_StatusTypeDef UART_ResolutionKT_OEM_Protocol(UART_HandleTypeDef *huart, uint
 		protocol.add = data[2];
 		protocol.cmd_len = data[3];
 		if (protocol.idex < 0x80 || protocol.add != sysconfig.CommunicationConfig.Add || (protocol.cmd_len + 5) > len)
-			return Resolution_flag;;
+			return Resolution_flag;
 		memcpy(protocol.cmd, &data[4], protocol.cmd_len);
 		protocol.checksum_8 = data[4 + protocol.cmd_len];
 		if (protocol.checksum_8 != Checksum_8(data, protocol.cmd_len + 4))
-			return Resolution_flag;;
+			return Resolution_flag;
 		Resolution_flag = HAL_OK;
 		cmd_par.idex = protocol.idex;
 		if (huart->Instance == USART1)
@@ -152,32 +151,38 @@ HAL_StatusTypeDef UART_ResolutionKT_OEM_Protocol(UART_HandleTypeDef *huart, uint
 
 HAL_StatusTypeDef UART_ResolutionKT_DT_Protocol(UART_HandleTypeDef *huart, uint8_t *data, uint8_t len)
 {
+	uint8_t separator_idex = 0;
+	uint8_t end_idex = 0;
+	KT_DT_Handle_t protocol;
+	Cmd_Par_t cmd_par;
+	for (uint8_t i = 0; i < len; i++)
+	{
+		if (data[i] == 0x3E)
+		{
+			separator_idex = i;
+		}
+		else if (data[i] == 0x0D)
+		{
+			end_idex = i;
+		}
+	}
+	if (!(separator_idex && end_idex))
+		return HAL_ERROR;
+	protocol.add = 0;
+	for (uint8_t i = 0; i < separator_idex; i++)
+	{
+		protocol.add = (protocol.add * 10) + (data[i] - 0x30);
+	}
+	if (protocol.add != sysconfig.CommunicationConfig.Add)
+		return HAL_ERROR;
+	protocol.cmd_len = end_idex - separator_idex - 1;
+	memcpy(protocol.cmd, &data[separator_idex + 1], protocol.cmd_len);
+	Cmd_Config(&cmd_par, protocol.cmd, protocol.cmd_len);
+	cmd_par.protocol = PROT_KT_DT;
+	if (huart->Instance == USART1)
+		cmd_par.port_num = 1;
+	else if (huart->Instance == USART2)
+		cmd_par.port_num = 2;
+	Cmd_List_Append(&cmd_par);
 	return HAL_OK;
 }
-//HAL_StatusTypeDef UART_ResolutionGeneral_Protocol(uint8_t *data, uint8_t len)
-//{
-//	uint8_t sum = 0;
-//	int32_t value = 0;
-//	GeneralProtocol_Handle_t protocol;
-//	Cmd_Par_t temp;
-//	if (len < 8)
-//		return HAL_ERROR;
-//	protocol.head = data[0];
-//	if (protocol.head != 0xAA)
-//		return HAL_ERROR;
-//	protocol.add = data[1];
-//	if (protocol.add != sysconfig.CommunicationConfig.Add)
-//		return HAL_ERROR;
-//	protocol.cmd = data[2];
-//	memcpy(protocol.data, &(data[3]), 4);
-//	value = ((uint32_t) (protocol.data[0]) << 24) | ((uint32_t) (protocol.data[1]) << 16)
-//			| ((uint32_t) (protocol.data[2]) << 8) | ((uint32_t) (protocol.data[3]));
-//	protocol.verify = data[7];
-//	sum = Checksum_8(data, 7);
-//	if (sum != protocol.verify)
-//		return HAL_ERROR;
-//	temp.cmd = protocol.cmd;
-//	temp.value = value;
-//	Cmd_List_Append(temp);
-//	return HAL_OK;
-//}

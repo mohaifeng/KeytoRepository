@@ -61,6 +61,33 @@ HAL_StatusTypeDef Cmd_List_Append(Cmd_Par_t *cmd)
 	return HAL_OK;
 }
 
+static void RegInt_To_Ascii(char *char_buf, RegValue_Handle_t *pdata)
+{
+	switch (pdata->val_type)
+	{
+		case REG_U8:
+			sprintf(char_buf, "%u", (uint8_t) pdata->value.u8v);
+			break;
+		case REG_U16:
+			sprintf(char_buf, "%u", (uint16_t) pdata->value.u16v);
+			break;
+		case REG_U32:
+			sprintf(char_buf, "%lu", (uint32_t) pdata->value.u32v);
+			break;
+		case REG_I8:
+			sprintf(char_buf, "%d", (int8_t) pdata->value.i8v);
+			break;
+		case REG_I16:
+			sprintf(char_buf, "%d", (int16_t) pdata->value.i16v);
+			break;
+		case REG_I32:
+			sprintf(char_buf, "%ld", (int32_t) pdata->value.i32v);
+			break;
+		default:
+			break;
+	}
+}
+
 static void Response_KTOEM_Config(ResponseHandle_t *resp_data)
 {
 	Usart_TX_t tx_stu;
@@ -76,29 +103,7 @@ static void Response_KTOEM_Config(ResponseHandle_t *resp_data)
 		tx_stu.tx_buffer[4] = 0;
 		for (uint8_t i = 0; i < resp_data->buff_size; i++)
 		{
-			switch (resp_data->res_buff[i].val_type)
-			{
-				case REG_U8:
-					sprintf(pdata_byte, "%u", (uint8_t) resp_data->res_buff[i].value.u8v);
-					break;
-				case REG_U16:
-					sprintf(pdata_byte, "%u", (uint16_t) resp_data->res_buff[i].value.u16v);
-					break;
-				case REG_U32:
-					sprintf(pdata_byte, "%lu", (uint32_t) resp_data->res_buff[i].value.u32v);
-					break;
-				case REG_I8:
-					sprintf(pdata_byte, "%d", (int8_t) resp_data->res_buff[i].value.i8v);
-					break;
-				case REG_I16:
-					sprintf(pdata_byte, "%d", (int16_t) resp_data->res_buff[i].value.i16v);
-					break;
-				case REG_I32:
-					sprintf(pdata_byte, "%ld", (int32_t) resp_data->res_buff[i].value.i32v);
-					break;
-				default:
-					break;
-			}
+			RegInt_To_Ascii(pdata_byte, &resp_data->res_buff[i]);
 			data_size_byte = strlen(pdata_byte);  //数据ascii码长度
 			memcpy(&tx_stu.tx_buffer[5 + tx_stu.tx_buffer[4]], pdata_byte, data_size_byte);
 			tx_stu.tx_buffer[4] = tx_stu.tx_buffer[4] + data_size_byte;
@@ -131,7 +136,44 @@ static void Response_KTOEM_Config(ResponseHandle_t *resp_data)
 }
 static void Response_KTDT_Config(ResponseHandle_t *resp_data)
 {
-
+	Usart_TX_t tx_stu;
+	char tmp_char[12];
+	uint8_t head = 0;
+	uint8_t num = 0;
+	tx_stu.port = resp_data->port_num;
+	num = sprintf(tmp_char, "%u", (uint8_t) sysconfig.CommunicationConfig.Add);  //地址转ascii
+	memcpy(&tx_stu.tx_buffer[head], tmp_char, strlen(tmp_char));
+	head += num;
+	tx_stu.tx_buffer[head++] = 0x3C;
+	num = sprintf(tmp_char, "%u", (uint8_t) resp_data->state);
+	memcpy(&tx_stu.tx_buffer[head], tmp_char, strlen(tmp_char));
+	head += num;
+	if (resp_data->is_data)
+	{
+		tx_stu.tx_buffer[head++] = 0x3A;
+		for (uint8_t i = 0; i < resp_data->buff_size; i++)
+		{
+			RegInt_To_Ascii(tmp_char, &resp_data->res_buff[i]);
+			num = strlen(tmp_char);  //数据ascii码长度
+			memcpy(&tx_stu.tx_buffer[head], tmp_char, num);
+			head += num;
+			if (i < resp_data->buff_size - 1)
+			{
+				tx_stu.tx_buffer[head++] = ',';
+			}
+		}
+	}
+	tx_stu.tx_buffer[head] = 0x0D;
+	tx_stu.tx_len = head + 1;
+	if (tx_stu.port == 1)
+	{
+		memcpy(&usart1_idex_stu.tx_buff, &tx_stu, sizeof(Usart_TX_t));
+	}
+	else if (tx_stu.port == 2)
+	{
+		memcpy(&usart2_idex_stu.tx_buff, &tx_stu, sizeof(Usart_TX_t));
+	}
+	Usart_TxBuffer_Append(&tx_stu);
 }
 
 void UART_ConfigReturnData(ResponseHandle_t *resp_data)
