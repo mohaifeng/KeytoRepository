@@ -35,6 +35,7 @@
 #include "valve_control.h"
 #include "cmd.h"
 #include "register.h"
+#include "can.h"
 //#include "verification.h"
 //#include "motor_control.h"
 /* USER CODE END Includes */
@@ -109,8 +110,6 @@ int main(void)
 	MX_TIM6_Init();
 	MX_FDCAN1_Init();
 	MX_TIM4_Init();
-	MX_TIM17_Init();
-	MX_TIM7_Init();
 
 	/* Initialize interrupts */
 	MX_NVIC_Init();
@@ -129,7 +128,11 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-
+//		if (CAN_HeartCnt >= 1000)
+//		{
+//			CAN_HeartCnt = 0;
+//			CAN_Transmit();
+//		}
 		if (usart1_rx_stu.dataready == 1)
 		{
 			ConsoleControlTask(&huart1);

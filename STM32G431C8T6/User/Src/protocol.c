@@ -166,7 +166,7 @@ HAL_StatusTypeDef UART_ResolutionKT_DT_Protocol(UART_HandleTypeDef *huart, uint8
 			end_idex = i;
 		}
 	}
-	if (!(separator_idex && end_idex))
+	if (!(separator_idex && end_idex && (separator_idex >= end_idex)))
 		return HAL_ERROR;
 	protocol.add = 0;
 	for (uint8_t i = 0; i < separator_idex; i++)

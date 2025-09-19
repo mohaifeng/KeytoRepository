@@ -31,6 +31,7 @@
 "./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.o"
 "./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart.o"
 "./Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart_ex.o"
+"./User/Src/can.o"
 "./User/Src/cmd.o"
 "./User/Src/dev.o"
 "./User/Src/flash.o"

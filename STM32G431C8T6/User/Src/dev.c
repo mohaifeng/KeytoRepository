@@ -11,9 +11,12 @@
 #include "user_usart.h"
 
 SysConfig_t sysconfig;
-uint32_t USART1_RxTimeCnt;														//串口1接收数据的时间计数
-uint32_t USART2_RxTimeCnt;														//串口2接收数据的时间计数
-uint32_t ValveControlTaskCnt = 0; //旋转阀控制任务时间计数
+uint32_t USART1_RxTimeCnt=0;														//串口1接收数据的时间计数
+uint32_t USART2_RxTimeCnt=0;														//串口2接收数据的时间计数
+uint32_t ValveControlTaskCnt=0; //旋转阀控制任务时间计数
+uint32_t CAN_HeartCnt=0; //旋转阀控制任务时间计数
+
+
 Console_Status_t console1_status = CONSOLE_IDLE;
 Console_Status_t console2_status = CONSOLE_IDLE;
 
@@ -38,6 +41,7 @@ void SysTick_Callback(void)
 	USART1_RxTimeCnt++;
 	USART2_RxTimeCnt++;
 	ValveControlTaskCnt++;
+	CAN_HeartCnt++;
 }
 
 void ConsoleControlTask(UART_HandleTypeDef *huart)

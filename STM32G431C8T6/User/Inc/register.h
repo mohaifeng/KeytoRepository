@@ -57,7 +57,7 @@ typedef struct
 	RegDataTypedef val_type;
 } RegValue_Handle_t;
 
-typedef Sys_Status_t (*RegWriteCallback)(uint16_t addr, int32_t new_value); //定义写寄存器值函数指针
+typedef uint8_t (*RegWriteCallback)(int32_t new_value); //定义写寄存器值函数指针
 
 typedef struct
 {
@@ -77,7 +77,7 @@ Sys_Status_t Read_Register(uint16_t addr, RegValue_Handle_t *regval);
 Sys_Status_t Write_Register(uint16_t addr, int32_t new_value);
 Sys_Status_t Save_Register(void);
 Sys_Status_t Reset_Register(void);
-Sys_Status_t WriteUsartBaudrateCallback(uint16_t addr, int32_t new_value);
-Sys_Status_t WriteCANBaudrateCallback(uint16_t addr, int32_t new_value);
+uint8_t WriteUsartBaudrateCallback(int32_t new_value);
+uint8_t WriteCANBaudrateCallback(int32_t new_value);
 
 #endif /* INC_REGISTER_H_ */

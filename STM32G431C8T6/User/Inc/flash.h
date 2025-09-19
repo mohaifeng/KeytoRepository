@@ -12,7 +12,7 @@
 #include "dev.h"
 #include "verification.h"
 
-#define FLASH_INIT_FLAG 0x12340001
+#define FLASH_INIT_FLAG 0x12340003
 
 /* Base address of the Flash sectors */
 #define ADDR_FLASH_PAGE_0     ((uint32_t)0x08000000) /* Base @ of Page 0, 2 Kbytes */

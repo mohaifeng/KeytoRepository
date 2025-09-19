@@ -102,6 +102,7 @@ typedef struct
 	uint32_t RS485_BaudRate;      //RS485波特率
 	uint16_t CAN_BaudRate;        //CAN波特率
 	uint8_t CAN_TargetAdd;        //CAN目标地址
+	uint32_t CAN_Heart;        //CAN心跳间隔
 } Communication_Config_t;
 
 typedef struct
@@ -120,15 +121,16 @@ typedef struct
 	uint8_t IIC_Addr;
 	uint8_t i2c_valve_profile;
 	uint8_t i2c_valvecmd;
-	uint8_t UserData[50];
-	uint32_t model;
-	uint32_t version;
+	uint8_t UserData[50];			//用户数据
+	uint32_t model;			//型号
+	uint32_t version;			//版本
 } SysConfig_t;
 
 extern SysConfig_t sysconfig;
 extern uint32_t USART1_RxTimeCnt;														//串口1接收数据的时间计数
 extern uint32_t USART2_RxTimeCnt;														//串口2接收数据的时间计数
 extern uint32_t ValveControlTaskCnt;														//旋转阀控制任务时间计数
+extern uint32_t CAN_HeartCnt;
 extern Console_Status_t console1_status;
 extern Console_Status_t console2_status;
 
