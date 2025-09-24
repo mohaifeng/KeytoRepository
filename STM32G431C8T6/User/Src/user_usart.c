@@ -164,7 +164,7 @@ HAL_StatusTypeDef Usart_TxBuffer_Append(Usart_TX_t *tx_stu)
 	return HAL_OK;
 }
 // 获取缓冲区数据
-HAL_StatusTypeDef Usart_GetData(UART_HandleTypeDef *huart, uint8_t **data, uint8_t *length)
+void Usart_GetData(UART_HandleTypeDef *huart, uint8_t **data, uint8_t *length)
 {
 	Usart_RX_t *tmp_rx_struct;
 	if (huart->Instance == USART1)
@@ -176,14 +176,9 @@ HAL_StatusTypeDef Usart_GetData(UART_HandleTypeDef *huart, uint8_t **data, uint8
 		tmp_rx_struct = &usart2_rx_stu;
 	}
 	else
-		return HAL_ERROR;
-	if (tmp_rx_struct->dataready)
-	{
-		*data = tmp_rx_struct->rx_buffer[!tmp_rx_struct->active_buffer];
-		*length = tmp_rx_struct->rx_len;
-		return HAL_OK;
-	}
-	return HAL_ERROR;
+		return;
+	*data = tmp_rx_struct->rx_buffer[!tmp_rx_struct->active_buffer];
+	*length = tmp_rx_struct->rx_len;
 }
 
 void Usart_Start_Receive(UART_HandleTypeDef *huart)
@@ -225,7 +220,6 @@ void USER_UART_IDLECallback(UART_HandleTypeDef *huart)
 		{
 			usart1_rx_stu.active_buffer = (!usart1_rx_stu.active_buffer);
 			usart1_rx_stu.dataready = 1;
-			console1_status = CONSOLE_READY;
 			USART1_RxTimeCnt = 0;
 		}
 	}
@@ -236,7 +230,6 @@ void USER_UART_IDLECallback(UART_HandleTypeDef *huart)
 		{
 			usart2_rx_stu.active_buffer = (!usart2_rx_stu.active_buffer);
 			usart2_rx_stu.dataready = 1;
-			console2_status = CONSOLE_READY;
 			USART2_RxTimeCnt = 0;
 		}
 	}

@@ -11,14 +11,10 @@
 #include "user_usart.h"
 
 SysConfig_t sysconfig;
-uint32_t USART1_RxTimeCnt=0;														//串口1接收数据的时间计数
-uint32_t USART2_RxTimeCnt=0;														//串口2接收数据的时间计数
-uint32_t ValveControlTaskCnt=0; //旋转阀控制任务时间计数
-uint32_t CAN_HeartCnt=0; //旋转阀控制任务时间计数
-
-
-Console_Status_t console1_status = CONSOLE_IDLE;
-Console_Status_t console2_status = CONSOLE_IDLE;
+uint32_t USART1_RxTimeCnt = 0;														//串口1接收数据的时间计数
+uint32_t USART2_RxTimeCnt = 0;														//串口2接收数据的时间计数
+uint32_t ValveControlTaskCnt = 0; //旋转阀控制任务时间计数
+uint32_t CAN_HeartCnt = 0; //旋转阀控制任务时间计数
 
 void ConfigInit(void)
 {
@@ -48,46 +44,8 @@ void ConsoleControlTask(UART_HandleTypeDef *huart)
 {
 	uint8_t *pdata = NULL;
 	uint8_t datalen = 0;
-	if (huart->Instance == USART1)
-	{
-		switch (console1_status)
-		{
-			case CONSOLE_READY:
-				Usart_GetData(huart, &pdata, &datalen);
-				RealtimeResolutionBuff_Append(huart, pdata, datalen);
-				console1_status = CONSOLE_WAIT;
-				break;
-			case CONSOLE_WAIT:
-				if (USART1_RxTimeCnt >= USART_TASK_TIME) //5ms没有接收到新的数据
-				{
-					USART1_RxTimeCnt = 0;
-					usart1_rx_stu.dataready = 0;
-					ResolutionProtocol(&huart1);
-				}
-				break;
-			default:
-				break;
-		}
-	}
-	if (huart->Instance == USART2)
-	{
-		switch (console2_status)
-		{
-			case CONSOLE_READY:
-				Usart_GetData(huart, &pdata, &datalen);
-				RealtimeResolutionBuff_Append(huart, pdata, datalen);
-				console2_status = CONSOLE_WAIT;
-				break;
-			case CONSOLE_WAIT:
-				if (USART2_RxTimeCnt >= USART_TASK_TIME) //5ms没有接收到新的数据
-				{
-					USART2_RxTimeCnt = 0;
-					usart2_rx_stu.dataready = 0;
-					ResolutionProtocol(huart);
-				}
-				break;
-			default:
-				break;
-		}
-	}
+	Usart_GetData(huart, &pdata, &datalen);
+	RealtimeResolutionBuff_Append(huart, pdata, datalen);
+	ResolutionProtocol(huart);
+
 }

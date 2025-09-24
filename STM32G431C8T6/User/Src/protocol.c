@@ -151,13 +151,13 @@ HAL_StatusTypeDef UART_ResolutionKT_OEM_Protocol(UART_HandleTypeDef *huart, uint
 
 HAL_StatusTypeDef UART_ResolutionKT_DT_Protocol(UART_HandleTypeDef *huart, uint8_t *data, uint8_t len)
 {
-	uint8_t separator_idex = 0;
-	uint8_t end_idex = 0;
+	volatile uint8_t separator_idex = 0;
+	volatile uint8_t end_idex = 0;
 	KT_DT_Handle_t protocol;
 	Cmd_Par_t cmd_par;
 	for (uint8_t i = 0; i < len; i++)
 	{
-		if (data[i] == 0x3E)
+		if (data[i] == '>')
 		{
 			separator_idex = i;
 		}
@@ -166,12 +166,12 @@ HAL_StatusTypeDef UART_ResolutionKT_DT_Protocol(UART_HandleTypeDef *huart, uint8
 			end_idex = i;
 		}
 	}
-	if (!(separator_idex && end_idex && (separator_idex >= end_idex)))
+	if (!(separator_idex && end_idex && (separator_idex <= end_idex)))
 		return HAL_ERROR;
 	protocol.add = 0;
-	for (uint8_t i = 0; i < separator_idex; i++)
+	for (uint8_t j = 0; j < separator_idex; j++)
 	{
-		protocol.add = (protocol.add * 10) + (data[i] - 0x30);
+		protocol.add = (protocol.add * 10) + (data[j] - 0x30);
 	}
 	if (protocol.add != sysconfig.CommunicationConfig.Add)
 		return HAL_ERROR;

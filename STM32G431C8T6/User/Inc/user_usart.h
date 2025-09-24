@@ -33,7 +33,7 @@ typedef struct
 typedef struct
 {
 	Usart_TX_t tx_buff_list[TX_LIST_MAX];
-	uint8_t num;
+	volatile uint8_t num;
 	uint8_t head;
 	uint8_t tail;
 } Usart_TX_list_t;
@@ -50,13 +50,12 @@ extern Usart_TX_list_t usart_tx_stu; //串口1发送数据结构体
 extern Oem_Idex_t usart1_idex_stu;
 extern Oem_Idex_t usart2_idex_stu;
 
-
 void User_USART1_Init(void);
 void User_USART2_Init(void);
 void Usart_Transmit_Task(void);
 void Clear_Usart_TxList(void);
 HAL_StatusTypeDef Usart_TxBuffer_Append(Usart_TX_t *tx_stu);
-HAL_StatusTypeDef Usart_GetData(UART_HandleTypeDef *huart, uint8_t **data, uint8_t *length);
+void Usart_GetData(UART_HandleTypeDef *huart, uint8_t **data, uint8_t *length);
 void Usart_Start_Receive(UART_HandleTypeDef *huart);
 void USER_UART_IDLECallback(UART_HandleTypeDef *huart);
 

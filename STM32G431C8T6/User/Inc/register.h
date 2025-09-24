@@ -21,7 +21,7 @@ typedef enum
 	READ_ONLY = 1,
 	WRITE_ONLY,
 	READ_WRITE
-} RegRWPer_t;
+} RW_Handle_t;
 //定义寄存器是否可以掉电保存权限
 typedef enum
 {
@@ -37,7 +37,7 @@ typedef enum
 	REG_I8,
 	REG_I16,
 	REG_I32,
-} RegDataTypedef;
+} DataTypedef;
 
 //定义寄存器值的数据类型
 typedef union
@@ -54,7 +54,7 @@ typedef union
 typedef struct
 {
 	RegValue value;
-	RegDataTypedef val_type;
+	DataTypedef val_type;
 } RegValue_Handle_t;
 
 typedef uint8_t (*RegWriteCallback)(int32_t new_value); //定义写寄存器值函数指针
@@ -62,8 +62,8 @@ typedef uint8_t (*RegWriteCallback)(int32_t new_value); //定义写寄存器值�
 typedef struct
 {
 	uint16_t addr;              // 寄存器地址
-	RegRWPer_t permission;   // 读写权限
-	RegDataTypedef data_type;      // 数据类型
+	RW_Handle_t permission;   // 读写权限
+	DataTypedef data_type;      // 数据类型
 	void *data_ptr;             // 数据存储指针
 	RegValue min_value;         // 最小值
 	RegValue max_value;         // 最大值

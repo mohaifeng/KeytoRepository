@@ -99,6 +99,7 @@ int main(void)
 	/* USER CODE BEGIN SysInit */
 	ConfigInit();
 	Init_Registers();
+	OD_Init();
 	/* USER CODE END SysInit */
 
 	/* Initialize all configured peripherals */
@@ -128,17 +129,21 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-//		if (CAN_HeartCnt >= 1000)
-//		{
-//			CAN_HeartCnt = 0;
-//			CAN_Transmit();
-//		}
-		if (usart1_rx_stu.dataready == 1)
+		if (CAN_HeartCnt >= 1000)
 		{
+			CAN_HeartCnt = 0;
+			CAN_Heart_Transmit();
+		}
+		if (usart1_rx_stu.dataready == 1 && USART1_RxTimeCnt >= USART_TASK_TIME)
+		{
+			USART1_RxTimeCnt = 0;
+			usart1_rx_stu.dataready = 0;
 			ConsoleControlTask(&huart1);
 		}
-		if (usart2_rx_stu.dataready == 1)
+		if (usart2_rx_stu.dataready == 1 && USART2_RxTimeCnt >= USART_TASK_TIME)
 		{
+			USART2_RxTimeCnt = 0;
+			usart2_rx_stu.dataready = 0;
 			ConsoleControlTask(&huart2);
 		}
 		Led_Task(led_state);
