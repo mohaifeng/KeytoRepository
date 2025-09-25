@@ -247,7 +247,6 @@ void CAN_ResolutionGeneral_Protocol(uint32_t idtype, uint8_t *data, uint8_t len)
 			state = OD_Read(canframe.idex, canframe.sub_idex, &data);
 			if (state == EXECUTE_SUCCESS)
 			{
-				CanTxHeader.Identifier = 0x00400000; //报文ID
 				CanTxBuff[4] = (data >> 24) & 0xFF;
 				CanTxBuff[5] = (data >> 16) & 0xFF;
 				CanTxBuff[6] = (data >> 8) & 0xFF;

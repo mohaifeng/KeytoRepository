@@ -25,9 +25,16 @@ int32_t TMC5160_SPIReadData(uint8_t address)
 	uint8_t rxData[5] = { 0 };
 	int32_t value = 0;
 	txData[0] = address & 0x7F; //读地址最高位为0
-	HAL_SPI_TransmitReceive(&hspi1, txData, rxData, 5, TMC_SPI_MAX_DELAY);
+
+	TMC_SPI1_CS_L();
+	HAL_SPI_TransmitReceive(&hspi1, txData, rxData, TMC_SPI_DATA_SIZE, TMC_SPI_MAX_DELAY);
+	TMC_SPI1_CS_H();
 	TMC_Delay(1);
-	HAL_SPI_TransmitReceive(&hspi1, txData, rxData, 5, TMC_SPI_MAX_DELAY);
+	TMC_SPI1_CS_L();
+	HAL_SPI_TransmitReceive(&hspi1, txData, rxData, TMC_SPI_DATA_SIZE, TMC_SPI_MAX_DELAY);
+	TMC_SPI1_CS_H();
+//	HAL_SPI_TransmitReceive(&hspi1, txData, rxData, TMC_SPI_DATA_SIZE, TMC_SPI_MAX_DELAY);
+
 	value = (rxData[1] << 24) | (rxData[2] << 16) | (rxData[3] << 8) | rxData[4];
 	return value;
 }
@@ -40,8 +47,9 @@ void TMC5160_SPIWriteInt(uint8_t address, int32_t value)
 	txData[2] = (value >> 16) & 0xFF;
 	txData[3] = (value >> 8) & 0xFF;
 	txData[4] = value & 0xFF;
+	TMC_SPI1_CS_L();
 	HAL_SPI_Transmit(&hspi1, txData, 5, TMC_SPI_MAX_DELAY);
-
+	TMC_SPI1_CS_H();
 }
 
 void TMC5160_Init(void)
@@ -55,8 +63,8 @@ void TMC5160_Init(void)
 
 	TMC5160_SPIWriteInt(TMC5160_REG_RAMPMODE, POSITIONINGMODE);
 	TMC5160_SPIWriteInt(TMC5160_REG_XACTUAL, 0); 		// writing value 0xFFCC12F0 = 0 = 0.0 to address 14 = 0x21(XACTUAL)
-	TMC5160_SPIWriteInt(TMC5160_REG_VSTART, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.StartSpeed));//VSTART
-	TMC5160_SPIWriteInt(TMC5160_REG_A1, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Acceleration));//A1 VSTART-V1 速度模式不用配置
+	TMC5160_SPIWriteInt(TMC5160_REG_VSTART, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.StartSpeed)); //VSTART
+	TMC5160_SPIWriteInt(TMC5160_REG_A1, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Acceleration)); //A1 VSTART-V1 速度模式不用配置
 	TMC5160_SPIWriteInt(TMC5160_REG_V1, Convert_usteps_To_ustept(sysconfig.MotorValveConfig.MaxSpeed/2));			//第一阶段加减速阀值
 	TMC5160_SPIWriteInt(TMC5160_REG_AMAX, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Acceleration));//AMAX V1-VMAX  500
 	TMC5160_SPIWriteInt(TMC5160_REG_VMAX, Convert_usteps_To_ustept(sysconfig.MotorValveConfig.MaxSpeed));	//VMAX   200*ustep*RPM/60
@@ -65,23 +73,23 @@ void TMC5160_Init(void)
 	TMC5160_SPIWriteInt(TMC5160_REG_VSTOP, Convert_usteps_To_ustept(sysconfig.MotorValveConfig.StopSpeed));				//VSTOP
 	//TMC5160_SPIWriteInt(0x2B, 	Convert_usteps_To_ustept(SysConfig.MotorValveConfig.MaxSpeed));
 
-	TMC5160_SPIWriteInt(TMC5160_REG_VDCMIN, 0x00000000); 		// writing value 0x00000000 = 0 = 0.0 to address 25 = 0x33(VDCMIN)
-	TMC5160_SPIWriteInt(TMC5160_REG_SW_MODE, 0x00000400); 		// writing value 0x00000400 = 1024 = 0.0 to address 26 = 0x34(SW_MODE)
+	TMC5160_SPIWriteInt(TMC5160_REG_VDCMIN, 0x00000000); // writing value 0x00000000 = 0 = 0.0 to address 25 = 0x33(VDCMIN)
+	TMC5160_SPIWriteInt(TMC5160_REG_SW_MODE, 0x00000400); // writing value 0x00000400 = 1024 = 0.0 to address 26 = 0x34(SW_MODE)
 
-	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_0, 0xAAAAB554); 		// writing value 0xAAAAB554 = 0 = 0.0 to address 31 = 0x60(MSLUT[0])
-	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_1, 0x4A9554AA); 	// writing value 0x4A9554AA = 1251300522 = 0.0 to address 32 = 0x61(MSLUT[1])
-	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_2, 0x24492929); 		// writing value 0x24492929 = 608774441 = 0.0 to address 33 = 0x62(MSLUT[2])
-	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_3, 0x10104222); 		// writing value 0x10104222 = 269500962 = 0.0 to address 34 = 0x63(MSLUT[3])
-	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_4, 0xFBFFFFFF); 		// writing value 0xFBFFFFFF = 0 = 0.0 to address 35 = 0x64(MSLUT[4])
-	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_5, 0xB5BB777D); 		// writing value 0xB5BB777D = 0 = 0.0 to address 36 = 0x65(MSLUT[5])
-	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_6, 0x49295556); 	// writing value 0x49295556 = 1227445590 = 0.0 to address 37 = 0x66(MSLUT[6])
-	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_7, 0x00404222); 		// writing value 0x00404222 = 4211234 = 0.0 to address 38 = 0x67(MSLUT[7])
-	TMC5160_SPIWriteInt(TMC5160_REG_MSLUTSEL, 0xFFFF8056); 		// writing value 0xFFFF8056 = 0 = 0.0 to address 39 = 0x68(MSLUTSEL)
-	TMC5160_SPIWriteInt(TMC5160_REG_MSLUTSTART, 0x00F70000); 	// writing value 0x00F70000 = 16187392 = 0.0 to address 40 = 0x69(MSLUTSTART)
+	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_0, 0xAAAAB554); // writing value 0xAAAAB554 = 0 = 0.0 to address 31 = 0x60(MSLUT[0])
+	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_1, 0x4A9554AA); // writing value 0x4A9554AA = 1251300522 = 0.0 to address 32 = 0x61(MSLUT[1])
+	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_2, 0x24492929); // writing value 0x24492929 = 608774441 = 0.0 to address 33 = 0x62(MSLUT[2])
+	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_3, 0x10104222); // writing value 0x10104222 = 269500962 = 0.0 to address 34 = 0x63(MSLUT[3])
+	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_4, 0xFBFFFFFF); // writing value 0xFBFFFFFF = 0 = 0.0 to address 35 = 0x64(MSLUT[4])
+	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_5, 0xB5BB777D); // writing value 0xB5BB777D = 0 = 0.0 to address 36 = 0x65(MSLUT[5])
+	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_6, 0x49295556); // writing value 0x49295556 = 1227445590 = 0.0 to address 37 = 0x66(MSLUT[6])
+	TMC5160_SPIWriteInt(TMC5160_REG_MSLUT_7, 0x00404222); // writing value 0x00404222 = 4211234 = 0.0 to address 38 = 0x67(MSLUT[7])
+	TMC5160_SPIWriteInt(TMC5160_REG_MSLUTSEL, 0xFFFF8056); // writing value 0xFFFF8056 = 0 = 0.0 to address 39 = 0x68(MSLUTSEL)
+	TMC5160_SPIWriteInt(TMC5160_REG_MSLUTSTART, 0x00F70000); // writing value 0x00F70000 = 16187392 = 0.0 to address 40 = 0x69(MSLUTSTART)
 
-	TMC5160_SPIWriteInt(TMC5160_REG_CHOPCONF, 0x10410153); 		// writing value 0x00410153 = 4260179 = 0.0 to address 41 = 0x6C(CHOPCONF)
+	TMC5160_SPIWriteInt(TMC5160_REG_CHOPCONF, 0x10410153); // writing value 0x00410153 = 4260179 = 0.0 to address 41 = 0x6C(CHOPCONF)
 	TMC5160_SPIWriteInt(TMC5160_REG_COOLCONF, 0x00030000); 		// 电流下降速率0,最小电流: 1/2 电流设置(IRUN)
-	TMC5160_SPIWriteInt(TMC5160_REG_DCCTRL, 0x00000000); 		// writing value 0x00000000 = 0 = 0.0 to address 43 = 0x6E(DCCTRL)
+	TMC5160_SPIWriteInt(TMC5160_REG_DCCTRL, 0x00000000); // writing value 0x00000000 = 0 = 0.0 to address 43 = 0x6E(DCCTRL)
 	//TMC5160_SPIWriteInt(0x70, 	0xC40C001E); 		// writing value 0xC40C001E = 0 = 0.0 to address 44 = 0x70(PWMCONF)
 	TMC5160_SPIWriteInt(TMC5160_REG_PWMCONF, 0xC40C2f1f);
 

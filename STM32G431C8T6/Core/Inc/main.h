@@ -61,6 +61,8 @@ void Error_Handler(void);
 #define OW1_Pin GPIO_PIN_0
 #define OW1_GPIO_Port GPIOA
 #define OW1_EXTI_IRQn EXTI0_IRQn
+#define SPI1_NSS_Pin GPIO_PIN_4
+#define SPI1_NSS_GPIO_Port GPIOA
 #define DIAG0_Pin GPIO_PIN_1
 #define DIAG0_GPIO_Port GPIOB
 #define DIAG1_Pin GPIO_PIN_2

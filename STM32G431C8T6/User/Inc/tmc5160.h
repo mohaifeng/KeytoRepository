@@ -12,10 +12,13 @@
 
 #define TMC5160_CLK						12000000	//默认频率12MHz
 #define TMC5160_SD_MODE				0		//0：内部斜坡,DIR,STEP用作外部停止,1：外部步进信号，DIR,STEP用作外部方向和步进信号
-#define TMC_SPI_MAX_DELAY     200//SPI通信最大延时时间（ms）
+#define TMC_SPI_DATA_SIZE     5//SPI通信字节数
+#define TMC_SPI_MAX_DELAY     10//SPI通信最大延时时间（ms）
 
 #if TMC5160_SD_MODE == 0
 #define TMC5160_STOP_MODE			1		//0:内部停止指令 1:REFR_DIR作为外部停止信号
+#define TMC_SPI1_CS_L()			HAL_GPIO_WritePin(SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_RESET)
+#define TMC_SPI1_CS_H()			HAL_GPIO_WritePin(SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_SET)
 #define TMC_EXT_STOP()			HAL_GPIO_WritePin(TMC_DIR_GPIO_Port, TMC_DIR_Pin, GPIO_PIN_SET)
 #define TMC_EXT_RELEASE()		HAL_GPIO_WritePin(TMC_DIR_GPIO_Port, TMC_DIR_Pin, GPIO_PIN_RESET)
 #endif
