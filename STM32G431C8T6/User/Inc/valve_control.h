@@ -79,6 +79,7 @@ typedef struct
 } Valve_Handle_t;
 
 void ValveControlTask(void);
+void Valve_Init(const Cmd_Par_t *pcmd, ResponseHandle_t *resp);
 void Valve_ReadRegister(const Cmd_Par_t *pcmd, ResponseHandle_t *resp);
 void Valve_WriteRegister(const Cmd_Par_t *pcmd, ResponseHandle_t *resp);
 #endif /* INC_VALVE_CONTROL_H_ */

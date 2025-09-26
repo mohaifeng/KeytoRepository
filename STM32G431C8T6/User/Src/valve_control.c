@@ -26,6 +26,14 @@ Valve_Handle_t ValveControl =
 				.ErrorResetChannel = 0,
 		};
 
+void Valve_Init(const Cmd_Par_t *pcmd, ResponseHandle_t *resp)
+{
+
+	resp->state = EXECUTE_SUCCESS;
+	Motor_SpeedMove(DIR_POSITIVE, 1000);
+	resp->is_data = 0;
+}
+
 void ValveControlTask(void)
 {
 

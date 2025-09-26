@@ -14,6 +14,7 @@
 #define TMC5160_SD_MODE				0		//0：内部斜坡,DIR,STEP用作外部停止,1：外部步进信号，DIR,STEP用作外部方向和步进信号
 #define TMC_SPI_DATA_SIZE     5//SPI通信字节数
 #define TMC_SPI_MAX_DELAY     10//SPI通信最大延时时间（ms）
+#define TMC_MAX_CURRENT				2350	//采样电阻0.05欧姆，对应Irms最大2350mA（）
 
 #if TMC5160_SD_MODE == 0
 #define TMC5160_STOP_MODE			1		//0:内部停止指令 1:REFR_DIR作为外部停止信号
@@ -35,6 +36,8 @@
 //将ustep/ta^2加减速转换为ustep/s^2加减速，ustep acceleration a[Hz/s]= a[5160] * fCLK[Hz]^2 / (512*256) / 2^24
 //#define ConvertACC_ustepss_To_usteptt(ustepss) (((uint64_t)ustepss*(uint64_t)0x20000000000)/(TMC5160_CLK*TMC5160_CLK))
 #define ConvertACC_ustepss_To_usteptt(ustepss) (ustepss*0.01527099483)
+//
+#define ConvertCurrent_To_Proportion(current)	((uint8_t)(current * 255) / TMC_MAX_CURRENT)
 
 /*通用配置寄存器*/
 #define TMC5160_REG_GCONF          0x00  // 通用配置
@@ -126,17 +129,25 @@ typedef enum
 	MRES_1,
 } MRES_t;
 
+//运动模式定义
 typedef enum
 {
-	POSITIONINGMODE, //位置模式
-	VELOCITYMODETOPOSITIVEVMAX, //速度模式到正 VMAX
-	VELOCITYMODETONEGATIVEVMAX, //速度模式至负 VMAX
+	POSITION_MODE, //位置模式
+	SPEED_TO_VMAX, //速度模式到正 VMAX
+	SPEED_TO_N_VVMAX, //速度模式至负 VMAX
 	HOLDMODE, //保持模式
 } RAMPMODE;
 
+//运动方向
+typedef enum
+{
+	DIR_POSITIVE,
+	DIR_OPPOSITE
+} MoveDir_t;
+
 typedef struct
 {
-	uint16_t StopMode;								//0:HardStop,1:SoftStop
+	uint8_t StopMode;								//0:HardStop,1:SoftStop
 	uint16_t MicroStep;								//细分
 	uint16_t StartPhaseCurrent;       //起始相电流
 	uint16_t PhaseCurrent;						//额定电流
@@ -157,9 +168,9 @@ void TMC5160_SPIWriteInt(uint8_t address, int32_t value);
 void TMC5160_Init(void);
 void Motor_HardStop(void);
 void Motor_SoftStop(void);
-void Motor_SpeedMove(uint8_t Dir, uint32_t uSpeed);
+void Motor_SpeedMove(MoveDir_t Dir, uint32_t uSpeed);
 void Motor_MovePosition(int32_t pos);
-void Motor_SetDirection(uint8_t dir);
+void Motor_SetDirection(MoveDir_t dir);
 void Motor_SetMicrostep(uint16_t step);
 void Motor_SetPhaseCurrent(uint16_t current);
 void Motor_SetVSTART(uint32_t uspeed);

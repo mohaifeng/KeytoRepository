@@ -35,6 +35,18 @@ static RegConfigTypedef reg_user_list[] =
 	REG_CONFIG( 10, READ_ONLY, REG_U32, &sysconfig.version,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = SYS_SOFT_VERSIONS}, SAVE_DISABLE,NULL ),//软件版本
 	REG_CONFIG( 11, READ_WRITE, REG_U32, &sysconfig.CommunicationConfig.CAN_Heart,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 1000}, SAVE_ENABLE,NULL ),//软件版本
 	/*电机配置参数*/
+	REG_CONFIG( 20, READ_WRITE, REG_U8, &sysconfig.MotorValveConfig.StopMode,{.u8v = 0},{.u8v = 0x1},{.u8v = 0}, SAVE_ENABLE,NULL ),//软件版本
+	REG_CONFIG( 21, READ_WRITE, REG_U16, &sysconfig.MotorValveConfig.MicroStep,{.u16v = 0},{.u16v = 256},{.u16v = 32}, SAVE_ENABLE,NULL ),//软件版本
+	REG_CONFIG( 22, READ_WRITE, REG_U16, &sysconfig.MotorValveConfig.PhaseCurrent,{.u16v = 0},{.u16v = 2300},{.u16v = 1000}, SAVE_ENABLE,NULL ),//软件版本
+	REG_CONFIG( 23, READ_WRITE, REG_U16, &sysconfig.MotorValveConfig.PhaseVoltage,{.u16v = 0},{.u16v = 2300},{.u16v = 1000}, SAVE_ENABLE,NULL ),//软件版本
+	REG_CONFIG( 24, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.StartSpeed,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 100}, SAVE_ENABLE,NULL ),//软件版本
+	REG_CONFIG( 25, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.Acceleration,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 10000}, SAVE_ENABLE,NULL ),//软件版本
+	REG_CONFIG( 26, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.Deceleration,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 10000}, SAVE_ENABLE,NULL ),//软件版本
+	REG_CONFIG( 27, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.RunSpeed,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 0}, SAVE_DISABLE,NULL ),//软件版本
+	REG_CONFIG( 28, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.MaxSpeed,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 3000}, SAVE_ENABLE,NULL ),//软件版本
+	REG_CONFIG( 29, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.StopSpeed,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 200}, SAVE_ENABLE,NULL ),//软件版本
+	REG_CONFIG( 30, READ_WRITE, REG_U8, &sysconfig.MotorValveConfig.PositionDir,{.u8v = 0},{.u8v = 1},{.u32v = 0}, SAVE_ENABLE,NULL ),//软件版本
+	REG_CONFIG( 31, READ_WRITE, REG_U8, &sysconfig.MotorValveConfig.PositionDir,{.u8v = 0},{.u8v = 1},{.u32v = 0}, SAVE_ENABLE,NULL ),//软件版本
 
 	/*通讯配置参数*/
 
