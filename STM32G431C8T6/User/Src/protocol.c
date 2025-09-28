@@ -143,7 +143,7 @@ HAL_StatusTypeDef UART_ResolutionKT_OEM_Protocol(UART_HandleTypeDef *huart, uint
 				cmd_par.protocol = PROT_KT_OEM;
 			}
 		}
-		Cmd_Config(&cmd_par, protocol.cmd, protocol.cmd_len);
+		Cmd_Config(&cmd_par, protocol.cmd, protocol.cmd_len);//将命令字符串中命令与参数分开存储到cmd_par
 		Cmd_List_Append(&cmd_par);
 	}
 	return Resolution_flag;

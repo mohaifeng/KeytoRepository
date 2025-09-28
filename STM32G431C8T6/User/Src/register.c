@@ -25,7 +25,6 @@ static RegConfigTypedef reg_user_list[] =
 	REG_CONFIG( 2, READ_WRITE, REG_U8, &sysconfig.AutoAgingEnable,{.u8v = 0},{.u8v = 1},{.u8v = 0},SAVE_ENABLE, NULL ), //自动老化使能
 	REG_CONFIG( 3, READ_WRITE, REG_U8,&sysconfig.AutoResetZeroEn,{.u8v = 0},{.u8v = 1},{.u8v = 0},SAVE_ENABLE, NULL), //自动置零使能
 
-
 	REG_CONFIG( 4,READ_WRITE, REG_U8, &sysconfig.CommunicationConfig.Add,{.u8v = 0},{.u8v = 0xFF},{.u8v = 0},SAVE_ENABLE,NULL ), //地址
 	REG_CONFIG( 5, READ_WRITE, REG_U16, &sysconfig.CommunicationConfig.CAN_BaudRate,{.u16v = 0},{.u16v = 1000},{.u16v = 500}, SAVE_ENABLE,WriteCANBaudrateCallback ),//CAN波特率
 	REG_CONFIG( 6, READ_WRITE, REG_U32, &sysconfig.CommunicationConfig.RS232_BaudRate,{.u32v = 9600},{.u32v = 115200},{.u32v = 38400},SAVE_ENABLE, WriteUsartBaudrateCallback ),//串口波特率
@@ -35,18 +34,17 @@ static RegConfigTypedef reg_user_list[] =
 	REG_CONFIG( 10, READ_ONLY, REG_U32, &sysconfig.version,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = SYS_SOFT_VERSIONS}, SAVE_DISABLE,NULL ),//软件版本
 	REG_CONFIG( 11, READ_WRITE, REG_U32, &sysconfig.CommunicationConfig.CAN_Heart,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 1000}, SAVE_ENABLE,NULL ),//软件版本
 	/*电机配置参数*/
-	REG_CONFIG( 20, READ_WRITE, REG_U8, &sysconfig.MotorValveConfig.StopMode,{.u8v = 0},{.u8v = 0x1},{.u8v = 0}, SAVE_ENABLE,NULL ),//软件版本
-	REG_CONFIG( 21, READ_WRITE, REG_U16, &sysconfig.MotorValveConfig.MicroStep,{.u16v = 0},{.u16v = 256},{.u16v = 32}, SAVE_ENABLE,NULL ),//软件版本
-	REG_CONFIG( 22, READ_WRITE, REG_U16, &sysconfig.MotorValveConfig.PhaseCurrent,{.u16v = 0},{.u16v = 2300},{.u16v = 1000}, SAVE_ENABLE,NULL ),//软件版本
-	REG_CONFIG( 23, READ_WRITE, REG_U16, &sysconfig.MotorValveConfig.PhaseVoltage,{.u16v = 0},{.u16v = 2300},{.u16v = 1000}, SAVE_ENABLE,NULL ),//软件版本
-	REG_CONFIG( 24, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.StartSpeed,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 100}, SAVE_ENABLE,NULL ),//软件版本
-	REG_CONFIG( 25, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.Acceleration,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 10000}, SAVE_ENABLE,NULL ),//软件版本
-	REG_CONFIG( 26, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.Deceleration,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 10000}, SAVE_ENABLE,NULL ),//软件版本
-	REG_CONFIG( 27, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.RunSpeed,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 0}, SAVE_DISABLE,NULL ),//软件版本
-	REG_CONFIG( 28, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.MaxSpeed,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 3000}, SAVE_ENABLE,NULL ),//软件版本
-	REG_CONFIG( 29, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.StopSpeed,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 200}, SAVE_ENABLE,NULL ),//软件版本
-	REG_CONFIG( 30, READ_WRITE, REG_U8, &sysconfig.MotorValveConfig.PositionDir,{.u8v = 0},{.u8v = 1},{.u32v = 0}, SAVE_ENABLE,NULL ),//软件版本
-	REG_CONFIG( 31, READ_WRITE, REG_U8, &sysconfig.MotorValveConfig.PositionDir,{.u8v = 0},{.u8v = 1},{.u32v = 0}, SAVE_ENABLE,NULL ),//软件版本
+	REG_CONFIG( 20, READ_WRITE, REG_U8, &sysconfig.MotorValveConfig.StopMode,{.u8v = 0},{.u8v = 0x1},{.u8v = 0}, SAVE_ENABLE,NULL ),//停止模式
+	REG_CONFIG( 21, READ_WRITE, REG_U16, &sysconfig.MotorValveConfig.MicroStep,{.u16v = 0},{.u16v = 256},{.u16v = 32}, SAVE_ENABLE,NULL ),//细分
+	REG_CONFIG( 22, READ_WRITE, REG_U16, &sysconfig.MotorValveConfig.PhaseCurrent,{.u16v = 0},{.u16v = 2300},{.u16v = 1000}, SAVE_ENABLE,NULL ),//运行电流
+	REG_CONFIG( 23, READ_WRITE, REG_U16, &sysconfig.MotorValveConfig.PhaseVoltage,{.u16v = 0},{.u16v = 2300},{.u16v = 1000}, SAVE_ENABLE,NULL ),//运行电压
+	REG_CONFIG( 24, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.StartSpeed,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 100}, SAVE_ENABLE,NULL ),//启动速度
+	REG_CONFIG( 25, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.Acceleration,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 10000}, SAVE_ENABLE,NULL ),//加速度
+	REG_CONFIG( 26, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.Deceleration,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 10000}, SAVE_ENABLE,NULL ),//减速度
+	REG_CONFIG( 27, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.RunSpeed,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 0}, SAVE_DISABLE,NULL ),//运行速度
+	REG_CONFIG( 28, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.MaxSpeed,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 3000}, SAVE_ENABLE,NULL ),//最大速度
+	REG_CONFIG( 29, READ_WRITE, REG_U32, &sysconfig.MotorValveConfig.StopSpeed,{.u32v = 0},{.u32v = 0xFFFFFFFF},{.u32v = 200}, SAVE_ENABLE,NULL ),//停止速度
+	REG_CONFIG( 30, READ_WRITE, REG_U8, &sysconfig.MotorValveConfig.PositionDir,{.u8v = 0},{.u8v = 1},{.u8v = 0}, SAVE_ENABLE,NULL ),//电机方向
 
 	/*通讯配置参数*/
 

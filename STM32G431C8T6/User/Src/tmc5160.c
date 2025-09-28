@@ -55,15 +55,15 @@ void TMC5160_SPIWriteInt(uint8_t address, int32_t value)
 void TMC5160_Init(void)
 {
 	/**********************,MOTOR_VALVE*********************/
-	TMC5160_SPIWriteInt(TMC5160_REG_GCONF, 0x00000002);	//faststandstill，0x00000002
-	TMC5160_SPIWriteInt(TMC5160_REG_IHOLD_IRUN, 0x00020F00); //Power_Set.Power_Config); 	// IHOLD_IRUN: IHOLD=0, IRUN=15 , IHOLDDELAY=2
+	TMC5160_SPIWriteInt(TMC5160_REG_GCONF, (1 << 1));	//faststandstill:1
+	TMC5160_SPIWriteInt(TMC5160_REG_IHOLD_IRUN, ((0 << 0) | (15 << 8) | (2 << 16))); // IHOLD_IRUN: IHOLD=0, IRUN=15 , IHOLDDELAY=2
 	TMC5160_SPIWriteInt(TMC5160_REG_TPOWERDOWN, 0x0000000A);	// TPOWERDOWN=10:
-	TMC5160_SPIWriteInt(TMC5160_REG_TPWMTHRS, Convert_usteps_To_ustept(1500*sysconfig.MotorValveConfig.MicroStep));
-	TMC5160_SPIWriteInt(TMC5160_REG_THIGH, 0x00000000); // writing value 0x00000000 = 0 = 0.0 to address 12 = 0x15(THIGH)
+	TMC5160_SPIWriteInt(TMC5160_REG_TPWMTHRS, Convert_usteps_To_ustept(200*sysconfig.MotorValveConfig.MicroStep));
+	TMC5160_SPIWriteInt(TMC5160_REG_THIGH, Convert_usteps_To_ustept(1500*sysconfig.MotorValveConfig.MicroStep)); //
 
 	TMC5160_SPIWriteInt(TMC5160_REG_RAMPMODE, POSITION_MODE);
 	TMC5160_SPIWriteInt(TMC5160_REG_XACTUAL, 0); 		// writing value 0xFFCC12F0 = 0 = 0.0 to address 14 = 0x21(XACTUAL)
-	TMC5160_SPIWriteInt(TMC5160_REG_VSTART, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.StartSpeed)); //VSTART
+	TMC5160_SPIWriteInt(TMC5160_REG_VSTART, Convert_usteps_To_ustept(sysconfig.MotorValveConfig.StartSpeed)); //VSTART
 	TMC5160_SPIWriteInt(TMC5160_REG_A1, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Acceleration)); //A1 VSTART-V1 速度模式不用配置
 	TMC5160_SPIWriteInt(TMC5160_REG_V1, Convert_usteps_To_ustept(sysconfig.MotorValveConfig.MaxSpeed/2));			//第一阶段加减速阀值
 	TMC5160_SPIWriteInt(TMC5160_REG_AMAX, ConvertACC_ustepss_To_usteptt(sysconfig.MotorValveConfig.Acceleration));//AMAX V1-VMAX  500
@@ -145,13 +145,13 @@ void Motor_SoftStop(void)
  输出：无
  */
 
-void Motor_SpeedMove(MoveDir_t Dir, uint32_t uSpeed)
+void Motor_SpeedMove(uint8_t Dir, uint32_t uSpeed)
 {
 	TMC_DRV_ON();
 #if TMC5160_STOP_MODE
 	TMC_EXT_RELEASE();
 #endif
-	if (Dir == DIR_POSITIVE)
+	if (Dir == 0)
 		TMC5160_SPIWriteInt(TMC5160_REG_RAMPMODE, SPEED_TO_VMAX);
 	else
 		TMC5160_SPIWriteInt(TMC5160_REG_RAMPMODE, SPEED_TO_N_VVMAX);
@@ -178,7 +178,7 @@ void Motor_MovePosition(int32_t pos)
  输出:无
  返回值：无
  */
-void Motor_SetDirection(MoveDir_t dir)
+void Motor_SetDirection(uint8_t dir)
 {
 	int32_t val;
 	val = TMC5160_SPIReadData(TMC5160_REG_GCONF);

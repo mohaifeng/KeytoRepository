@@ -26,11 +26,32 @@ Valve_Handle_t ValveControl =
 				.ErrorResetChannel = 0,
 		};
 
-void Valve_Init(const Cmd_Par_t *pcmd, ResponseHandle_t *resp)
+void Valve_SpeedMove(const Cmd_Par_t *pcmd, ResponseHandle_t *resp)
 {
-
+	if (pcmd->value_num > 2)
+	{
+		resp->state = PARAMETER_ERROR;
+		resp->is_data = 0;
+		return;
+	}
+	Motor_SpeedMove(pcmd->value_buf[0], pcmd->value_buf[1]);
 	resp->state = EXECUTE_SUCCESS;
-	Motor_SpeedMove(DIR_POSITIVE, 1000);
+	resp->is_data = 0;
+}
+
+void Valve_Stop(const Cmd_Par_t *pcmd, ResponseHandle_t *resp)
+{
+	if (pcmd->value_num > 1)
+	{
+		resp->state = PARAMETER_ERROR;
+		resp->is_data = 0;
+		return;
+	}
+	if (pcmd->value_buf[0] == 1)
+		Motor_SoftStop();
+	else
+		Motor_HardStop();
+	resp->state = EXECUTE_SUCCESS;
 	resp->is_data = 0;
 }
 

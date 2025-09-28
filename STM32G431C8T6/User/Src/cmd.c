@@ -217,11 +217,15 @@ void Resolution_Cmd(const Cmd_Par_t *pcmd, ResponseHandle_t *resp)
 		Valve_WriteRegister(pcmd, resp);
 		return;
 	}
-	else if (strcmp((char*) pcmd->cmd, "It") == 0)
+	else if (strcmp((char*) pcmd->cmd, "Sm") == 0)
 	{
-		Valve_Init(pcmd, resp);
+		Valve_SpeedMove(pcmd, resp);
 		return;
 	}
-
+	else if (strcmp((char*) pcmd->cmd, "Rt") == 0)
+	{
+		Valve_Stop(pcmd, resp);
+		return;
+	}
 }
 
