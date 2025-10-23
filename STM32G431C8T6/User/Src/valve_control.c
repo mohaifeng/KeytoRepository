@@ -11,7 +11,7 @@
 
 Valve_Handle_t ValveControl =
 		{
-				.bState = VALVE_IDLE,
+				.ValveState = VALVE_IDLE,
 				.CurrentMotorPosition = 0,
 				.CurrentPort = 0,
 				.hFaultNow = 0,
@@ -67,7 +67,7 @@ void Valve_NextState(ValveState_t bState)
 {
 	if (ValveControl.ZeroMarkFlag != 1 && (bState == VALVE_START || bState == VALVE_DIR_START || bState == VALVE_RUN))
 		return;
-	ValveControl.bState = bState;
+	ValveControl.ValveState = bState;
 //	ValveControlTaskCont = VALVE_CONTROL_TASK_TIME;
 }
 

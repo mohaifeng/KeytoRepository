@@ -115,7 +115,7 @@ class serialport:
                 else:
                     print(datetime.datetime.now(), end=':')
                     print('RX:', rx_buf)
-                    return len(rx_buf) // 2
+                    return rx_buf
         else:
             print(datetime.datetime.now(), end=':')
             print('数据无返回！')

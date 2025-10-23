@@ -17,7 +17,6 @@
 #define MIN_VALUE(x,y) 						x<y?x:y
 #define MAX_VALUE(x,y) 						x>y?x:y
 
-
 typedef enum
 {
 	VALVE_INIT = 0,
@@ -36,10 +35,9 @@ typedef enum
 
 typedef struct
 {
-
-	ValveState_t bState;
+	ValveState_t ValveState;	//电机状态
 	uint32_t MotorHardStatus;			//电机硬件状态
-	uint32_t MotorRAMPStatus;
+	uint32_t MotorRAMPStatus;//电机斜坡状态和开关事件状态
 	uint8_t hFaultNow;						//错误标志,0：无错误，3：位置错误，4，丢步
 	uint8_t hOldFaultNow;					//旧错误标志
 	uint8_t CurrentPort;          //当前端口
@@ -51,7 +49,7 @@ typedef struct
 	int32_t TriggerMotroPosition[25];
 	int32_t CurrentMotorPosition;     //当前电机位置
 	int32_t OldPosition;              //单位step
-	int32_t StartPosition;
+	int32_t StartPosition;				//开始启动位置
 	int32_t TargetPositon;        //目标位置
 	int32_t Move_uStep;						//触发位置光耦后移动微步
 	uint8_t CurrentTriggerOptCont;				//运动到指定通道当前已经触发光耦个数

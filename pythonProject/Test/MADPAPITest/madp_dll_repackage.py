@@ -1,4 +1,8 @@
+import time
+from binascii import a2b_hex
+from openpyxl import Workbook
 import clr
+import Com.Port.serialport as sp
 from System import Byte, Int32
 from System.Collections.Generic import List, Dictionary
 
@@ -672,7 +676,39 @@ def Extend_Serial_Transmit(hex_str: str):
     return api.SerialWrite(csharp_code)
 
 
+def GetPos():
+    sp.ser.PortSend(bytes.fromhex('02 2D 00 00 00 00 0D 0A'))
+    data = sp.ser.Wait_Rx_Finish()
+    datalen = int(data[2:4], 16)
+    dataint = int(a2b_hex(data[4:datalen * 2 + 4]).decode())
+    print('dataint:', dataint)
+    return dataint
+
+
 if __name__ == '__main__':
-    Sys_Config(False, False, False, False, True, True)
+    # 创建一个工作簿
+    wb = Workbook()
+    # 获取活动工作表
+    ws = wb.active
+    # 数据
+    data = []
+
+    sp.Reset_Ser_Baud(0, 'com5', 115200)
+    sp.ser.PortSend(bytes.fromhex('02 2A 00 00 00 01 0D 0A'))
+    time.sleep(1)
     Sys_CAN_Open(dev_usbcan2, 0, 0, 500)
-    Cmd_t(0)
+    Sys_Config(False, False, False, False, True, True)
+    Group_ArmAxis_Init(0, 10, True, 50)
+    Group_ArmAxis_Init(0, 11, True, 50)
+    time.sleep(1)
+    start_pos = GetPos()
+    data.append(start_pos)
+    # Group_ArmAxis_MovePos(0, 10, True, 10, 50)
+    for i in range(0, 311):
+        Group_ArmAxis_MoveDir(0, 11, True, 1, 10)
+        time.sleep(1)
+        end_pos = GetPos()
+        data.append(end_pos)
+    ws.append(data)
+    wb.save("示例数据.xlsx")
+    print("数据已写入Excel文件")
