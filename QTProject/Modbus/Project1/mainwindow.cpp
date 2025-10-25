@@ -183,11 +183,11 @@ void MainWindow::SendHex(const QString &text)
 
 bool MainWindow::isResponseComplete(const QByteArray &data)
 {
-    quint8 firstchar =static_cast<quint8>(data[0]);
-    if (static_cast<quint8>(data[0])==modbus->addr)
-    {
+//    quint8 firstchar =static_cast<quint8>(data[0]);
+//    if (static_cast<quint8>(data[0])==modbus->addr)
+//    {
 
-    }
+//    }
 
     if (data.length() >= 4)
     { // 假设应答至少4字节
