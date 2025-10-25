@@ -6,6 +6,11 @@
 #include <QObject>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QList>
+#include <QPushButton>
+#include "protocol.h"
+
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,6 +27,7 @@ public:
     ~MainWindow();
 
 private slots:
+    void setModbus(Modbus *m);
     void on_pushButton_clicked();
     bool OpenSerialPort(const QString &portName,const int &baudrate);
     void CloseSerialPort();
@@ -33,24 +39,32 @@ private slots:
     void SendString(const QString &text);
     void SendHex(const QString &text);
     void on_BaudratecomboBox_activated(const QString &arg1);
-    void onTimerTimeout();
+    void ScanfAddrLoop();
     void on_CheckAddr_clicked();
     QByteArray WaitResponse(quint16 timeoutM);
     void on_AddrlineEdit_textEdited(const QString &arg1);
     void onReadyRead();
+    void LogPrint(const QString &text);
     bool isResponseComplete(const QByteArray &data);
+    void on_ClearLogpushButton_clicked();
+    void PushButtonConfigSetEnabled(bool isok);
+    void RegisterPushButton();
 private:
     Ui::MainWindow *ui;
     QString sernum;
     int baudrate;
-    quint16 addr=0;
     quint16 targetaddr=0;
     QTimer *SerialRefreshTimer = new QTimer(this);       // 串口任务定时器
     // 创建串口对象
     QSerialPort *SerialPort = new QSerialPort(this);
     QByteArray m_receivedData;
     bool m_responseReceived = false;
+    Modbus *modbus=nullptr;
+    bool firstscanf=true;
+    QList<QPushButton*> ControledButtons;
+
 signals:
     void responseReady();  // 信号声明
 };
+
 #endif // MAINWINDOW_H
