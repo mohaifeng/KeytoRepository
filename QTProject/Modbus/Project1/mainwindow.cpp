@@ -5,15 +5,15 @@
 #include <QThread>
 #include <QDateTime>
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     // 初始扫描串口
-    RefreshSerialPorts();
-    setModbus(new Modbus());
-    PushButtonConfigSetEnabled(false);
+    RefreshSerialPorts();//串口号开始刷新
+    PushButtonConfigSetEnabled(false);//按钮全部无法点击，等待串口开启后解锁
     // 连接定时器信号到刷新槽
     connect(SerialRefreshTimer, &QTimer::timeout, this, &MainWindow::RefreshSerialPorts);
     // 当串口的接收缓冲区有数据时，readyRead信号会被发射
@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent)
     // 连接状态管理信号
     // 初始状态：未连接
     ui->LogplainTextEdit->setLineWrapMode(QPlainTextEdit::WidgetWidth);//日志框自动换行
-    modbus = new Modbus();  // 使用Qt对象树
 }
 
 MainWindow::~MainWindow()
@@ -39,11 +38,6 @@ void MainWindow::RegisterPushButton()//需被控制按钮注册函数，通过�
     ControledButtons.removeOne(ui->ClearLogpushButton);
 }
 
-void MainWindow::setModbus(Modbus *m)
-{
-    modbus = m;
-}
-
 
 void MainWindow::PushButtonConfigSetEnabled(bool isok)
 {
@@ -54,6 +48,7 @@ void MainWindow::PushButtonConfigSetEnabled(bool isok)
     }
 }
 
+quint8 last_sernum=0;//上一次串口数目
 void MainWindow::RefreshSerialPorts()
 {
     if(!SerialPort->isOpen())
@@ -63,13 +58,20 @@ void MainWindow::RefreshSerialPorts()
     // 获取当前选中的串口（用于保持选择）
     sernum = ui->SerialcomboBox->currentText();
     baudrate = ui->BaudratecomboBox->currentText().toInt();
-    // 清空ComboBox
-    ui->SerialcomboBox->clear();
-    // 获取当前可用串口
-    int selectIndex = -1;
     QList<QSerialPortInfo> portList = QSerialPortInfo::availablePorts();
-    if (!portList.isEmpty())
+    if (portList.isEmpty())
     {
+        ui->SerialcomboBox->clear();
+        return;
+    }
+    quint8 currentsersize=portList.size();
+    if(currentsersize!=last_sernum)
+    {
+        last_sernum=currentsersize;
+        // 清空ComboBox
+        ui->SerialcomboBox->clear();
+        // 获取当前可用串口
+        int selectIndex = -1;
         // 添加可用串口到ComboBox
         foreach (const QSerialPortInfo &portInfo, portList)
         {
@@ -80,16 +82,16 @@ void MainWindow::RefreshSerialPorts()
                 selectIndex = ui->SerialcomboBox->count() - 1;
             }
         }
-    }
-    // 设置选择
-    if (selectIndex >= 0)
-    {
-        ui->SerialcomboBox->setCurrentIndex(selectIndex);
-    }
-    else if (!portList.isEmpty())
-    {
-        // 如果之前的选择不存在，选择第一个
-        ui->SerialcomboBox->setCurrentIndex(0);
+        // 设置选择
+        if (selectIndex >= 0)
+        {
+            ui->SerialcomboBox->setCurrentIndex(selectIndex);
+        }
+        else
+        {
+            // 如果之前的选择不存在，选择第一个
+            ui->SerialcomboBox->setCurrentIndex(0);
+        }
     }
 }
 
@@ -133,7 +135,7 @@ bool MainWindow::SendData(const QByteArray &data)
         if (SerialPort->waitForBytesWritten(1000))
         {
             QString hexString = data.toHex(' ').toUpper();
-            QString logEntry = QString("[%1]: %2").arg("Tx:").arg(hexString);
+            QString logEntry = QString("[%1]: %2").arg("Tx").arg(hexString);
             LogPrint(logEntry);
             return true;
         }
@@ -183,15 +185,18 @@ void MainWindow::SendHex(const QString &text)
 
 bool MainWindow::isResponseComplete(const QByteArray &data)
 {
-//    quint8 firstchar =static_cast<quint8>(data[0]);
-//    if (static_cast<quint8>(data[0])==modbus->addr)
-//    {
-
-//    }
-
-    if (data.length() >= 4)
-    { // 假设应答至少4字节
-        return true;
+    if (data.size() >= 6)
+    {
+        if(modbus->TwoBytesToQuint16(data.right(2), false) == modbus->calculateCRC16_Modbus(data.chopped(2)))
+        {
+            if (static_cast<quint8>(data[0]) == modbus->addr&&static_cast<quint8>(data[1])==modbus->cmd)
+            {
+                QString hexString = data.toHex(' ').toUpper();
+                QString logEntry = QString("[%1]: %2").arg("Rx").arg(hexString);
+                LogPrint(logEntry);
+                return true;
+            }
+        }
     }
     return false;
 }
@@ -199,16 +204,15 @@ bool MainWindow::isResponseComplete(const QByteArray &data)
 void MainWindow::onReadyRead()
 {
     m_receivedData.append(SerialPort->readAll());
-    qDebug() << "收到数据:" << m_receivedData.toHex(' ');
-    LogPrint(m_receivedData);
     // 这里可以添加应答数据完整性检查
-    if (isResponseComplete(m_receivedData)) {
+    if (isResponseComplete(m_receivedData))
+    {
         m_responseReceived = true;
         emit responseReady();  // 在这里发出信号！
     }
 }
 
-QByteArray MainWindow::WaitResponse(quint16 timeoutMs=500)
+QByteArray MainWindow::WaitResponse(quint16 timeoutMs=100)
 {
     // 清空接收缓冲区
     SerialPort->readAll();
@@ -223,21 +227,22 @@ QByteArray MainWindow::WaitResponse(quint16 timeoutMs=500)
     timeoutTimer.start(timeoutMs);
     // 等待应答或超时
     loop.exec();
+    timeoutTimer.stop();
     if (!m_responseReceived)
     {
         return QByteArray();
     }
-    qDebug() << "收到应答数据:" << m_receivedData.toHex(' ');
     return m_receivedData;
 }
 
+//日志输出函数
 void MainWindow::LogPrint(const QString &text)
 {
     QString timestamp = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
     QString logEntry = QString("[%1]:%2").arg(timestamp).arg(text);
-
     ui->LogplainTextEdit->appendPlainText(logEntry);
 }
+
 //打开串口槽函数
 void MainWindow::on_pushButton_clicked()
 {
@@ -286,21 +291,22 @@ void MainWindow::on_CheckAddr_clicked()
     QString buttonText = ui->CheckAddr->text();
     if(buttonText == "查询")
     {
-        qDebug()<<"进程进入";
         modbus->cmd=0x03;
         modbus->regaddr=0xF2;
         modbus->regnum=1;
-        qDebug()<<"test1";
         QTimer::singleShot(GAP_TIME, this, &MainWindow::ScanfAddrLoop);
-        qDebug()<<"test2";
+        ui->VersionlineEdit->clear();
         ui->CheckAddr->setText("停止");
     }
     else
     {
+        firstscanf=true;
         ui->CheckAddr->setText("查询");
+
     }
 }
 
+quint8 tmpaddr=0;
 // 定时器超时槽函数 -执行后若没有扫描到地址间隔50ms再次执行
 void MainWindow::ScanfAddrLoop()
 {
@@ -310,40 +316,13 @@ void MainWindow::ScanfAddrLoop()
         if(firstscanf)
         {
             modbus->addr=255;
-            QByteArray sendmsg = modbus->ModbusSenddataConfig();
-            ui->AddrlineEdit->setText(QString::number(modbus->addr));
-            SendData(sendmsg);
-            QByteArray resp= WaitResponse();
-            if(!resp.isEmpty())
-            {
-                LogPrint("扫描到地址");
-                return;
-            }
-            else
-            {
-                modbus->addr=0;
-                firstscanf=false;
-            }
+            tmpaddr=0;
+            firstscanf=false;
         }
-        if(modbus->addr<255)
+        else if(tmpaddr<255)
         {
-            QString buttonText = ui->CheckAddr->text();
-
-            QByteArray sendmsg = modbus->ModbusSenddataConfig();
-            ui->AddrlineEdit->setText(QString::number(modbus->addr));
-            SendData(sendmsg);
-            QByteArray resp= WaitResponse();
-            if(!resp.isEmpty())
-            {
-                LogPrint("扫描到地址");
-                firstscanf=true;
-                return;
-            }
-            else
-            {
-                modbus->addr++;
-                QTimer::singleShot(GAP_TIME, this, &MainWindow::ScanfAddrLoop);
-            }
+            modbus->addr=tmpaddr;
+            tmpaddr++;
         }
         else
         {
@@ -355,6 +334,21 @@ void MainWindow::ScanfAddrLoop()
             ui->CheckAddr->setEnabled(false);
             ui->CheckAddr->setEnabled(true);
             ui->CheckAddr->setText("查询");
+        }
+        QByteArray sendmsg = modbus->ModbusSenddataConfig();
+        ui->AddrlineEdit->setText(QString::number(modbus->addr));
+        SendData(sendmsg);
+        QByteArray resp= WaitResponse();
+        if(!resp.isEmpty())
+        {
+            LogPrint("扫描到地址");
+            ui->VersionlineEdit->setText(resp.mid(3,2).toHex());
+            ui->CheckAddr->setText("查询");
+            firstscanf=true;
+        }
+        else
+        {
+            QTimer::singleShot(GAP_TIME, this, &MainWindow::ScanfAddrLoop);
         }
     }
 }
@@ -373,9 +367,111 @@ void MainWindow::on_ClearLogpushButton_clicked()
 
 
 
+void MainWindow::on_ReadWritecomboBox_activated(int index)
+{
+    switch (index)
+    {
+    case 0:modbus->cmd=0x03;
+        break;
+    case 1:modbus->cmd=0x06;
+        break;
+    case 2:modbus->cmd=0x10;
+        break;
+    default:
+        break;
+    }
+}
 
+void MainWindow::on_RegAddrlineEdit_textEdited(const QString &arg1)
+{
+    if(arg1.length()%4==0)
+    {
+        bool ok;
+        modbus->regaddr = arg1.toUShort(&ok, 16);  // 十六进制
+        if(!ok)
+        {
+            ShowWarningDialog("寄存器地址错误");
+        }
+    }
+    else
+    {
+        modbus->regaddr=0;
+    }
+}
 
+void MainWindow::on_WriteNumlineEdit_textEdited(const QString &arg1)
+{
+    bool ok;
+    modbus->regnum = arg1.toUShort(&ok);  // 默认就是10进制
+    if(!ok)
+    {
+        ShowWarningDialog("寄存器个数错误");
+    }
+}
 
+void MainWindow::on_HexcheckBox_stateChanged(int arg1)
+{
+    QString DataText = ui->DatalineEdit->text();
+    bool ok;
+    quint16 tmp_data=0;
+    if(!DataText.isEmpty())
+    {
+        switch(arg1)
+        {
+        case 0:
+            tmp_data=DataText.toUShort(&ok);
+            break;
+        case 2:
+            tmp_data=DataText.toUShort(&ok,16);
+            break;
+        default:
+            break;
+        }
+        modbus->Appendint16BigEndian(modbus->databuff,tmp_data);
+    }
+}
 
+void MainWindow::on_DatalineEdit_textEdited(const QString &arg1)
+{
+    bool ok;
+    quint16 tmp_data=0;
+    modbus->databuff.clear();
+    switch (ui->HexcheckBox->checkState())
+    {
+    case 0:
+        tmp_data=arg1.toUShort(&ok);
+        break;
+    case 2:
+        tmp_data=arg1.toUShort(&ok,16);
+        break;
+    default:
+        break;
+    }
+    modbus->Appendint16BigEndian(modbus->databuff,tmp_data);
+}
 
-
+void MainWindow::on_CmdSendpushButton_clicked()
+{
+    QString RegText = ui->RegAddrlineEdit->text();
+    QString NumText = ui->WriteNumlineEdit->text();
+    QString DataText = ui->DatalineEdit->text();
+    if(RegText.isEmpty())
+    {
+        ShowWarningDialog("请填写寄存器地址！");
+    }
+    if(NumText.isEmpty())
+    {
+        modbus->regnum=1;
+    }
+    if(DataText.isEmpty())
+    {
+        modbus->databuff=0;
+    }
+    modbus->ModbusSenddataConfig();
+    SendData(modbus->send_buff);
+    QByteArray resp= WaitResponse();
+    if(resp.isEmpty())
+    {
+        LogPrint("应答超时");
+    }
+}

@@ -27,7 +27,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void setModbus(Modbus *m);
     void on_pushButton_clicked();
     bool OpenSerialPort(const QString &portName,const int &baudrate);
     void CloseSerialPort();
@@ -49,6 +48,18 @@ private slots:
     void on_ClearLogpushButton_clicked();
     void PushButtonConfigSetEnabled(bool isok);
     void RegisterPushButton();
+    void on_ReadWritecomboBox_activated(int index);
+
+    void on_RegAddrlineEdit_textEdited(const QString &arg1);
+
+    void on_WriteNumlineEdit_textEdited(const QString &arg1);
+
+    void on_HexcheckBox_stateChanged(int arg1);
+
+    void on_DatalineEdit_textEdited(const QString &arg1);
+
+    void on_CmdSendpushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QString sernum;
@@ -59,7 +70,7 @@ private:
     QSerialPort *SerialPort = new QSerialPort(this);
     QByteArray m_receivedData;
     bool m_responseReceived = false;
-    Modbus *modbus=nullptr;
+    Modbus *modbus=new Modbus();
     bool firstscanf=true;
     QList<QPushButton*> ControledButtons;
 

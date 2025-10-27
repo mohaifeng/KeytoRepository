@@ -219,6 +219,7 @@ Makefile: Project1.pro ../../../../Download/QT/5.12.9/mingw73_32/mkspecs/win32-g
 		../../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/qt_config.prf \
 		../../../../Download/QT/5.12.9/mingw73_32/mkspecs/win32-g++/qmake.conf \
 		../../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		../../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/exclusive_builds.prf \
 		../../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/toolchain.prf \
 		../../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/default_pre.prf \
@@ -404,6 +405,7 @@ Makefile: Project1.pro ../../../../Download/QT/5.12.9/mingw73_32/mkspecs/win32-g
 ../../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/qt_config.prf:
 ../../../../Download/QT/5.12.9/mingw73_32/mkspecs/win32-g++/qmake.conf:
 ../../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/spec_post.prf:
+.qmake.stash:
 ../../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/exclusive_builds.prf:
 ../../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/toolchain.prf:
 ../../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/default_pre.prf:
