@@ -11,6 +11,7 @@ Modbus::Modbus()
     regnum=0;
     databuff.clear();
     send_buff.clear();
+    single_data=0;
     crc16=0;
 }
 Modbus::~Modbus()
@@ -20,17 +21,21 @@ Modbus::~Modbus()
 QByteArray Modbus::ModbusSenddataConfig()
 {
     send_buff.clear();
-    send_buff.append(addr);
-    send_buff.append(cmd);
-    Appenduint16RegAddrBigEndian(send_buff,regaddr);
+    send_buff.append(addr);//写地址
+    send_buff.append(cmd);//写命令
+    Appenduint16RegAddrBigEndian(send_buff,regaddr);//写寄存器地址
     switch (cmd)
     {
     case 0x03:
-        Appenduint16RegNumBigEndian(send_buff,regnum);
+        Appenduint16RegNumBigEndian(send_buff,regnum);//写寄存器个数
         break;
     case 0x06:
+        Appendint16BigEndian(send_buff,single_data);//写数据
         break;
     case 0x10:
+        Appendint16BigEndian(send_buff,regnum);//写寄存器个数
+        Appenduint8BigEndian(send_buff,databuff.size());//写数据个数
+        AppendQByteArray(send_buff,databuff);//写数据
         break;
     default:
         break;
@@ -53,7 +58,15 @@ qint16 Modbus::ModbusByteToInt(QByteArray &response)
     response.clear();
     return 0;
 }
+void Modbus::AppendQByteArray(QByteArray &byteArray,QByteArray &value)
+{
+    byteArray.append(value);
+}
 
+void Modbus::Appenduint8BigEndian(QByteArray &byteArray,quint8 value)
+{
+    byteArray.append(static_cast<char>(value & 0xFF));
+}
 // 添加16位整数（大端序）
 void Modbus::Appendint16BigEndian(QByteArray &byteArray,qint16 value)
 {

@@ -569,7 +569,10 @@ release/protocol.o: protocol.cpp protocol.h \
 		../../../../Download/QT/5.12.9/mingw73_32/include/QtCore/qmetatype.h \
 		../../../../Download/QT/5.12.9/mingw73_32/include/QtCore/qvarlengtharray.h \
 		../../../../Download/QT/5.12.9/mingw73_32/include/QtCore/qcontainerfwd.h \
-		../../../../Download/QT/5.12.9/mingw73_32/include/QtCore/qobject_impl.h
+		../../../../Download/QT/5.12.9/mingw73_32/include/QtCore/qobject_impl.h \
+		../../../../Download/QT/5.12.9/mingw73_32/include/QtCore/QtEndian \
+		../../../../Download/QT/5.12.9/mingw73_32/include/QtCore/qendian.h \
+		../../../../Download/QT/5.12.9/mingw73_32/include/QtCore/qfloat16.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\protocol.o protocol.cpp
 
 release/moc_mainwindow.o: release/moc_mainwindow.cpp 

@@ -48,17 +48,9 @@ private slots:
     void on_ClearLogpushButton_clicked();
     void PushButtonConfigSetEnabled(bool isok);
     void RegisterPushButton();
-    void on_ReadWritecomboBox_activated(int index);
-
-    void on_RegAddrlineEdit_textEdited(const QString &arg1);
-
-    void on_WriteNumlineEdit_textEdited(const QString &arg1);
-
-    void on_HexcheckBox_stateChanged(int arg1);
-
-    void on_DatalineEdit_textEdited(const QString &arg1);
-
     void on_CmdSendpushButton_clicked();
+
+    void on_StartReadpushButton_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -4,7 +4,7 @@
 #include <QMessageBox>
 #include <QThread>
 #include <QDateTime>
-
+#include <QString>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -362,14 +362,31 @@ void MainWindow::on_ClearLogpushButton_clicked()
 {
     ui->LogplainTextEdit->clear();
 }
-
+/*单步执行命令相关函数*/
 /****************************************************************/
 
-
-
-void MainWindow::on_ReadWritecomboBox_activated(int index)
+void MainWindow::on_CmdSendpushButton_clicked()
 {
-    switch (index)
+    QString RegText = ui->RegAddrlineEdit->text();//获取寄存器地址
+    QString NumText = ui->WriteNumlineEdit->text();//获取读写个数
+    QString DataText = ui->DatalineEdit->text();//获取数据
+    if(RegText.isEmpty())
+    {
+        ShowWarningDialog("请填写寄存器地址！");
+        return;
+    }
+    if(NumText.isEmpty())
+    {
+        modbus->regnum=1;
+    }
+    if(DataText.isEmpty())
+    {
+        modbus->databuff=0;
+        modbus->single_data=0;
+    }
+    /*获取选择的寄存器命令*/
+    int cmd_idex=ui->ReadWritecomboBox->currentIndex();
+    switch (cmd_idex)
     {
     case 0:modbus->cmd=0x03;
         break;
@@ -380,93 +397,79 @@ void MainWindow::on_ReadWritecomboBox_activated(int index)
     default:
         break;
     }
-}
-
-void MainWindow::on_RegAddrlineEdit_textEdited(const QString &arg1)
-{
-    if(arg1.length()%4==0)
-    {
-        bool ok;
-        modbus->regaddr = arg1.toUShort(&ok, 16);  // 十六进制
-        if(!ok)
-        {
-            ShowWarningDialog("寄存器地址错误");
-        }
-    }
-    else
-    {
-        modbus->regaddr=0;
-    }
-}
-
-void MainWindow::on_WriteNumlineEdit_textEdited(const QString &arg1)
-{
+    /******************/
+    /*处理寄存器地址*/
     bool ok;
-    modbus->regnum = arg1.toUShort(&ok);  // 默认就是10进制
+    modbus->regaddr = RegText.toUShort(&ok, 16);  // 十六进制
+    if(!ok)
+    {
+        ShowWarningDialog("寄存器地址错误");
+        return;
+    }
+    /******************/
+    /*处理读写寄存器个数*/
+    modbus->regnum = NumText.toUShort(&ok);  // 默认就是10进制
     if(!ok)
     {
         ShowWarningDialog("寄存器个数错误");
+        return;
     }
-}
-
-void MainWindow::on_HexcheckBox_stateChanged(int arg1)
-{
-    QString DataText = ui->DatalineEdit->text();
-    bool ok;
-    quint16 tmp_data=0;
-    if(!DataText.isEmpty())
+    /******************/
+    /*处理数据*/
+    if(modbus->cmd==0x10)
     {
-        switch(arg1)
+        qint16 decimalValue;
+        modbus->databuff.clear();
+        QStringList numbers = DataText.split(',',QString::SkipEmptyParts,Qt::CaseInsensitive);
+        switch (ui->HexcheckBox->checkState())
         {
         case 0:
-            tmp_data=DataText.toUShort(&ok);
+            if(DataText.contains(','))
+            {
+                for (const QString &numStr : numbers)
+                {
+                    decimalValue = numStr.toInt(&ok);
+                    modbus->Appendint16BigEndian(modbus->databuff,decimalValue);
+                }
+            }
+            else
+            {
+                decimalValue=DataText.toInt(&ok);
+                modbus->Appendint16BigEndian(modbus->databuff,decimalValue);
+            }
             break;
         case 2:
-            tmp_data=DataText.toUShort(&ok,16);
+            if(DataText.contains(','))
+            {
+                for (const QString &numStr : numbers)
+                {
+                    modbus->databuff.append(QByteArray::fromHex(numStr.toLatin1()));
+                }
+            }
+            else
+            {
+                modbus->databuff.append(QByteArray::fromHex(DataText.toLatin1()));
+            }
             break;
         default:
             break;
         }
-        modbus->Appendint16BigEndian(modbus->databuff,tmp_data);
     }
-}
-
-void MainWindow::on_DatalineEdit_textEdited(const QString &arg1)
-{
-    bool ok;
-    quint16 tmp_data=0;
-    modbus->databuff.clear();
-    switch (ui->HexcheckBox->checkState())
+    else
     {
-    case 0:
-        tmp_data=arg1.toUShort(&ok);
-        break;
-    case 2:
-        tmp_data=arg1.toUShort(&ok,16);
-        break;
-    default:
-        break;
+        switch (ui->HexcheckBox->checkState())
+        {
+        case 0:
+            modbus->single_data=DataText.toUShort(&ok);
+            break;
+        case 2:
+            modbus->single_data=DataText.toUShort(&ok,16);
+            break;
+        default:
+            break;
+        }
     }
-    modbus->Appendint16BigEndian(modbus->databuff,tmp_data);
-}
-
-void MainWindow::on_CmdSendpushButton_clicked()
-{
-    QString RegText = ui->RegAddrlineEdit->text();
-    QString NumText = ui->WriteNumlineEdit->text();
-    QString DataText = ui->DatalineEdit->text();
-    if(RegText.isEmpty())
-    {
-        ShowWarningDialog("请填写寄存器地址！");
-    }
-    if(NumText.isEmpty())
-    {
-        modbus->regnum=1;
-    }
-    if(DataText.isEmpty())
-    {
-        modbus->databuff=0;
-    }
+    /******************/
     modbus->ModbusSenddataConfig();
     SendData(modbus->send_buff);
     QByteArray resp= WaitResponse();
@@ -475,3 +478,14 @@ void MainWindow::on_CmdSendpushButton_clicked()
         LogPrint("应答超时");
     }
 }
+/**********************************************/
+void MainWindow::on_StartReadpushButton_clicked()
+{
+    QTableWidgetItem *tmp=ui->ReadMultableWidget->currentItem();
+}
+
+
+
+/**********************************************/
+
+
