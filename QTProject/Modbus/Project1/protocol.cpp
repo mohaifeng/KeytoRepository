@@ -53,10 +53,11 @@ QByteArray Modbus::ModbusSenddataConfig()
 
 }
 
-qint16 Modbus::ModbusByteToInt(QByteArray &response)
+quint16 Modbus::ModbusSingleRegByteToInt(QByteArray &response)
 {
-    response.clear();
-    return 0;
+    QByteArray data= response.mid(3,2);
+    return TwoBytesToQuint16(data,true);
+
 }
 void Modbus::AppendQByteArray(QByteArray &byteArray,QByteArray &value)
 {

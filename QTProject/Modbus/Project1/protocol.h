@@ -12,7 +12,7 @@ public:
     ~Modbus();
 public:
     QByteArray ModbusSenddataConfig();
-    qint16 ModbusByteToInt(QByteArray &response);
+    quint16 ModbusSingleRegByteToInt(QByteArray &response);
     void AppendQByteArray(QByteArray &byteArray,QByteArray &value);
     void Appenduint8BigEndian(QByteArray &byteArray,quint8 value);
     void Appendint16BigEndian(QByteArray &byteArray,qint16 value);
@@ -34,9 +34,11 @@ public:
     quint16 regnum;//读写寄存器个数
     QByteArray  databuff;//数据数组
     QByteArray send_buff;//格式化后发送字节命令
-    quint16 single_data;
+    quint16 single_data;//单个寄存器数据
     quint16 crc16;
 
 };
+
+
 
 #endif // PROTOCOL_H
