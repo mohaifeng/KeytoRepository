@@ -628,10 +628,6 @@ void MainWindow::SendRegListAck(QList<QList<quint16>> &lst)
     }
 }
 
-void MainWindow::SerSafetyTask()
-{
-}
-
 void MainWindow::on_AddRowpushButton_clicked()
 {
     bool ok;

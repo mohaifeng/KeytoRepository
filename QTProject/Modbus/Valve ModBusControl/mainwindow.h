@@ -71,7 +71,6 @@ private slots:
     void on_TargetChlineEdit_textEdited(const QString &arg1);
     void AppendMultiDataToDataBuff(QByteArray &databuff,QString &datatext,int type);
     void on_CounterclockwisepushButton_clicked();
-    void SerSafetyTask();
     void on_ClockwisepushButton_clicked();
     quint16 QstringToUint16(QString &data,int type);
     QByteArray QstringToQbytearray(QString &data,int type);
