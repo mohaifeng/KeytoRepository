@@ -9,6 +9,7 @@
 #include <windows.h>
 #endif
 
+#define RESERVED    0
 
 // ControlCAN.dll 数据类型定义
 typedef struct _VCI_BOARD_INFO {
@@ -45,7 +46,8 @@ typedef struct _VCI_INIT_CONFIG {
     uint8_t Mode;
 } VCI_INIT_CONFIG, *PVCI_INIT_CONFIG;
 
-typedef struct _VCI_ERR_INFO {
+typedef struct _VCI_ERR_INFO
+{
     uint32_t ErrCode;
     uint8_t Passive_ErrData[3];
     uint8_t ArLost_ErrData;
@@ -60,41 +62,29 @@ public:
     ~ControlCANWrapper();
 
     // DLL加载管理
-    bool loadLibrary(const QString &dllPath = "ControlCAN.dll");
-    void unloadLibrary();
-    bool isLoaded() const;
-
+    bool LoadCANLibrary(const QString &dllPath);
+    void UnloadCANLibrary();
+    bool IsLoaded() const;
     // 设备操作函数
-    int openDevice(uint32_t deviceType, uint32_t deviceIndex, uint32_t reserved);
-    int closeDevice(uint32_t deviceType, uint32_t deviceIndex);
-    int getBoardInfo(uint32_t deviceType, uint32_t deviceIndex, VCI_BOARD_INFO *pInfo);
-
+    bool OpenDevice(uint32_t deviceType, uint32_t deviceIndex, uint32_t reserved=RESERVED);//此函数用以打开设备。注意一个设备只能打开一次。
+    bool CloseDevice(uint32_t deviceType, uint32_t deviceIndex);//此函数用以关闭设备。
+    bool GetBoardInfo(uint32_t deviceType, uint32_t deviceIndex, VCI_BOARD_INFO *pInfo);//此函数用以获取设备信息
     // CAN通道操作
-    int initCAN(uint32_t deviceType, uint32_t deviceIndex, uint32_t canIndex, VCI_INIT_CONFIG *pInitConfig);
-    int startCAN(uint32_t deviceType, uint32_t deviceIndex, uint32_t canIndex);
-    int resetCAN(uint32_t deviceType, uint32_t deviceIndex, uint32_t canIndex);
+    bool InitCAN(uint32_t deviceType, uint32_t deviceIndex, uint32_t canIndex, VCI_INIT_CONFIG *pInitConfig);//此函数用以初始化指定的CAN通道。有多个CAN通道时，需要多次调用。
+    bool StartCAN(uint32_t deviceType, uint32_t deviceIndex, uint32_t canIndex);//此函数用以启动CAN卡的某一个CAN通道。有多个CAN通道时，需要多次调用。
+    bool ResetCAN(uint32_t deviceType, uint32_t deviceIndex, uint32_t canIndex);//此函数用以复位CAN。主要用与 VCI_StartCAN配合使用，无需再初始化，即可恢复CAN卡的正常状态。
 
     // 数据收发
-    int transmit(uint32_t deviceType, uint32_t deviceIndex, uint32_t canIndex,
-                 VCI_CAN_OBJ *pSend, uint32_t len);
-    int receive(uint32_t deviceType, uint32_t deviceIndex, uint32_t canIndex,
-                VCI_CAN_OBJ *pReceive, uint32_t len, int waitTime = -1);
-
-    // 错误信息
-    int readErrInfo(uint32_t deviceType, uint32_t deviceIndex, uint32_t canIndex,
-                    VCI_ERR_INFO *pErrInfo);
-
+    bool Transmit(uint32_t deviceType, uint32_t deviceIndex, uint32_t canIndex,VCI_CAN_OBJ *pSend, uint32_t len);//发送函数。返回值为实际发送成功的帧数。
+    int Receive(uint32_t deviceType, uint32_t deviceIndex, uint32_t canIndex,VCI_CAN_OBJ *pReceive, uint32_t len, int waitTime=RESERVED);//接收函数。此函数从指定的设备CAN通道的接收缓冲区中读取数据。
     // 工具函数
-    static QString errorCodeToString(int errorCode);
-
+    QString ErrorCodeToString(int errorCode);
 signals:
     void errorOccurred(const QString &errorMessage);
     void canMessageReceived(const QVector<VCI_CAN_OBJ> &messages);
 
 private:
     QLibrary m_library;
-    bool m_initialized;
-
     // 函数指针定义
     typedef int (*VCI_OpenDeviceFunc)(uint32_t, uint32_t, uint32_t);
     typedef int (*VCI_CloseDeviceFunc)(uint32_t, uint32_t);
@@ -104,7 +94,6 @@ private:
     typedef int (*VCI_ResetCANFunc)(uint32_t, uint32_t, uint32_t);
     typedef int (*VCI_TransmitFunc)(uint32_t, uint32_t, uint32_t, PVCI_CAN_OBJ, uint32_t);
     typedef int (*VCI_ReceiveFunc)(uint32_t, uint32_t, uint32_t, PVCI_CAN_OBJ, uint32_t, int);
-    typedef int (*VCI_ReadErrInfoFunc)(uint32_t, uint32_t, uint32_t, PVCI_ERR_INFO);
     typedef int (*VCI_ClearBufferFunc)(uint32_t, uint32_t, uint32_t);
 
     // 函数指针实例
@@ -116,7 +105,6 @@ private:
     VCI_ResetCANFunc VCI_ResetCAN;
     VCI_TransmitFunc VCI_Transmit;
     VCI_ReceiveFunc VCI_Receive;
-    VCI_ReadErrInfoFunc VCI_ReadErrInfo;
     VCI_ClearBufferFunc VCI_ClearBuffer;
 };
 

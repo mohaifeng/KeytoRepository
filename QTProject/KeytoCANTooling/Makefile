@@ -243,6 +243,7 @@ Makefile: KeytoCANTooling.pro ../../../Download/QT/5.12.9/mingw73_32/mkspecs/win
 		../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/yacc.prf \
 		../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/lex.prf \
 		KeytoCANTooling.pro \
+		../../../Download/QT/5.12.9/mingw73_32/lib/Qt5Charts.prl \
 		../../../Download/QT/5.12.9/mingw73_32/lib/Qt5Widgets.prl \
 		../../../Download/QT/5.12.9/mingw73_32/lib/Qt5Gui.prl \
 		../../../Download/QT/5.12.9/mingw73_32/lib/Qt5Core.prl \
@@ -428,6 +429,7 @@ Makefile: KeytoCANTooling.pro ../../../Download/QT/5.12.9/mingw73_32/mkspecs/win
 ../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/yacc.prf:
 ../../../Download/QT/5.12.9/mingw73_32/mkspecs/features/lex.prf:
 KeytoCANTooling.pro:
+../../../Download/QT/5.12.9/mingw73_32/lib/Qt5Charts.prl:
 ../../../Download/QT/5.12.9/mingw73_32/lib/Qt5Widgets.prl:
 ../../../Download/QT/5.12.9/mingw73_32/lib/Qt5Gui.prl:
 ../../../Download/QT/5.12.9/mingw73_32/lib/Qt5Core.prl:

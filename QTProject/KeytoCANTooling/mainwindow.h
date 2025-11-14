@@ -3,6 +3,11 @@
 
 #include <QMainWindow>
 #include "controlcan_wrapper.h"
+#include "log.h"
+#include <QWidget>
+#include <QtCharts>
+#include "chartwidget.h"
+#include "plotview.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,8 +24,19 @@ public:
 private:
     Ui::MainWindow *ui;
 private slots:
-     void on_OpenPortpushButton_clicked();
+    void onErrorOccurred(const QString &errorMessage);
+    void on_OpenCANpushButton_clicked();
+    void SerAppend();
 public:
      ControlCANWrapper *canWrapper = new ControlCANWrapper(this);
+     Log *log = new Log();
+     QString CANdllPaths;
+     QTimer *sertime=new QTimer(this);
+     PlotView *plot;
 };
+
+
+
+
+
 #endif // MAINWINDOW_H
