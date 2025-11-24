@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     delaytime=100;
     ui->GapTimelineEdit->setText(QString::number(delaytime));
     is_seridle=false;
+    ui->Fncwidget->repaint();
 }
 
 MainWindow::~MainWindow()
@@ -51,14 +52,14 @@ void MainWindow::RegisterPushButton()//需被控制按钮注册函数，通过�
 void MainWindow::Versiong_Config(QString ver)
 {
     QString timestamp = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-    QString fin_str=QString("Valve ModBus %1 [%2]").arg(ver).arg(timestamp);
+    QString fin_str=QString("Valve ModBus %1 [%2]").arg(ver,timestamp);
     setWindowTitle(fin_str);//设置界面抬头
 }
 
 void MainWindow::PushButtonConfigSetEnabled(bool isok)
 {
     // 遍历处理
-    for (QPushButton *button : ControledButtons)
+    for (QPushButton *button : std::as_const(ControledButtons))
     {
         button->setEnabled(isok);
     }
@@ -155,7 +156,7 @@ bool MainWindow::SendData(const QByteArray &data)
         if (SerialPort->waitForBytesWritten(1000))
         {
             QString hexString = data.toHex(' ').toUpper();
-            QString logEntry = QString("[%1]: %2").arg("Tx").arg(hexString);
+            QString logEntry = QString("[%1]: %2").arg("Tx",hexString);
             LogPrint(logEntry,Log::TX);
             return true;
         }
@@ -185,7 +186,7 @@ QByteArray MainWindow::hexStringToByteArray(const QString &hexString)
     }
     for (int i = 0; i < hex.length(); i += 2) {
         bool ok;
-        char byte = static_cast<char>(hex.mid(i, 2).toInt(&ok, 16));
+        char byte = static_cast<char>(QStringView{hex}.mid(i, 2).toInt(&ok, 16));
         if (!ok) {
             return QByteArray();
         }
@@ -212,7 +213,7 @@ bool MainWindow::isResponseComplete(const QByteArray &data)
             if (static_cast<quint8>(data[0]) == modbus->addr&&static_cast<quint8>(data[1])==modbus->cmd)
             {
                 QString hexString = data.toHex(' ').toUpper();
-                QString logEntry = QString("[%1]: %2").arg("Rx").arg(hexString);
+                QString logEntry = QString("[%1]: %2").arg("Rx",hexString);
                 LogPrint(logEntry,Log::RX);
                 return true;
             }
@@ -502,15 +503,15 @@ void MainWindow::AppendMultiDataToDataBuff(QByteArray &databuff, QString &datate
     QStringList numbers;
     if(datatext.contains(','))
     {
-        numbers= datatext.split(',',QString::SkipEmptyParts,Qt::CaseInsensitive);
+        numbers= datatext.split(',',Qt::SkipEmptyParts,Qt::CaseInsensitive);
     }
     switch (type)
     {
     case 10:
         if(!numbers.isEmpty())
         {
-            numbers= datatext.split(',',QString::SkipEmptyParts,Qt::CaseInsensitive);
-            for (const QString &numStr : numbers)
+            numbers= datatext.split(',',Qt::SkipEmptyParts,Qt::CaseInsensitive);
+            for (const QString &numStr : std::as_const(numbers))
             {
                 decimalValue = numStr.toInt(&ok);
                 modbus->Appendint16BigEndian(databuff,decimalValue);
@@ -525,7 +526,7 @@ void MainWindow::AppendMultiDataToDataBuff(QByteArray &databuff, QString &datate
     case 16:
         if(!numbers.isEmpty())
         {
-            for (const QString &numStr : numbers)
+            for (const QString &numStr : std::as_const(numbers))
             {
                 databuff.append(QByteArray::fromHex(numStr.toLatin1()));
             }
