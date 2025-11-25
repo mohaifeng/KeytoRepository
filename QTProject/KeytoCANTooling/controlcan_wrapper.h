@@ -9,7 +9,17 @@
 #include <windows.h>
 #endif
 
-#define RESERVED    0
+#define RESERVED            0
+//接口卡类型定义
+#define VCI_USBCAN1         3
+#define VCI_USBCAN2         4
+#define VCI_USBCAN2A		4
+#define VCI_USBCAN_E_U 		20
+#define VCI_USBCAN_2E_U 	21
+
+//函数调用返回状态值
+#define	STATUS_OK           1
+#define STATUS_ERR          0
 
 // ControlCAN.dll 数据类型定义
 typedef struct _VCI_BOARD_INFO {
@@ -53,6 +63,22 @@ typedef struct _VCI_ERR_INFO
     uint8_t ArLost_ErrData;
 } VCI_ERR_INFO, *PVCI_ERR_INFO;
 
+//定义CAN工作模式
+typedef enum
+{
+    MODE_NORMAL,
+    MODE_MONITOR,
+    MODE_TEST
+}CAN_Work_Mode;
+
+//定义滤波模式
+typedef enum
+{
+    RECEIVE_ALL=1,
+    STANDARD_FRAMES_ONLY,
+    EXTENDED_FRAMES_ONLY
+}CAN_Filter_Mode;
+
 class ControlCANWrapper : public QObject
 {
     Q_OBJECT
@@ -60,7 +86,17 @@ class ControlCANWrapper : public QObject
 public:
     explicit ControlCANWrapper(QObject *parent = nullptr);
     ~ControlCANWrapper();
-
+    //ControlCAN属性
+    typedef struct
+    {
+        uint32_t DevType;
+        uint32_t DevIdex;
+        uint32_t CANIdex;
+        uint32_t CANBaudRate;
+        VCI_INIT_CONFIG InitStu;
+        VCI_CAN_OBJ Tx_CANData;
+        VCI_CAN_OBJ Rx_CANData;
+    }ControlCAN;
     // DLL加载管理
     bool LoadCANLibrary(const QString &dllPath);
     void UnloadCANLibrary();
@@ -79,10 +115,10 @@ public:
     int Receive(uint32_t deviceType, uint32_t deviceIndex, uint32_t canIndex,VCI_CAN_OBJ *pReceive, uint32_t len, int waitTime=RESERVED);//接收函数。此函数从指定的设备CAN通道的接收缓冲区中读取数据。
     // 工具函数
     QString ErrorCodeToString(int errorCode);
+    QList<int> CAN_Baudrate_Config(int baudrate);
 signals:
     void errorOccurred(const QString &errorMessage);
     void canMessageReceived(const QVector<VCI_CAN_OBJ> &messages);
-
 private:
     QLibrary m_library;
     // 函数指针定义

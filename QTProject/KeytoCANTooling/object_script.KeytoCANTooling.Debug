@@ -1,0 +1,10 @@
+debug/controlcan_wrapper.o
+debug/log.o
+debug/main.o
+debug/mainwindow.o
+debug/plotview.o
+debug/qcustomplot.o
+debug/moc_controlcan_wrapper.o
+debug/moc_mainwindow.o
+debug/moc_plotview.o
+debug/moc_qcustomplot.o

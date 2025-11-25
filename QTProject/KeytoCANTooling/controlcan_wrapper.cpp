@@ -22,6 +22,42 @@ ControlCANWrapper::~ControlCANWrapper()
     UnloadCANLibrary();
 }
 
+QList<int> ControlCANWrapper::CAN_Baudrate_Config(int baudrate)
+{
+    QList<int> timing;
+    switch (baudrate)
+    {
+    case 100:
+        timing[0]=0x04;
+        timing[1]=0x1C;
+        break;
+    case 125:
+        timing[0]=0x03;
+        timing[1]=0x1C;
+        break;
+    case 250:
+        timing[0]=0x01;
+        timing[1]=0x1C;
+        break;
+    case 500:
+        timing[0]=0x00;
+        timing[1]=0x1C;
+        break;
+    case 800:
+        timing[0]=0x00;
+        timing[1]=0x16;
+        break;
+    case 1000:
+        timing[0]=0x00;
+        timing[1]=0x14;
+        break;
+    default:
+        timing[0]=0x00;
+        timing[1]=0x1C;
+        break;
+    }
+    return timing;
+}
 bool ControlCANWrapper::LoadCANLibrary(const QString &dllPath)
 {
     if (m_library.isLoaded())

@@ -1,0 +1,10 @@
+release/controlcan_wrapper.o
+release/log.o
+release/main.o
+release/mainwindow.o
+release/plotview.o
+release/qcustomplot.o
+release/moc_controlcan_wrapper.o
+release/moc_mainwindow.o
+release/moc_plotview.o
+release/moc_qcustomplot.o
