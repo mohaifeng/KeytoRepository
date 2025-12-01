@@ -59,7 +59,11 @@ void MainWindow::Versiong_Config(QString ver)
 void MainWindow::PushButtonConfigSetEnabled(bool isok)
 {
     // 遍历处理
-    for (QPushButton *button : std::as_const(ControledButtons))
+    // for (QPushButton *button : std::as_const(ControledButtons))
+    // {
+    //     button->setEnabled(isok);
+    // }
+    foreach (QPushButton *button , ControledButtons)
     {
         button->setEnabled(isok);
     }
@@ -511,7 +515,12 @@ void MainWindow::AppendMultiDataToDataBuff(QByteArray &databuff, QString &datate
         if(!numbers.isEmpty())
         {
             numbers= datatext.split(',',Qt::SkipEmptyParts,Qt::CaseInsensitive);
-            for (const QString &numStr : std::as_const(numbers))
+            // for (const QString &numStr : std::as_const(numbers))
+            // {
+            //     decimalValue = numStr.toInt(&ok);
+            //     modbus->Appendint16BigEndian(databuff,decimalValue);
+            // }
+            foreach (const QString &numStr ,numbers)
             {
                 decimalValue = numStr.toInt(&ok);
                 modbus->Appendint16BigEndian(databuff,decimalValue);
@@ -526,7 +535,11 @@ void MainWindow::AppendMultiDataToDataBuff(QByteArray &databuff, QString &datate
     case 16:
         if(!numbers.isEmpty())
         {
-            for (const QString &numStr : std::as_const(numbers))
+            // for (const QString &numStr : std::as_const(numbers))
+            // {
+            //     databuff.append(QByteArray::fromHex(numStr.toLatin1()));
+            // }
+            foreach (const QString &numStr , numbers)
             {
                 databuff.append(QByteArray::fromHex(numStr.toLatin1()));
             }

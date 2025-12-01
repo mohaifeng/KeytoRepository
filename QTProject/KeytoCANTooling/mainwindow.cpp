@@ -173,7 +173,7 @@ bool MainWindow::TxCANDataConfig()
     for(int i = 0; i < hcontrolcan.Tx_CANData.DataLen; i++)
     {
         bool ok;
-        quint8 byte = static_cast<char>(tmp.mid(i*2, 2).toInt(&ok, 16));
+        quint8 byte = static_cast<char>(QStringView(tmp).mid(i*2, 2).toInt(&ok, 16));
         if (!ok) {
             return false;
         }

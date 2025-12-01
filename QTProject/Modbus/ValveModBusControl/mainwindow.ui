@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>969</width>
-    <height>656</height>
+    <width>1065</width>
+    <height>702</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -563,16 +563,10 @@
               <property name="text">
                <string>寄存器(0x)</string>
               </property>
-              <property name="textAlignment">
-               <set>AlignCenter</set>
-              </property>
              </column>
              <column>
               <property name="text">
                <string>数据(int)</string>
-              </property>
-              <property name="textAlignment">
-               <set>AlignCenter</set>
               </property>
              </column>
             </widget>
@@ -1234,8 +1228,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>969</width>
-     <height>23</height>
+     <width>1065</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>

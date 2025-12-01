@@ -32,6 +32,6 @@ void Log::LogPrint(QPlainTextEdit* edit, const QString& text, LogLevel level)
         break;
     }
     QString timestamp = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
-    QString logEntry = QString("[%1]:%2").arg(timestamp).arg(text);
-    edit->appendHtml(QString("<font color=\"%1\">%2</font>").arg(color.name()).arg(logEntry));
+    QString logEntry = QString("[%1]:%2").arg(timestamp,text);
+    edit->appendHtml(QString("<font color=\"%1\">%2</font>").arg(color.name(),logEntry));
 }
