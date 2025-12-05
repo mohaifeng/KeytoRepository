@@ -1,0 +1,85 @@
+#ifndef PROTOCOL_H
+#define PROTOCOL_H
+
+#include <QObject>
+
+#define BUFF_SIZE 10
+
+class Modbus
+{
+public:
+    explicit Modbus();
+    ~Modbus();
+public:
+    QByteArray ModbusSenddataConfig();
+    quint16 ModbusSingleRegByteToInt(QByteArray &response);
+    void AppendQByteArray(QByteArray &byteArray,QByteArray &value);
+    void Appenduint8BigEndian(QByteArray &byteArray,quint8 value);
+    void Appendint16BigEndian(QByteArray &byteArray,qint16 value);
+    void Appendint16LittleEndian(QByteArray &byteArray,qint16 value) ;
+    void Appenduint16RegAddrBigEndian(QByteArray &byteArray,quint16 value) ;
+    void Appenduint16RegAddrLittleEndian(QByteArray &byteArray,quint16 value);
+    void Appenduint16RegNumBigEndian(QByteArray &byteArray,quint16 value) ;
+    void Appenduint16RegNumLittleEndian(QByteArray &byteArray,quint16 value);
+    void Appenduint16Crc16BigEndian(QByteArray &byteArray,quint16 value) ;
+    void Appenduint16Crc16LittleEndian(QByteArray &byteArray,quint16 value);
+    quint16 calculateCRC16_Modbus(const QByteArray &data);
+    quint16 TwoBytesToQuint16(const QByteArray &data, bool isBigEndian);
+public:
+    bool crc16_isBigEndian;
+    bool data_isBigEndian;
+    quint8 addr;//设备地址
+    quint8 cmd;//读写命令
+    quint16 regaddr;//寄存器地址
+    quint16 regnum;//读写寄存器个数
+    QByteArray  databuff;//数据数组
+    QByteArray send_buff;//格式化后发送字节命令
+    quint16 single_data;//单个寄存器数据
+    quint16 crc16;
+
+};
+
+class MOEM
+{
+public:
+    explicit MOEM();
+    ~MOEM();
+
+public:
+    struct MOEMSend
+    {
+        quint8 head;
+        quint8 addr;
+        quint8 group_ID;
+        char idex;
+        char frametype;
+        QByteArray scriptbuffer;
+        quint8 end;
+        quint16 crc16;
+    };
+    struct MOEMResult
+    {
+        quint8 head;
+        quint8 addr;
+        quint8 group_ID;
+        char idex;
+        char frametype;
+        char madpstatus;
+        QByteArray responsebuffer;
+        quint8 end;
+        quint16 crc16;
+    };
+public:
+
+private:
+    MOEMSend moemsend;
+    MOEMResult moemresult;
+public:
+    QByteArray MoemSenddataConfig(quint8 addr,quint8 group_ID,char frametype,const QByteArray &scriptbuffer);
+
+
+};
+
+quint16 calculateCRC16(const QByteArray &data, quint16 polynomial = 0xA001);
+
+#endif // PROTOCOL_H
