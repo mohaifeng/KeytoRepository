@@ -191,9 +191,14 @@ QByteArray MOEM::MoemSenddataConfig(quint8 addr,quint8 group_ID,char frametype,c
     moemsend.idex++;
     if(moemsend.idex >'9')
     {
-        moemsend.idex=0;
+        moemsend.idex='0';
     }
     return data;
+}
+
+MOEM::MOEMSend MOEM::GetMOEMSendStu()
+{
+    return moemsend;
 }
 
 quint16 calculateCRC16(const QByteArray &data, quint16 polynomial)
@@ -217,4 +222,41 @@ quint16 calculateCRC16(const QByteArray &data, quint16 polynomial)
         }
     }
     return crc;
+}
+
+MOEM::MOEMResult ResponseDataConfig(const QByteArray &data)
+{
+    MOEM::MOEMResult tmp;
+    int headidex = -1;
+    int endidex = -1;
+    if (data.size() < 8)
+    {
+        return tmp;
+    }
+    for (int i = 0; i < data.size(); ++i)
+    {
+        if (static_cast<quint8>(data[i]) == 0xBB) // 找到帧头
+        {
+            headidex = i;
+        }
+        if (static_cast<quint8>(data[i]) == 0xBC) // 找到帧尾
+        {
+            endidex = i;
+            break;
+        }
+    }
+    if((headidex < 0)||(endidex<0)||(headidex > endidex)||((data.size()-endidex-1) < 2))
+    {
+        return tmp;
+    }
+    tmp.head=static_cast<quint8>(data[headidex]);
+    tmp.addr=static_cast<quint8>(data[headidex+1])&0xF0;
+    tmp.group_ID=static_cast<quint8>(data[headidex+1])&0x0F;
+    tmp.idex=static_cast<char>(data[headidex+2]);
+    tmp.frametype=static_cast<char>(data[headidex+3]);
+    tmp.madpstatus=static_cast<char>(data[headidex+4]);
+    tmp.responsestring=QString::fromLatin1(data.mid(headidex+5,endidex-headidex-5));
+    tmp.end=static_cast<quint8>(data[endidex]);
+    tmp.crc16=static_cast<quint8>(data[endidex+1] << 8) | static_cast<quint8>(data[endidex+2]);
+    return tmp;
 }

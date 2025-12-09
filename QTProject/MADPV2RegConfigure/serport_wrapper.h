@@ -11,7 +11,7 @@ class SerialPortWrapper: public QObject
     Q_OBJECT
 public:
     //定义数据完整性检查函数指针类型
-    typedef QByteArray (*FrameIntegrityCheckCallback)(const QByteArray &data);
+    typedef bool (*FrameIntegrityCheckCallback)(QByteArray &data);
     // 串口配置结构体
     struct SerialConfig
     {
@@ -48,7 +48,7 @@ public:
     QList<QSerialPortInfo> GetAvailablePorts();
     QStringList GetAvailablePortNames();
     //读写操作
-    qint64 ByteArrayTransmit(const QByteArray &data);
+    bool ByteArrayTransmit(const QByteArray &data);
     QByteArray ReadData(qint64 maxSize = 1024);
     QByteArray ReadAll();
     qint64 GetBytesAvailable() const;
@@ -70,9 +70,8 @@ public:
     void RegisterFrameIntegrityCheckCallback(FrameIntegrityCheckCallback callback);
 private slots:
     void OnReadyRead();
+    void ResponseFinish();
     void HandleError(QSerialPort::SerialPortError error);
-public slots:
-
 private:
     //内部方法
     void SetupConnections();
@@ -89,12 +88,14 @@ private:
     // 同步操作
     QMutex m_readMutex;
     QMutex m_writeMutex;
-    QTimer *m_responseTimer;
-    // 帧完整性检查标志
-    bool frameintegritycheckenable;
+    QTimer *m_responseTimer = new QTimer(this);
+    QTimer *m_responsefinishTimer = new QTimer(this);
     // 统计信息
     qint64 m_bytesReceived;
     qint64 m_bytesSent;
+    // 帧完整性检查标志
+    bool frameintegritycheckenable;
+    bool responsefinishflag;
     // 成员变量 - 函数指针
     FrameIntegrityCheckCallback m_callback;
 signals:

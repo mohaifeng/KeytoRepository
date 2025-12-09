@@ -1,5 +1,6 @@
 #include "serport_wrapper.h"
 #include <QThread>
+#include <QDebug>
 
 SerialPortWrapper::SerialPortWrapper(QObject *parent): QObject(parent)
 {
@@ -8,10 +9,11 @@ SerialPortWrapper::SerialPortWrapper(QObject *parent): QObject(parent)
     m_config.parity=QSerialPort::NoParity;//无校验位
     m_config.stopBits=QSerialPort::OneStop;//1个停止位
     m_config.flowControl=QSerialPort::NoFlowControl;//无流控制
-    m_config.readTimeout=1000;
-    m_config.writeTimeout=1000;
+    m_config.readTimeout=500;
+    m_config.writeTimeout=2000;
     m_config.responseTimeout=2000;
     frameintegritycheckenable=false;
+    SetupConnections();
 }
 SerialPortWrapper::~SerialPortWrapper()
 {
@@ -21,6 +23,9 @@ SerialPortWrapper::~SerialPortWrapper()
 void SerialPortWrapper::SetupConnections()
 {
     // 连接串口信号
+    // 设置响应超时定时器（单次触发）
+    m_responsefinishTimer->setSingleShot(true);
+    connect(m_responsefinishTimer, &QTimer::timeout,this, &SerialPortWrapper::ResponseFinish);
     connect(m_serialPort, &QSerialPort::readyRead,this, &SerialPortWrapper::OnReadyRead);
     connect(m_serialPort, &QSerialPort::errorOccurred,this, &SerialPortWrapper::HandleError);
 }
@@ -36,7 +41,7 @@ bool SerialPortWrapper::OpenPort(const SerialConfig &config)
     m_serialPort->setParity(m_config.parity);
     m_serialPort->setStopBits(m_config.stopBits);
     m_serialPort->setFlowControl(m_config.flowControl);
-    // 设置超时
+
     m_serialPort->setReadBufferSize(1024 * 1024);  // 1MB缓冲区
     if (!m_serialPort->open(QIODevice::ReadWrite))
     {
@@ -89,6 +94,14 @@ QStringList SerialPortWrapper::GetAvailablePortNames()
 //注册数据完整性判断回调函数
 void SerialPortWrapper::RegisterFrameIntegrityCheckCallback(FrameIntegrityCheckCallback callback)
 {
+    if(callback!=nullptr)
+    {
+        frameintegritycheckenable=true;
+    }
+    else
+    {
+        frameintegritycheckenable=false;
+    }
     m_callback=callback;
 }
 
@@ -98,6 +111,7 @@ void SerialPortWrapper::OnReadyRead()
     {
         return;
     }
+    responsefinishflag=false;
     QMutexLocker locker(&m_readMutex);
     QByteArray newData = m_serialPort->readAll();
     if (newData.isEmpty())
@@ -107,24 +121,37 @@ void SerialPortWrapper::OnReadyRead()
     m_readBuffer.append(newData);
     m_bytesReceived += newData.size();
     emit debugMessage(QString("接收到 %1 字节数据").arg(newData.size()));
-    // 处理完整的数据帧
-    if (frameintegritycheckenable)
-    {
-        while(true)
-        {
-            QByteArray frame = m_callback(m_readBuffer);
-            if (frame.isEmpty())
-            {
-                break;
-            }
-            emit frameReceived(frame);
-            emit debugMessage(QString("收到完整帧: %1").arg(frame.toHex(' ').toUpper()));
-        }
-    }
-    // 发射原始数据信号
+    // 重新启动超时定时器
+    m_responsefinishTimer->start(5);  // 5ms超时（可根据波特率调整）
+    //发射原始数据信号
     emit dataReceived(newData);
 }
 
+void SerialPortWrapper::ResponseFinish()
+{
+    if(!m_readBuffer.isEmpty())
+    {
+        if(frameintegritycheckenable)
+        {
+            if (m_callback(m_readBuffer))
+            {
+                emit frameReceived(m_readBuffer);
+                emit debugMessage(QString("收到完整帧: %1").arg(m_readBuffer.toHex(' ').toUpper()));
+            }
+            else
+            {
+                m_lastError = SerialPortWrapper::ReadFailed;
+                m_lastErrorString = "数据解析错误";
+                emit errorOccurred(m_lastError, m_lastErrorString);
+            }
+        }
+        else
+        {
+            emit frameReceived(m_readBuffer);
+            emit debugMessage(QString("收到完整帧: %1").arg(m_readBuffer.toHex(' ').toUpper()));
+        }
+    }
+}
 // 等待写入完成
 bool SerialPortWrapper::WaitForBytesWritten(int timeout)
 {
@@ -135,37 +162,35 @@ bool SerialPortWrapper::WaitForBytesWritten(int timeout)
     return true;
 }
 // 写入数据
-qint64 SerialPortWrapper::ByteArrayTransmit(const QByteArray &data)
+bool SerialPortWrapper::ByteArrayTransmit(const QByteArray &data)
 {
     if (!IsOpen())
     {
         m_lastError = SerialPortWrapper::PortNotOpen;
         m_lastErrorString = "串口未打开";
-        return -1;
+        emit errorOccurred(m_lastError, m_lastErrorString);
+        return false;
     }
     QMutexLocker locker(&m_writeMutex);
-
     qint64 bytesWritten = m_serialPort->write(data);
-    if (bytesWritten == -1)
+    if (bytesWritten == -1||bytesWritten !=data.size())
     {
         m_lastError = SerialPortWrapper::WriteFailed;
         m_lastErrorString = m_serialPort->errorString();
         emit errorOccurred(m_lastError, m_lastErrorString);
+        return false;
     }
-    else
+    if (!WaitForBytesWritten(m_config.writeTimeout))
     {
-        if (!WaitForBytesWritten(m_config.writeTimeout))
-        {
-            m_lastError = SerialPortWrapper::TimeoutError;
-            m_lastErrorString = "写入超时";
-            emit errorOccurred(m_lastError, m_lastErrorString);
-            return -1;
-        }
-        m_bytesSent += bytesWritten;
-        emit dataSent(data);
-        emit debugMessage(QString("发送数据: %1").arg(data.toHex(' ').toUpper()));
+        m_lastError = SerialPortWrapper::TimeoutError;
+        m_lastErrorString = "写入超时";
+        emit errorOccurred(m_lastError, m_lastErrorString);
+        return false;
     }
-    return bytesWritten;
+    m_bytesSent += bytesWritten;
+    emit dataSent(data);
+    emit debugMessage(QString("发送数据: %1").arg(data.toHex(' ').toUpper()));
+    return true;
 }
 QByteArray SerialPortWrapper::ReadData(qint64 maxSize)
 {
@@ -175,7 +200,6 @@ QByteArray SerialPortWrapper::ReadData(qint64 maxSize)
         m_lastErrorString = "串口未打开";
         return QByteArray();
     }
-
     QMutexLocker locker(&m_readMutex);
     return m_serialPort->read(maxSize);
 }
@@ -192,10 +216,11 @@ QByteArray SerialPortWrapper::WaitForResponse(int timeout)
 {
     m_readBuffer.clear();
     int waitTime = (timeout > 0) ? timeout : m_config.responseTimeout;
-    m_responseTimer->start(waitTime);
     QEventLoop loop;
     connect(this, &SerialPortWrapper::dataReceived, &loop, &QEventLoop::quit);
     connect(m_responseTimer, &QTimer::timeout, &loop, &QEventLoop::quit);
+    m_responseTimer->setSingleShot(true);
+    m_responseTimer->start(waitTime);
     loop.exec();
     m_responseTimer->stop();
     return m_readBuffer;
@@ -208,26 +233,26 @@ QByteArray SerialPortWrapper::ByteArrayTransmitWaitAck(const QByteArray &data, i
     {
         return QByteArray();
     }
-    m_readBuffer.clear();
     // 发送数据
-    if (ByteArrayTransmit(data) == -1)
+    if (!ByteArrayTransmit(data))
     {
         return QByteArray();
     }
-    // 等待响应
-    int waitTime = (timeout > 0) ? timeout : m_config.responseTimeout;
-    m_responseTimer->start(waitTime);
-    // 进入事件循环等待
-    QEventLoop loop;
-    connect(this, &SerialPortWrapper::dataReceived, &loop, &QEventLoop::quit);
-    connect(m_responseTimer, &QTimer::timeout, &loop, &QEventLoop::quit);
-    loop.exec();
-    m_responseTimer->stop();
-    if (m_readBuffer.isEmpty())
+    if (WaitForResponse(timeout).isEmpty())
     {
         m_lastError = SerialPortWrapper::TimeoutError;
         m_lastErrorString = "等待响应超时";
         emit errorOccurred(m_lastError, m_lastErrorString);
+    }
+    else
+    {
+        QEventLoop loop;
+        connect(this, &SerialPortWrapper::frameReceived, &loop, &QEventLoop::quit);
+        connect(m_responseTimer, &QTimer::timeout, &loop, &QEventLoop::quit);
+        m_responseTimer->setSingleShot(true);
+        m_responseTimer->start(m_config.readTimeout);
+        loop.exec();
+        m_responseTimer->stop();
     }
     return m_readBuffer;
 }

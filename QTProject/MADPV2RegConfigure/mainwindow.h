@@ -22,16 +22,15 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void ConfigInit();
-    void onReadyRead();
+    void onResponseComplete(const QByteArray &data);
     void RefreshSerialPorts();
-    void LogMsgPrint(const QString &text);
+    void LogMsgPrint(const QString &text,Log::LogLevel type);
     void ErrorMsgPrint(int errorcode ,const QString &errorString);
-    void TxMsgPrint(const QString &msg);
-    void RxMsgPrint(const QString &msg);
     void ShowWarningDialog(const QString &arg1 );
     void UserRegListAppend(int addr ,const QString &func,const QString &rw,const QString &unit,int value);
     void UserNodeAppend(int nodeaddr,const QString &nodename);
     void ScanfNodeLoop();
+    static bool DataIntegrityCheckCallback(QByteArray &data);
 private slots:
     void on_serOpenpushButton_clicked();
 
@@ -48,6 +47,7 @@ private slots:
 
 private:
     QTimer *SerialRefreshTimer = new QTimer(this);      // 串口号刷新定时器
+    QTimer *completetimer = new QTimer(this); //数据接收完整定时器
     //串口配置相关
     SerialPortWrapper *pser = new SerialPortWrapper();//串口实例对象
     SerialPortWrapper::SerialConfig serialconfig;//串口配置对象
@@ -58,6 +58,5 @@ private:
     QJsonObject jsonobj;
     JsonReader * json= new JsonReader();
     MOEM *moem=new MOEM();
-
 };
 #endif // MAINWINDOW_H

@@ -65,7 +65,7 @@ public:
         char idex;
         char frametype;
         char madpstatus;
-        QByteArray responsebuffer;
+        QString responsestring;
         quint8 end;
         quint16 crc16;
     };
@@ -76,6 +76,8 @@ private:
     MOEMResult moemresult;
 public:
     QByteArray MoemSenddataConfig(quint8 addr,quint8 group_ID,char frametype,const QByteArray &scriptbuffer);
+    MOEMSend GetMOEMSendStu();
+    MOEMResult ResponseDataConfig(const QByteArray &data);
 
 
 };
