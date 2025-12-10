@@ -34,7 +34,8 @@ public:
         WriteFailed,
         ReadFailed,
         TimeoutError,
-        ConfigError
+        ConfigError,
+        IntegrityError
     };
     Q_ENUM(SerialError)  // 重要：添加这一行
 public:

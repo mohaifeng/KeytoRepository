@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>924</width>
-    <height>728</height>
+    <width>1164</width>
+    <height>867</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -536,7 +536,7 @@
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_14">
         <item>
-         <widget class="QTabWidget" name="tabWidget_3">
+         <widget class="QTabWidget" name="RegtabWidget">
           <property name="currentIndex">
            <number>4</number>
           </property>
@@ -544,139 +544,728 @@
            <attribute name="title">
             <string>MADP</string>
            </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout_22">
+            <item>
+             <widget class="QGroupBox" name="groupBox_17">
+              <property name="title">
+               <string>MADP寄存器</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_16">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="MADPRegtableWidget">
+                 <property name="frameShape">
+                  <enum>QFrame::Shape::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Shadow::Sunken</enum>
+                 </property>
+                 <property name="lineWidth">
+                  <number>1</number>
+                 </property>
+                 <property name="gridStyle">
+                  <enum>Qt::PenStyle::SolidLine</enum>
+                 </property>
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>65</number>
+                 </attribute>
+                 <attribute name="verticalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>地址</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>功能</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>R/W</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>单位</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>638</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </widget>
           <widget class="QWidget" name="tab_5">
            <attribute name="title">
             <string>ADP</string>
            </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout_21">
+            <item>
+             <widget class="QGroupBox" name="groupBox_14">
+              <property name="title">
+               <string>用户寄存器</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_13">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="ADPUserRegtableWidget">
+                 <property name="frameShape">
+                  <enum>QFrame::Shape::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Shadow::Sunken</enum>
+                 </property>
+                 <property name="lineWidth">
+                  <number>1</number>
+                 </property>
+                 <property name="gridStyle">
+                  <enum>Qt::PenStyle::SolidLine</enum>
+                 </property>
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>65</number>
+                 </attribute>
+                 <attribute name="verticalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>地址</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>功能</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>R/W</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>单位</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_15">
+              <property name="title">
+               <string>厂家寄存器</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_14">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="ADPFacRegtableWidget">
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>65</number>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>地址</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>功能</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>R/W</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>单位</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_16">
+              <property name="title">
+               <string>公共寄存器</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_15">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="ADPCommonRegtableWidget">
+                 <property name="frameShape">
+                  <enum>QFrame::Shape::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Shadow::Sunken</enum>
+                 </property>
+                 <property name="lineWidth">
+                  <number>1</number>
+                 </property>
+                 <property name="gridStyle">
+                  <enum>Qt::PenStyle::SolidLine</enum>
+                 </property>
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>65</number>
+                 </attribute>
+                 <attribute name="verticalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>地址</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>功能</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>R/W</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>单位</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
           </widget>
           <widget class="QWidget" name="tab_7">
            <attribute name="title">
             <string>Z轴</string>
            </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout_20">
+            <item>
+             <widget class="QGroupBox" name="groupBox_11">
+              <property name="title">
+               <string>用户寄存器</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_10">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="ZUserRegtableWidget">
+                 <property name="frameShape">
+                  <enum>QFrame::Shape::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Shadow::Sunken</enum>
+                 </property>
+                 <property name="lineWidth">
+                  <number>1</number>
+                 </property>
+                 <property name="gridStyle">
+                  <enum>Qt::PenStyle::SolidLine</enum>
+                 </property>
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>65</number>
+                 </attribute>
+                 <attribute name="verticalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>地址</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>功能</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>R/W</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>单位</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_13">
+              <property name="title">
+               <string>厂家寄存器</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_12">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="ZFacRegtableWidget">
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>65</number>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>地址</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>功能</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>R/W</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>单位</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_12">
+              <property name="title">
+               <string>公共寄存器</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_11">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="ZCommonRegtableWidge">
+                 <property name="frameShape">
+                  <enum>QFrame::Shape::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Shadow::Sunken</enum>
+                 </property>
+                 <property name="lineWidth">
+                  <number>1</number>
+                 </property>
+                 <property name="gridStyle">
+                  <enum>Qt::PenStyle::SolidLine</enum>
+                 </property>
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>65</number>
+                 </attribute>
+                 <attribute name="verticalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>地址</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>功能</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>R/W</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>单位</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
           </widget>
           <widget class="QWidget" name="tab_8">
            <attribute name="title">
             <string>分距</string>
            </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout_23">
+            <item>
+             <widget class="QGroupBox" name="groupBox_18">
+              <property name="title">
+               <string>用户寄存器</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_17">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="SpreaderUserRegtableWidget">
+                 <property name="frameShape">
+                  <enum>QFrame::Shape::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Shadow::Sunken</enum>
+                 </property>
+                 <property name="lineWidth">
+                  <number>1</number>
+                 </property>
+                 <property name="gridStyle">
+                  <enum>Qt::PenStyle::SolidLine</enum>
+                 </property>
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>65</number>
+                 </attribute>
+                 <attribute name="verticalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>地址</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>功能</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>R/W</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>单位</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_20">
+              <property name="title">
+               <string>厂家寄存器</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_19">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="SpreaderFacRegtableWidget">
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>65</number>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>地址</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>功能</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>R/W</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>单位</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_19">
+              <property name="title">
+               <string>公共寄存器</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_18">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="SpreaderCommonRegtableWidget">
+                 <property name="frameShape">
+                  <enum>QFrame::Shape::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Shadow::Sunken</enum>
+                 </property>
+                 <property name="lineWidth">
+                  <number>1</number>
+                 </property>
+                 <property name="gridStyle">
+                  <enum>Qt::PenStyle::SolidLine</enum>
+                 </property>
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>65</number>
+                 </attribute>
+                 <attribute name="verticalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>地址</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>功能</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>R/W</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>单位</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
           </widget>
           <widget class="QWidget" name="tab_6">
            <attribute name="title">
             <string>移液臂</string>
            </attribute>
-           <layout class="QGridLayout" name="gridLayout_5">
-            <item row="0" column="0">
-             <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="1,1">
-              <item>
-               <widget class="QGroupBox" name="groupBox_9">
-                <property name="title">
-                 <string>用户寄存器</string>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_6">
-                 <item row="0" column="0">
-                  <widget class="QTableWidget" name="UserRegtableWidget">
-                   <property name="frameShape">
-                    <enum>QFrame::Shape::StyledPanel</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Shadow::Sunken</enum>
-                   </property>
-                   <property name="lineWidth">
-                    <number>1</number>
-                   </property>
-                   <property name="gridStyle">
-                    <enum>Qt::PenStyle::SolidLine</enum>
-                   </property>
-                   <property name="rowCount">
-                    <number>0</number>
-                   </property>
-                   <attribute name="horizontalHeaderCascadingSectionResizes">
-                    <bool>false</bool>
-                   </attribute>
-                   <attribute name="horizontalHeaderDefaultSectionSize">
-                    <number>65</number>
-                   </attribute>
-                   <attribute name="verticalHeaderCascadingSectionResizes">
-                    <bool>false</bool>
-                   </attribute>
-                   <column>
-                    <property name="text">
-                     <string>地址</string>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>功能</string>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>R/W</string>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>单位</string>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>值</string>
-                    </property>
-                   </column>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item>
-               <widget class="QGroupBox" name="groupBox_8">
-                <property name="title">
-                 <string>厂家寄存器</string>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_7">
-                 <item row="0" column="0">
-                  <widget class="QTableWidget" name="FacRegtableWidget">
-                   <property name="rowCount">
-                    <number>0</number>
-                   </property>
-                   <attribute name="horizontalHeaderCascadingSectionResizes">
-                    <bool>false</bool>
-                   </attribute>
-                   <attribute name="horizontalHeaderDefaultSectionSize">
-                    <number>65</number>
-                   </attribute>
-                   <column>
-                    <property name="text">
-                     <string>地址</string>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>功能</string>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>R/W</string>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>单位</string>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>值</string>
-                    </property>
-                   </column>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
+           <layout class="QHBoxLayout" name="horizontalLayout_16">
+            <item>
+             <widget class="QGroupBox" name="groupBox_9">
+              <property name="title">
+               <string>用户寄存器</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_6">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="ArmUserRegtableWidget">
+                 <property name="frameShape">
+                  <enum>QFrame::Shape::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Shadow::Sunken</enum>
+                 </property>
+                 <property name="lineWidth">
+                  <number>1</number>
+                 </property>
+                 <property name="gridStyle">
+                  <enum>Qt::PenStyle::SolidLine</enum>
+                 </property>
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>65</number>
+                 </attribute>
+                 <attribute name="verticalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>地址</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>功能</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>R/W</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>单位</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_8">
+              <property name="title">
+               <string>厂家寄存器</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_7">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="ArmFacRegtableWidget">
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>65</number>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>地址</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>功能</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>R/W</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>单位</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_10">
+              <property name="title">
+               <string>公共寄存器</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_9">
+               <item row="0" column="0">
+                <widget class="QTableWidget" name="ArmCommonRegtableWidget">
+                 <property name="frameShape">
+                  <enum>QFrame::Shape::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Shadow::Sunken</enum>
+                 </property>
+                 <property name="lineWidth">
+                  <number>1</number>
+                 </property>
+                 <property name="gridStyle">
+                  <enum>Qt::PenStyle::SolidLine</enum>
+                 </property>
+                 <property name="rowCount">
+                  <number>0</number>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>65</number>
+                 </attribute>
+                 <attribute name="verticalHeaderCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>地址</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>功能</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>R/W</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>单位</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -749,7 +1338,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
-             <widget class="QPushButton" name="pushButton_6">
+             <widget class="QPushButton" name="ReadRegpushButton">
               <property name="text">
                <string>查询寄存器</string>
               </property>

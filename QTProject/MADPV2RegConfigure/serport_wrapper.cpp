@@ -94,7 +94,7 @@ QStringList SerialPortWrapper::GetAvailablePortNames()
 //注册数据完整性判断回调函数
 void SerialPortWrapper::RegisterFrameIntegrityCheckCallback(FrameIntegrityCheckCallback callback)
 {
-    if(callback!=nullptr)
+    if(callback != nullptr)
     {
         frameintegritycheckenable=true;
     }
@@ -120,11 +120,11 @@ void SerialPortWrapper::OnReadyRead()
     }
     m_readBuffer.append(newData);
     m_bytesReceived += newData.size();
+    //发射原始数据信号
+    emit dataReceived(newData);
     emit debugMessage(QString("接收到 %1 字节数据").arg(newData.size()));
     // 重新启动超时定时器
     m_responsefinishTimer->start(5);  // 5ms超时（可根据波特率调整）
-    //发射原始数据信号
-    emit dataReceived(newData);
 }
 
 void SerialPortWrapper::ResponseFinish()
@@ -140,8 +140,8 @@ void SerialPortWrapper::ResponseFinish()
             }
             else
             {
-                m_lastError = SerialPortWrapper::ReadFailed;
-                m_lastErrorString = "数据解析错误";
+                m_lastError = SerialPortWrapper::IntegrityError;
+                m_lastErrorString = QString("数据解析错误:%1").arg(m_readBuffer.toHex());
                 emit errorOccurred(m_lastError, m_lastErrorString);
             }
         }

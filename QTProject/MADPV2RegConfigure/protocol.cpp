@@ -224,7 +224,7 @@ quint16 calculateCRC16(const QByteArray &data, quint16 polynomial)
     return crc;
 }
 
-MOEM::MOEMResult ResponseDataConfig(const QByteArray &data)
+MOEM::MOEMResult MOEM::ResponseDataConfig(const QByteArray &data)
 {
     MOEM::MOEMResult tmp;
     int headidex = -1;

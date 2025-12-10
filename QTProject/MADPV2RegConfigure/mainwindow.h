@@ -7,6 +7,7 @@
 #include <QTimer>
 #include "serport_wrapper.h"
 #include "protocol.h"
+#include <QTableWidget>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -22,15 +23,25 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void ConfigInit();
+    void MADPRegInit();
+    void ArmRegInit();
     void onResponseComplete(const QByteArray &data);
     void RefreshSerialPorts();
     void LogMsgPrint(const QString &text,Log::LogLevel type);
+    void MADPTxMsgPrint(const MOEM::MOEMSend &send);
+    void MADPRxMsgPrint(const MOEM::MOEMResult &result);
     void ErrorMsgPrint(int errorcode ,const QString &errorString);
     void ShowWarningDialog(const QString &arg1 );
-    void UserRegListAppend(int addr ,const QString &func,const QString &rw,const QString &unit,int value);
+    void RefreshRegtableWidget();
+    void RegColAppend(QTableWidget *tableWidget,const QString &headerName);
+    void RegRowAppend(QTableWidget *tableWidget,int addr ,const QString &func,const QString &rw,const QString &unit);
     void UserNodeAppend(int nodeaddr,const QString &nodename);
+    void NodeHashAppend(int type ,int addr,QString &name);
     void ScanfNodeLoop();
+    QString NodeNameConfig(int type);
     static bool DataIntegrityCheckCallback(QByteArray &data);
+    void RegtableWidgetClear();
+    QList<int> GetColumnRegAddr_R(QTableWidget* tableWidget);
 private slots:
     void on_serOpenpushButton_clicked();
 
@@ -45,7 +56,10 @@ private slots:
 
     void on_ReadNodepushButton_clicked();
 
+    void on_ReadRegpushButton_clicked();
+
 private:
+    bool m_stopOperations;
     QTimer *SerialRefreshTimer = new QTimer(this);      // 串口号刷新定时器
     QTimer *completetimer = new QTimer(this); //数据接收完整定时器
     //串口配置相关
