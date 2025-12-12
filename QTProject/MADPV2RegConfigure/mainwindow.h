@@ -27,21 +27,25 @@ public:
     void ArmRegInit();
     void onResponseComplete(const QByteArray &data);
     void RefreshSerialPorts();
+    void DebugMsgPrint(const QString &text);
     void LogMsgPrint(const QString &text,Log::LogLevel type);
-    void MADPTxMsgPrint(const MOEM::MOEMSend &send);
-    void MADPRxMsgPrint(const MOEM::MOEMResult &result);
+    void MADPTxMsgPrint();
+    void MADPRxMsgPrint(const QByteArray &frame);
     void ErrorMsgPrint(int errorcode ,const QString &errorString);
     void ShowWarningDialog(const QString &arg1 );
     void RefreshRegtableWidget();
     void RegColAppend(QTableWidget *tableWidget,const QString &headerName);
     void RegRowAppend(QTableWidget *tableWidget,int addr ,const QString &func,const QString &rw,const QString &unit);
     void UserNodeAppend(int nodeaddr,const QString &nodename);
-    void NodeHashAppend(int type ,int addr,QString &name);
+    void NodeMapAppend(int type ,int addr,QString &name);
     void ScanfNodeLoop();
     QString NodeNameConfig(int type);
-    static bool DataIntegrityCheckCallback(QByteArray &data);
+    static bool DataReceiveFinishCheckCallback(const QByteArray &data);
+    static bool DataIntegrityCheckCallback(const QByteArray &data);
     void RegtableWidgetClear();
     QList<int> GetColumnRegAddr_R(QTableWidget* tableWidget);
+    void AppendColRegData(QTableWidget* tableWidget,const QString &node,const QStringList &items);
+    int FindColumnByHeader(QTableWidget* tableWidget, const QString& headerText);
 private slots:
     void on_serOpenpushButton_clicked();
 
@@ -72,5 +76,6 @@ private:
     QJsonObject jsonobj;
     JsonReader * json= new JsonReader();
     MOEM *moem=new MOEM();
+    quint8 checknodeaddr = 0;
 };
 #endif // MAINWINDOW_H

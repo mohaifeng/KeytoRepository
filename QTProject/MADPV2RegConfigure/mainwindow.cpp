@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
         return;
     }
     pser->RegisterFrameIntegrityCheckCallback(MainWindow::DataIntegrityCheckCallback);
+    pser->RegisterDataReceiveFinishCheckCallback(MainWindow::DataReceiveFinishCheckCallback);
 }
 
 MainWindow::~MainWindow()
@@ -40,60 +41,59 @@ void MainWindow::MADPRegInit()
 void MainWindow::ArmRegInit()
 {
     RegRowAppend(ui->ArmUserRegtableWidget,1,"当前设备状态","RW","/");
-    RegRowAppend(ui->ArmUserRegtableWidget,2,"当前位置","R","0～180000(um)");
-    RegRowAppend(ui->ArmUserRegtableWidget,3,"当前速度","R","0～400000(um/s)");
+    RegRowAppend(ui->ArmUserRegtableWidget,2,"当前位置","R","um");
+    RegRowAppend(ui->ArmUserRegtableWidget,3,"当前速度","R","um/s");
     RegRowAppend(ui->ArmUserRegtableWidget,4,"当前编码器计数值","R","/");
     RegRowAppend(ui->ArmUserRegtableWidget,5,"近端光耦状态","R","/");
     RegRowAppend(ui->ArmUserRegtableWidget,6,"远端光耦状态","R","/");
     RegRowAppend(ui->ArmUserRegtableWidget,7,"最大行程","R","/");
-    RegRowAppend(ui->ArmUserRegtableWidget,8,"拨码ID","R","0～15");
-    RegRowAppend(ui->ArmUserRegtableWidget,9,"偏移ID","RW","0～111");
+    RegRowAppend(ui->ArmUserRegtableWidget,8,"拨码ID","R","/");
+    RegRowAppend(ui->ArmUserRegtableWidget,9,"偏移ID","RW","/");
     RegRowAppend(ui->ArmUserRegtableWidget,45,"移动次数","RW","/");
     RegRowAppend(ui->ArmUserRegtableWidget,46,"移动全行程倍数","RW","/");
     RegRowAppend(ui->ArmUserRegtableWidget,47,"取TIP次数","RW","/");
     RegRowAppend(ui->ArmUserRegtableWidget,48,"置零次数","RW","/");
-    RegRowAppend(ui->ArmUserRegtableWidget,200,"超级权限","RW","0～8888");
 
-    RegRowAppend(ui->ArmFacRegtableWidget,1,"新旧协议切换","RW","0～1");
-    RegRowAppend(ui->ArmFacRegtableWidget,2,"运行电流","RW","0～0xFFFF(mA)");
-    RegRowAppend(ui->ArmFacRegtableWidget,3,"保持电流","RW","0～0xFFFF(mA)");
-    RegRowAppend(ui->ArmFacRegtableWidget,4,"加速度","RW","0～0xFFFFFFFF(ustep/s2)");
-    RegRowAppend(ui->ArmFacRegtableWidget,5,"减速度","RW","0～0xFFFFFFFF(ustep/s2)");
-    RegRowAppend(ui->ArmFacRegtableWidget,6,"最大速度","RW","0～0xFFFFFFFF(um/s)");
-    RegRowAppend(ui->ArmFacRegtableWidget,7,"电机运动方向","RW","0～1");
-    RegRowAppend(ui->ArmFacRegtableWidget,8,"启动速度","RW","0～0xFFFFFFFF(ustep/s)");
-    RegRowAppend(ui->ArmFacRegtableWidget,9,"截止速度","RW","0～0xFFFFFFFF(ustep/s)");
-    RegRowAppend(ui->ArmFacRegtableWidget,10,"电机细分","RW","1/2/4/16/32/64/128/256");
-    RegRowAppend(ui->ArmFacRegtableWidget,11,"最大行程","RW","0～0x7FFFFFFF(um)");
-    RegRowAppend(ui->ArmFacRegtableWidget,12,"最小行程","RW","0～0x7FFF(um)");
-    RegRowAppend(ui->ArmFacRegtableWidget,13,"初始化速度","RW","0～0x7FFFFFFF(um/s)");
-    RegRowAppend(ui->ArmFacRegtableWidget,14,"编码器一圈计数值","RW","0～0xFFFF");
-    RegRowAppend(ui->ArmFacRegtableWidget,15,"导程","RW","0～0xFFFFFFFF(um)");
-    RegRowAppend(ui->ArmFacRegtableWidget,16,"零位补偿值","RW","0～0x7FFFFFFF(um)");
-    RegRowAppend(ui->ArmFacRegtableWidget,17,"背隙值","RW","0～0x7FFF(um)");
-    RegRowAppend(ui->ArmFacRegtableWidget,18,"堵转阈值","RW","0～0x7FFF(um)");
-    RegRowAppend(ui->ArmFacRegtableWidget,19,"取TIP堵转阈值","RW","0～0x7FFF(um)");
-    RegRowAppend(ui->ArmFacRegtableWidget,20,"编码器计数方向","RW","0～1");
-    RegRowAppend(ui->ArmFacRegtableWidget,21,"近端光耦触发电平","RW","0～1");
-    RegRowAppend(ui->ArmFacRegtableWidget,22,"置零时离开零位的距离","RW","0～0xFFFFFFFF(um)");
-    RegRowAppend(ui->ArmFacRegtableWidget,23,"置零时光耦触发偏差","RW","0～0xFFFF(um)");
-    RegRowAppend(ui->ArmFacRegtableWidget,24,"运动中位置修正阈值","RW","0～0xFFFF(um)");
-    RegRowAppend(ui->ArmFacRegtableWidget,25,"首次置零的速度","RW","0～0x7FFFFFFF(um/s)");
-    RegRowAppend(ui->ArmFacRegtableWidget,26,"取到TIP后的等待时间","RW","0～0x7FFF(ms)");
-    RegRowAppend(ui->ArmFacRegtableWidget,27,"编码器计数值","R","0～0x7FFFFFF(ms)");
+    RegRowAppend(ui->ArmFacRegtableWidget,1,"新旧协议切换","RW","/");
+    RegRowAppend(ui->ArmFacRegtableWidget,2,"运行电流","RW","mA");
+    RegRowAppend(ui->ArmFacRegtableWidget,3,"保持电流","RW","mA");
+    RegRowAppend(ui->ArmFacRegtableWidget,4,"加速度","RW","ustep/s2");
+    RegRowAppend(ui->ArmFacRegtableWidget,5,"减速度","RW","ustep/s2");
+    RegRowAppend(ui->ArmFacRegtableWidget,6,"最大速度","RW","um/s");
+    RegRowAppend(ui->ArmFacRegtableWidget,7,"电机运动方向","RW","/");
+    RegRowAppend(ui->ArmFacRegtableWidget,8,"启动速度","RW","ustep/s");
+    RegRowAppend(ui->ArmFacRegtableWidget,9,"截止速度","RW","ustep/s");
+    RegRowAppend(ui->ArmFacRegtableWidget,10,"电机细分","RW","/");
+    RegRowAppend(ui->ArmFacRegtableWidget,11,"最大行程","RW","um");
+    RegRowAppend(ui->ArmFacRegtableWidget,12,"最小行程","RW","um");
+    RegRowAppend(ui->ArmFacRegtableWidget,13,"初始化速度","RW","um/s");
+    RegRowAppend(ui->ArmFacRegtableWidget,14,"编码器一圈计数值","RW","/");
+    RegRowAppend(ui->ArmFacRegtableWidget,15,"导程","RW","um");
+    RegRowAppend(ui->ArmFacRegtableWidget,16,"零位补偿值","RW","um");
+    RegRowAppend(ui->ArmFacRegtableWidget,17,"背隙值","RW","um");
+    RegRowAppend(ui->ArmFacRegtableWidget,18,"堵转阈值","RW","um");
+    RegRowAppend(ui->ArmFacRegtableWidget,19,"取TIP堵转阈值","RW","um");
+    RegRowAppend(ui->ArmFacRegtableWidget,20,"编码器计数方向","RW","/");
+    RegRowAppend(ui->ArmFacRegtableWidget,21,"近端光耦触发电平","RW","/");
+    RegRowAppend(ui->ArmFacRegtableWidget,22,"置零时离开零位的距离","RW","um");
+    RegRowAppend(ui->ArmFacRegtableWidget,23,"置零时光耦触发偏差","RW","um");
+    RegRowAppend(ui->ArmFacRegtableWidget,24,"运动中位置修正阈值","RW","um");
+    RegRowAppend(ui->ArmFacRegtableWidget,25,"首次置零的速度","RW","um/s");
+    RegRowAppend(ui->ArmFacRegtableWidget,26,"取到TIP后的等待时间","RW","ms");
+    RegRowAppend(ui->ArmFacRegtableWidget,27,"编码器计数值","R","ms");
 
     RegRowAppend(ui->ArmCommonRegtableWidget,0,"设备型号","R","/");
     RegRowAppend(ui->ArmCommonRegtableWidget,1,"紧急停止","W","/");
-    RegRowAppend(ui->ArmCommonRegtableWidget,2,"心跳间隔时间","RW","0-10000(ms)");
-    RegRowAppend(ui->ArmCommonRegtableWidget,3,"设备重启","W","123456");
+    RegRowAppend(ui->ArmCommonRegtableWidget,2,"心跳间隔时间","RW","ms");
+    RegRowAppend(ui->ArmCommonRegtableWidget,3,"设备重启","W","/");
     RegRowAppend(ui->ArmCommonRegtableWidget,4,"软件版本","R","/");
-    RegRowAppend(ui->ArmCommonRegtableWidget,5,"CAN执行完成主动上报","RW","0～1");
-    RegRowAppend(ui->ArmCommonRegtableWidget,6,"串口波特率","RW","9600/38400");
-    RegRowAppend(ui->ArmCommonRegtableWidget,7,"CAN波特率","RW","100/125/250/500/1000");
-    RegRowAppend(ui->ArmCommonRegtableWidget,8,"Debug串口波特率","RW","115200");
+    RegRowAppend(ui->ArmCommonRegtableWidget,5,"CAN执行完成主动上报","RW","/");
+    RegRowAppend(ui->ArmCommonRegtableWidget,6,"串口波特率","RW","/");
+    RegRowAppend(ui->ArmCommonRegtableWidget,7,"CAN波特率","RW","/");
+    //RegRowAppend(ui->ArmCommonRegtableWidget,8,"Debug串口波特率","RW","/");
     RegRowAppend(ui->ArmCommonRegtableWidget,9,"设备序列号","R","/");
-    RegRowAppend(ui->ArmCommonRegtableWidget,10,"串口执行完成主动上报","RW","0～1");
-    RegRowAppend(ui->ArmCommonRegtableWidget,11,"串口应答参数的长度","RW","0～10");
+    RegRowAppend(ui->ArmCommonRegtableWidget,10,"串口执行完成主动上报","RW","/");
+    RegRowAppend(ui->ArmCommonRegtableWidget,11,"串口应答参数的长度","RW","/");
 
     // 调整列宽
     ui->ArmUserRegtableWidget->resizeColumnsToContents();
@@ -115,25 +115,37 @@ void MainWindow::ConfigInit()
     // 连接信号与槽函数
     connect(SerialRefreshTimer,&QTimer::timeout,this,&MainWindow::RefreshSerialPorts); // 连接定时器信号到刷新槽
     SerialRefreshTimer->start(500);
+
     connect(pser,&SerialPortWrapper::errorOccurred,this,&MainWindow::ErrorMsgPrint); // 连接定时器信号到刷新槽
+    connect(pser,&SerialPortWrapper::dataSent,this,&MainWindow::MADPTxMsgPrint); // 连接定时器信号到刷新槽
+    connect(pser,&SerialPortWrapper::frameReceived,this,&MainWindow::MADPRxMsgPrint); // 连接定时器信号到刷新槽
+    connect(pser,&SerialPortWrapper::debugMessage,this,&MainWindow::DebugMsgPrint); // 连接定时器信号到刷新槽
     m_stopOperations=false;
     MADPRegInit();
     ArmRegInit();
 }
+
+void MainWindow::DebugMsgPrint(const QString &text)
+{
+    qDebug()<<"Info:"<<text;
+}
+
 // 日志输出函数
 void MainWindow::LogMsgPrint(const QString &text,Log::LogLevel type)
 {
     log->LogPrint(ui->LogplainTextEdit, text, type);
 }
 
-void MainWindow::MADPTxMsgPrint(const MOEM::MOEMSend &send)
+void MainWindow::MADPTxMsgPrint()
 {
+    MOEM::MOEMSend send=moem->GetMOEMSendStu();
     QString text=QString("[TX]:%1(%2):%4").arg(QString::number(send.group_ID),send.frametype,send.scriptbuffer);
     LogMsgPrint(text,Log::TX);
 }
 
-void MainWindow::MADPRxMsgPrint(const MOEM::MOEMResult &result)
+void MainWindow::MADPRxMsgPrint(const QByteArray &frame)
 {
+    MOEM::MOEMResult result = moem->ResponseDataConfig(frame);
     QString text=QString("[RX]:%1(%2 %3):%4").arg(QString::number(result.group_ID),result.frametype,result.madpstatus,result.responsestring);
     LogMsgPrint(text,Log::RX);
 }
@@ -373,6 +385,7 @@ void MainWindow::on_ReadNodepushButton_clicked()
 {
     if(pser->IsOpen())
     {
+        checknodeaddr=0;
         m_stopOperations=false;
         QTimer::singleShot(50, this, &MainWindow::ScanfNodeLoop);
         ui->NodetableWidget->setRowCount(0);
@@ -387,13 +400,25 @@ void MainWindow::on_ReadNodepushButton_clicked()
 
 }
 //检查数据完整性
-bool MainWindow::DataIntegrityCheckCallback(QByteArray &data)
+bool MainWindow::DataReceiveFinishCheckCallback(const QByteArray &data)
+{
+    if (data.size() > 7 )
+    {
+        if(static_cast<quint8>(data[data.size()-3]) ==0xBC)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+bool MainWindow::DataIntegrityCheckCallback(const QByteArray &data)
 {
     QByteArray framedata;
     int start_idex = -1;
     int end_idex = -1;
     if (data.size() < 8)
     {
+        qDebug()<<"帧长度不够";
         return false;
     }
     for (int i = 0; i < data.size(); ++i)
@@ -407,6 +432,7 @@ bool MainWindow::DataIntegrityCheckCallback(QByteArray &data)
             end_idex = i;
             if (data.size() - 1 - i < 2) // 判断是否还剩下至少2个字节数据
             {
+                qDebug()<<"帧尾长度不够";
                 return false;
             }
             break;
@@ -414,42 +440,41 @@ bool MainWindow::DataIntegrityCheckCallback(QByteArray &data)
     }
     if (start_idex < 0 || end_idex < 0||start_idex >= end_idex) // 判断是否找到帧头祯尾
     {
+        qDebug()<<"未找到帧头帧尾";
         return false;
     }
     framedata = data.mid(start_idex, end_idex - start_idex + 1);
     if ((static_cast<quint8>(data[end_idex + 1]) << 8 | static_cast<quint8>(data[end_idex + 2])) != calculateCRC16(framedata))
     {
+        qDebug()<<"校验错误";
         return false;
     }
     return true;
 }
 
-quint8 nodeaddr = 0;
 void MainWindow::ScanfNodeLoop()
 {
-    if (++nodeaddr > 48)
+    if (++checknodeaddr > 48)
     {
         if(ui->NodetableWidget->rowCount()==0)
         {
             ShowWarningDialog("未扫描到节点");
         }
         RefreshRegtableWidget();
-        nodeaddr = 0;
+        checknodeaddr = 0;
         return;
     }
-    QByteArray sendmsg = moem->MoemSenddataConfig(0, 0, 'k', QString("%1Rp0").arg(nodeaddr).toUtf8());
+    QByteArray sendmsg = moem->MoemSenddataConfig(0, 0, 'k', QString("%1Rp0").arg(checknodeaddr).toUtf8());
     // LogMsgPrint(sendmsg.toHex().toUpper(),Log::TX);
-    MADPTxMsgPrint(moem->GetMOEMSendStu());
     QByteArray respmsg = pser->ByteArrayTransmitWaitAck(sendmsg, 500);
     if (!respmsg.isEmpty())
     {
         MOEM::MOEMResult result = moem->ResponseDataConfig(respmsg);
-        MADPRxMsgPrint(result);
         if(result.madpstatus == '0')
         {
-            QString name=QString("%1 %2").arg(NodeNameConfig(result.responsestring.toInt()),QString::number(nodeaddr));
-            UserNodeAppend(nodeaddr,name);
-            NodeHashAppend(result.responsestring.toInt(),nodeaddr,name);
+            QString name=QString("%1 %2").arg(NodeNameConfig(result.responsestring.toInt()),QString::number(checknodeaddr));
+            UserNodeAppend(checknodeaddr,name);
+            NodeMapAppend(result.responsestring.toInt(),checknodeaddr,name);
         }
         // LogMsgPrint(respmsg.toHex().toUpper(),Log::RX);
     }
@@ -457,9 +482,13 @@ void MainWindow::ScanfNodeLoop()
     {
         QTimer::singleShot(50, this, &MainWindow::ScanfNodeLoop);
     }
+    else
+    {
+        checknodeaddr=0;
+    }
 }
 
-void MainWindow::NodeHashAppend(int type ,int addr,QString &name)
+void MainWindow::NodeMapAppend(int type ,int addr,QString &name)
 {
     switch (type)
     {
@@ -540,11 +569,26 @@ void MainWindow::on_ReadRegpushButton_clicked()
     QList<int> userregaddr;
     QList<int> facregaddr;
     QList<int> comregaddr;
+    QByteArray respmsg;
     switch (ui->RegtabWidget->currentIndex())
     {
     case 0:
-
+    {
+        userregaddr=GetColumnRegAddr_R(ui->MADPRegtableWidget);
+        QString tmp=QString("m0,%1").arg(userregaddr.size());
+        respmsg =pser->ByteArrayTransmitWaitAck(moem->MoemSenddataConfig(0,0,'k',tmp.toUtf8()),500);
+        if(!respmsg.isEmpty())
+        {
+            MOEM::MOEMResult result = moem->ResponseDataConfig(respmsg);
+            if(result.madpstatus == '0')
+            {
+                QStringList items = result.responsestring.split(',');
+                AppendColRegData(ui->MADPRegtableWidget,"值",items);
+                ui->MADPRegtableWidget->resizeColumnsToContents();
+            }
+        }
         break;
+    }
     case 1:
 
         break;
@@ -555,35 +599,116 @@ void MainWindow::on_ReadRegpushButton_clicked()
 
         break;
     case 4:
+    {
         userregaddr=GetColumnRegAddr_R(ui->ArmUserRegtableWidget);
         facregaddr=GetColumnRegAddr_R(ui->ArmFacRegtableWidget);
         comregaddr=GetColumnRegAddr_R(ui->ArmCommonRegtableWidget);
-        foreach (QString node, ArmNodeMap.keys())
+        QString cmd;
+        foreach (const QString node, ArmNodeMap.keys())
         {
+            QString super=QString("%1Wr200,8888|").arg(ArmNodeMap.value(node));
+            moem->ResponseDataConfig(pser->ByteArrayTransmitWaitAck(moem->MoemSenddataConfig(0,0,'k',super.toUtf8()),500));
             foreach (int regaddr, userregaddr)
             {
-                QByteArray data=moem->MoemSenddataConfig(0,0,'k',QString("%1Rr%2").arg(ArmNodeMap.value(node),regaddr).toUtf8());
-                QByteArray respmsg =pser->ByteArrayTransmitWaitAck(data,500);
-                if(!respmsg.isEmpty())
+                QString tmp=QString("%1Rr%2|").arg(ArmNodeMap.value(node)).arg(regaddr);
+                cmd=cmd.append(tmp);
+            }
+            respmsg =pser->ByteArrayTransmitWaitAck(moem->MoemSenddataConfig(0,0,'k',cmd.toUtf8()),500);
+            if(!respmsg.isEmpty())
+            {
+                MOEM::MOEMResult result = moem->ResponseDataConfig(respmsg);
+                if(result.madpstatus == '0')
                 {
-                    MOEM::MOEMResult result = moem->ResponseDataConfig(respmsg);
-                    MADPRxMsgPrint(result);
-                    if(result.madpstatus == '0')
-                    {
-                        QString name=QString("%1 %2").arg(NodeNameConfig(result.responsestring.toInt()),QString::number(nodeaddr));
-
-                    }
+                    QStringList items = result.responsestring.split('|');
+                    AppendColRegData(ui->ArmUserRegtableWidget,node,items);
                 }
             }
+            cmd.clear();
+            foreach (int regaddr, facregaddr)
+            {
+                QString tmp=QString("%1Ru%2|").arg(ArmNodeMap.value(node)).arg(regaddr);
+                cmd=cmd.append(tmp);
+            }
+            respmsg =pser->ByteArrayTransmitWaitAck(moem->MoemSenddataConfig(0,0,'k',cmd.toUtf8()),500);
+            if(!respmsg.isEmpty())
+            {
+                MOEM::MOEMResult result = moem->ResponseDataConfig(respmsg);
+                if(result.madpstatus == '0')
+                {
+                    QStringList items = result.responsestring.split('|');
+                    AppendColRegData(ui->ArmFacRegtableWidget,node,items);
+                }
+            }
+            cmd.clear();
+            foreach (int regaddr, comregaddr)
+            {
+                QString tmp=QString("%1Rp%2|").arg(ArmNodeMap.value(node)).arg(regaddr);
+                cmd=cmd.append(tmp);
+            }
+            respmsg =pser->ByteArrayTransmitWaitAck(moem->MoemSenddataConfig(0,0,'k',cmd.toUtf8()),500);
+            if(!respmsg.isEmpty())
+            {
+                MOEM::MOEMResult result = moem->ResponseDataConfig(respmsg);
+                if(result.madpstatus == '0')
+                {
+                    QStringList items = result.responsestring.split('|');
+                    AppendColRegData(ui->ArmCommonRegtableWidget,node,items);
+                }
+            }
+            cmd.clear();
         }
         break;
+    }
     default:
         break;
+
+
+
     }
-
-
 }
 
+void MainWindow::AppendColRegData(QTableWidget* tableWidget,const QString &node,const QStringList &datalist)
+{
+    int colidex=FindColumnByHeader(tableWidget,node);
+    int dataidex=0;
+    for (int row = 0; row < tableWidget->rowCount(); ++row)
+    {
+        QTableWidgetItem* permission = tableWidget->item(row, 2);
+        if (permission && permission->text().contains('R'))
+        {
+            if (permission->text().contains('R'))
+            {       
+                QTableWidgetItem* item = new QTableWidgetItem(datalist[dataidex]);
+                tableWidget->setItem(row, colidex, item);
+                dataidex++;
+            }
+        }
+        else
+        {
+            // 对于没有读取权限的行，确保该单元格为空
+            // 注意：setItem(row, colidex, nullptr) 会删除原有的item
+            QTableWidgetItem* existingItem = tableWidget->item(row, colidex);
+            if (existingItem)
+            {
+                tableWidget->takeItem(row, colidex); // 移除但不删除
+                delete existingItem; // 显式删除
+            }
+        }
+    }
+}
+
+int MainWindow::FindColumnByHeader(QTableWidget* tableWidget, const QString& headerText)
+{
+    for (int col = 0; col < tableWidget->columnCount(); ++col)
+    {
+        QTableWidgetItem* headerItem = tableWidget->horizontalHeaderItem(col);
+        if (headerItem && headerItem->text() == headerText)
+        {
+            return col;  // 找到，返回列序号
+        }
+    }
+    return -1;  // 未找到
+}
 // 获取整数类型数据
 QList<int> MainWindow::GetColumnRegAddr_R(QTableWidget* tableWidget)
 {
@@ -599,10 +724,6 @@ QList<int> MainWindow::GetColumnRegAddr_R(QTableWidget* tableWidget)
             if (ok && permission->text().contains('R'))
             {
                 values.append(value);
-            }
-            else
-            {
-                values.append(-1);
             }
         }
     }

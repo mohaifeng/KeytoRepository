@@ -13,6 +13,7 @@ SerialPortWrapper::SerialPortWrapper(QObject *parent): QObject(parent)
     m_config.writeTimeout=2000;
     m_config.responseTimeout=2000;
     frameintegritycheckenable=false;
+    datareceivefinishcheckenable=false;
     SetupConnections();
 }
 SerialPortWrapper::~SerialPortWrapper()
@@ -55,7 +56,7 @@ bool SerialPortWrapper::OpenPort(const SerialConfig &config)
     m_lastError = SerialPortWrapper::NoError;
     m_lastErrorString.clear();
     emit portOpened(config.portName);
-    emit debugMessage(QString("串口 %1 已打开，波特率: %2").arg(config.portName,config.baudRate));
+    emit debugMessage(QString("串口 %1 已打开，波特率: %2").arg(config.portName).arg(config.baudRate));
     return true;
 }
 
@@ -91,6 +92,19 @@ QStringList SerialPortWrapper::GetAvailablePortNames()
     }
     return ports;
 }
+//注册接收数据完成判断回调函数
+void SerialPortWrapper::RegisterDataReceiveFinishCheckCallback(DataReceiveFinishCheckCallback callback)
+{
+    if(callback != nullptr)
+    {
+        datareceivefinishcheckenable=true;
+    }
+    else
+    {
+        datareceivefinishcheckenable=false;
+    }
+    m_datareceivefinishcallback=callback;
+}
 //注册数据完整性判断回调函数
 void SerialPortWrapper::RegisterFrameIntegrityCheckCallback(FrameIntegrityCheckCallback callback)
 {
@@ -102,7 +116,7 @@ void SerialPortWrapper::RegisterFrameIntegrityCheckCallback(FrameIntegrityCheckC
     {
         frameintegritycheckenable=false;
     }
-    m_callback=callback;
+    m_frameIntegritycallback=callback;
 }
 
 void SerialPortWrapper::OnReadyRead()
@@ -111,7 +125,6 @@ void SerialPortWrapper::OnReadyRead()
     {
         return;
     }
-    responsefinishflag=false;
     QMutexLocker locker(&m_readMutex);
     QByteArray newData = m_serialPort->readAll();
     if (newData.isEmpty())
@@ -124,7 +137,18 @@ void SerialPortWrapper::OnReadyRead()
     emit dataReceived(newData);
     emit debugMessage(QString("接收到 %1 字节数据").arg(newData.size()));
     // 重新启动超时定时器
-    m_responsefinishTimer->start(5);  // 5ms超时（可根据波特率调整）
+    if(datareceivefinishcheckenable)
+    {
+        if(m_datareceivefinishcallback(m_readBuffer))
+        {
+            ResponseFinish();
+        }
+    }
+    else
+    {
+        m_responsefinishTimer->start(30);  // 5ms超时（可根据波特率调整）
+    }
+
 }
 
 void SerialPortWrapper::ResponseFinish()
@@ -133,7 +157,7 @@ void SerialPortWrapper::ResponseFinish()
     {
         if(frameintegritycheckenable)
         {
-            if (m_callback(m_readBuffer))
+            if (m_frameIntegritycallback(m_readBuffer))
             {
                 emit frameReceived(m_readBuffer);
                 emit debugMessage(QString("收到完整帧: %1").arg(m_readBuffer.toHex(' ').toUpper()));
@@ -173,7 +197,7 @@ bool SerialPortWrapper::ByteArrayTransmit(const QByteArray &data)
     }
     QMutexLocker locker(&m_writeMutex);
     qint64 bytesWritten = m_serialPort->write(data);
-    if (bytesWritten == -1||bytesWritten !=data.size())
+    if (bytesWritten == -1 || bytesWritten !=data.size())
     {
         m_lastError = SerialPortWrapper::WriteFailed;
         m_lastErrorString = m_serialPort->errorString();
