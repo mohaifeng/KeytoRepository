@@ -271,7 +271,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -293,172 +293,26 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
-              <layout class="QFormLayout" name="formLayout">
-               <item row="0" column="0">
-                <widget class="QCheckBox" name="ch1checkBox">
-                 <property name="text">
-                  <string>1</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QCheckBox" name="ch5checkBox">
-                 <property name="text">
-                  <string>5</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QCheckBox" name="ch2checkBox">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="text">
-                  <string>2</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="ch6checkBox">
-                 <property name="text">
-                  <string>6</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QCheckBox" name="ch3checkBox">
-                 <property name="text">
-                  <string>3</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QCheckBox" name="ch7checkBox">
-                 <property name="text">
-                  <string>7</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QCheckBox" name="ch4checkBox">
-                 <property name="text">
-                  <string>4</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QCheckBox" name="ch8checkBox">
-                 <property name="text">
-                  <string>8</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <spacer name="verticalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Orientation::Vertical</enum>
+              <widget class="QGroupBox" name="ADPgroupBox">
+               <property name="title">
+                <string>ADP+Z</string>
                </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>117</height>
-                </size>
+               <layout class="QGridLayout" name="gridLayout_5"/>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="ArmNodegroupBox">
+               <property name="title">
+                <string>移液臂/Z轴</string>
                </property>
-              </spacer>
+              </widget>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="3,1">
-               <item>
-                <widget class="QLabel" name="label_2">
-                 <property name="text">
-                  <string>X轴地址</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="AddrXlineEdit">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_5">
-               <item>
-                <widget class="QLabel" name="label_5">
-                 <property name="text">
-                  <string>Y轴地址</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="AddrYlineEdit">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="2,1">
-               <property name="sizeConstraint">
-                <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
+              <widget class="QGroupBox" name="groupBox_22">
+               <property name="title">
+                <string>分距</string>
                </property>
-               <item>
-                <widget class="QLabel" name="label_6">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>80</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Z轴地址</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="AddrZlineEdit">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_17">
-               <item>
-                <widget class="QLabel" name="label_13">
-                 <property name="text">
-                  <string>分距地址</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="AddrSpreaderlineEdit"/>
-               </item>
-              </layout>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -468,6 +322,136 @@
             <property name="title">
              <string>ADP控制</string>
             </property>
+            <layout class="QVBoxLayout" name="verticalLayout_7">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_19">
+               <item>
+                <widget class="QLineEdit" name="lineEdit">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignmentFlag::AlignCenter</set>
+                 </property>
+                 <property name="placeholderText">
+                  <string>速度(ul/s)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineEdit_2">
+                 <property name="alignment">
+                  <set>Qt::AlignmentFlag::AlignCenter</set>
+                 </property>
+                 <property name="placeholderText">
+                  <string>功率(%)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineEdit_3">
+                 <property name="alignment">
+                  <set>Qt::AlignmentFlag::AlignCenter</set>
+                 </property>
+                 <property name="placeholderText">
+                  <string>退TIP?</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="ADPInitpushButton">
+                 <property name="text">
+                  <string>置零</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_24">
+               <item>
+                <widget class="QLineEdit" name="lineEdit_4">
+                 <property name="placeholderText">
+                  <string>吸液量(0.01ul)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineEdit_5">
+                 <property name="placeholderText">
+                  <string>吸液速度(ul/s)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineEdit_6">
+                 <property name="placeholderText">
+                  <string>截止速度(ul/s)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_3">
+                 <property name="text">
+                  <string>吸液</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_25">
+               <item>
+                <widget class="QLineEdit" name="lineEdit_7">
+                 <property name="placeholderText">
+                  <string>排液量(0.01ul)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineEdit_8">
+                 <property name="placeholderText">
+                  <string>回吸体积(0.01ul)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineEdit_9">
+                 <property name="placeholderText">
+                  <string>排液速度(ul/s)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineEdit_10">
+                 <property name="placeholderText">
+                  <string>截止速度(ul/s)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_4">
+                 <property name="text">
+                  <string>排液</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="verticalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Orientation::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>275</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
@@ -475,6 +459,212 @@
             <property name="title">
              <string>移液臂控制</string>
             </property>
+            <layout class="QVBoxLayout" name="verticalLayout_9">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_8">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_26">
+                 <item>
+                  <widget class="QLineEdit" name="lineEdit_11">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignmentFlag::AlignCenter</set>
+                   </property>
+                   <property name="placeholderText">
+                    <string>速度(um/s)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_5">
+                   <property name="text">
+                    <string>置零</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_27">
+                 <item>
+                  <widget class="QLineEdit" name="lineEdit_12">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignmentFlag::AlignCenter</set>
+                   </property>
+                   <property name="placeholderText">
+                    <string>位置(um)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="lineEdit_13">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignmentFlag::AlignCenter</set>
+                   </property>
+                   <property name="placeholderText">
+                    <string>速度(um/s)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_6">
+                   <property name="text">
+                    <string>绝对位置移动</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_28">
+                 <item>
+                  <widget class="QLineEdit" name="lineEdit_15">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignmentFlag::AlignCenter</set>
+                   </property>
+                   <property name="placeholderText">
+                    <string>位置(um)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="lineEdit_14">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignmentFlag::AlignCenter</set>
+                   </property>
+                   <property name="placeholderText">
+                    <string>速度(um/s)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_7">
+                   <property name="text">
+                    <string>绝对位置移动</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_29">
+                 <item>
+                  <spacer name="horizontalSpacer_7">
+                   <property name="orientation">
+                    <enum>Qt::Orientation::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="checkBox">
+                   <property name="text">
+                    <string>带保持力</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_8">
+                   <property name="text">
+                    <string>停止</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_4">
+               <property name="title">
+                <string>位置微调</string>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_30" stretch="1,2">
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_10">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_5">
+                    <item>
+                     <widget class="QLabel" name="label_2">
+                      <property name="text">
+                       <string>当前位置</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_5">
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_2">
+                    <item>
+                     <widget class="QLabel" name="label_6">
+                      <property name="text">
+                       <string>移动幅度(um)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="lineEdit_16"/>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_6">
+                    <item>
+                     <widget class="QPushButton" name="pushButton_9">
+                      <property name="text">
+                       <string>前移</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="pushButton_12">
+                      <property name="text">
+                       <string>后移</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_23">
+                  <property name="title">
+                   <string>位置信息</string>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_17"/>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -1353,20 +1543,27 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_7">
+             <widget class="QPushButton" name="SavepushButton">
               <property name="text">
                <string>掉点保存</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_8">
+             <widget class="QPushButton" name="RestorepushButton">
               <property name="text">
                <string>恢复出厂设置</string>
               </property>
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QPushButton" name="RestartpushButton">
+            <property name="text">
+             <string>重启</string>
+            </property>
+           </widget>
           </item>
           <item>
            <spacer name="verticalSpacer">

@@ -119,7 +119,7 @@ class serialport:
         else:
             print(datetime.datetime.now(), end=':')
             print('数据无返回！')
-            return 0
+            return ''
 
     def PortClean(self):
         self.tx_buf = ''
